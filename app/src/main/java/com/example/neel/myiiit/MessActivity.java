@@ -77,14 +77,11 @@ public class MessActivity extends AppCompatActivity {
 
                 String credentials = Credentials.basic(username, pswd);
 
-//                final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
-
                 ClearableCookieJar cookieJar =
                         new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(MessActivity.this));
 
                 OkHttpClient client = new OkHttpClient.Builder().cookieJar(cookieJar).build();
 
-//                RequestBody body= RequestBody.create(JSON,data.toString());
                 Request request = new Request.Builder()
                         .url(final_url)
                         .post(body)
@@ -93,13 +90,9 @@ public class MessActivity extends AppCompatActivity {
 
                 Response response = client.newCall(request).execute();
 
-//                Log.d("response", response.body().string());
-//                Log.d("response", response.toString());
                 Document reverseproxy_soup = Jsoup.parse(response.body().string());
-//                Log.d("soup",reverseproxy_soup.toString());
 
                 String cas_url = base_url + reverseproxy_soup.selectFirst("meta[http-equiv=REFRESH]").attr("content").replace("0;url=", "");
-//                Log.d("url", cas_url);
 
                 Request cas_request = new Request.Builder()
                         .url(cas_url)
@@ -109,9 +102,7 @@ public class MessActivity extends AppCompatActivity {
                 Document cas_soup = Jsoup.parse(cas_response.body().string());
 
 
-//                Log.d("cas soup", cas_soup.toString());
                 Element form = cas_soup.getElementById("fm1");
-//                Log.d("form", form.toString());
 
                 String mess_url = base_url + form.attr("action");
 
@@ -138,7 +129,6 @@ public class MessActivity extends AppCompatActivity {
                         .build();
                 Response mess_response = client.newCall(mess_request).execute();
 
-//                Log.d("mess response", mess_response.body().string());
 
                 Document mess_soup = Jsoup.parse( mess_response.body().string());
 
@@ -148,8 +138,6 @@ public class MessActivity extends AppCompatActivity {
                 result[1] = meals.get(6).getElementsByTag("td").get(1).text();
                 result[2] = meals.get(7).getElementsByTag("td").get(1).text();
 
-//            } catch (JSONException e) {
-//                e.printStackTrace();
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
