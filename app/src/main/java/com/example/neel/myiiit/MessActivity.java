@@ -45,11 +45,8 @@ public class MessActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mess);
 
-//        username = getIntent().getStringExtra("username");
-//        pswd = getIntent().getStringExtra("pswd");
-
-        username="neel.trivedi@research.iiit.ac.in";
-        pswd="@Neel1998";
+        username = getIntent().getStringExtra("username");
+        pswd = getIntent().getStringExtra("pswd");
 
         mess_databox = findViewById(R.id.mess_textbox);
         mess_prog = findViewById(R.id.mess_progress);
