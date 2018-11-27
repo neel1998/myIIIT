@@ -25,6 +25,7 @@ dependencies {
 
     implementation 'org.jsoup:jsoup:1.11.3'
     implementation 'com.squareup.okhttp3:okhttp:3.12.0'
+    implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
 
 
 }
