@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,6 +25,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import okhttp3.Credentials;
 import okhttp3.FormBody;
@@ -33,9 +36,10 @@ import okhttp3.Response;
 
 public class AttendenceActivity extends AppCompatActivity {
 
+    ListView attd_listview;
     String username,pswd;
-    TextView attd_databox;
     ProgressBar attd_prog;
+    AttendanceAdapter attendanceAdapter;
     String base_url = "https://reverseproxy.iiit.ac.in";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +49,9 @@ public class AttendenceActivity extends AppCompatActivity {
         username = getIntent().getStringExtra("username");
         pswd = getIntent().getStringExtra("pswd");
 
-        attd_databox = findViewById(R.id.attd_textbox);
+
+        attendanceAdapter = new AttendanceAdapter(AttendenceActivity.this ,new ArrayList<AttendanceData>());
+        attd_listview = findViewById(R.id.attd_list);
         attd_prog = findViewById(R.id.attd_progress);
         attd_prog.setVisibility(View.VISIBLE);
 
@@ -54,10 +60,10 @@ public class AttendenceActivity extends AppCompatActivity {
 
     }
 
-    private class AttdTask extends AsyncTask<Void,Void,JSONArray>{
+    private class AttdTask extends AsyncTask<Void,Void,Void>{
 
         @Override
-        protected JSONArray doInBackground(Void... voids) {
+        protected Void doInBackground(Void... voids) {
             try {
                 String credentials = Credentials.basic(username, pswd);
                 ClearableCookieJar cookieJar = new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(AttendenceActivity.this));
@@ -121,6 +127,13 @@ public class AttendenceActivity extends AppCompatActivity {
 
                 Document moodle_soup = Jsoup.parse(moodle_response.body().string());
 
+                //getting list of current courses
+                Elements current_courses = moodle_soup.getElementsByClass("course_title");
+                ArrayList<String> current_course_list = new ArrayList<>();
+                for ( Element course : current_courses ){
+                    current_course_list.add(course.text());
+                }
+                Log.d("course list", current_course_list.toString());
                 //course request
                 String course_url = base_url + moodle_soup.getElementsByClass("course_list").get(0).getElementsByClass("title").get(0).getElementsByTag("a").get(0).attr("href");
                 Request course_request = new Request.Builder()
@@ -139,30 +152,44 @@ public class AttendenceActivity extends AppCompatActivity {
                 Response singleAttendence_response = client.newCall(singleAttendence_request).execute();
                 Document singleAttendence_soup = Jsoup.parse(singleAttendence_response.body().string());
 
-                //All course Attendence request
+                //All course Attendance request
                 String allattd_url = base_url + singleAttendence_soup.getElementsByClass("nav nav-tabs").get(0).getElementsByTag("li").get(1).getElementsByTag("a").get(0).attr("href");
-                Request allAttendence_request = new Request.Builder()
+                Request allAttendance_request = new Request.Builder()
                         .url(allattd_url)
                         .header("Authorization", credentials)
                         .build();
-                Response allAttendence_response = client.newCall(allAttendence_request).execute();
-                Document allAttendence_soup = Jsoup.parse(allAttendence_response.body().string());
+                Response allAttendance_response = client.newCall(allAttendance_request).execute();
+                Document allAttendance_soup = Jsoup.parse(allAttendance_response.body().string());
+                //list of all course title and table
+                Elements course_titles = allAttendance_soup.getElementsByClass("cell c1 lastcol").get(0).getElementsByTag("h3");
 
-                Elements course_titles = allAttendence_soup.getElementsByClass("cell c1 lastcol").get(0).getElementsByTag("h3");
+                Elements course_tables = allAttendance_soup.getElementsByClass("cell c1 lastcol").get(0).getElementsByTag("table");
 
-                Log.d("course title", course_titles.toString());
+                //adding object of attendance data to adapter
+                int i = 0;
+                for ( Element table : course_tables ){
+
+                    String course_name = course_titles.get(i).text();
+                    if ( current_course_list.contains(course_name) ) {
+                        String session_completed = table.getElementsByClass("cell c1 lastcol").get(0).text();
+                        String session_present = table.getElementsByClass("cell c1 lastcol").get(1).text();
+                        attendanceAdapter.add(new AttendanceData(course_name, session_completed, session_present));
+                    }
+                    i++;
+                }
             }catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
             return null;
         }
 
         @Override
-        protected void onPostExecute(JSONArray jsonArray) {
+        protected void onPostExecute(Void aVoid) {
             attd_prog.setVisibility(View.GONE);
-            super.onPostExecute(jsonArray);
+            attd_listview.setAdapter(attendanceAdapter);
         }
     }
 }

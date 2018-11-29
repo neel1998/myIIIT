@@ -12,11 +12,10 @@
         android:layout_centerInParent="true"
         android:id="@+id/attd_progress"
         />
-    <TextView
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/attd_textbox"
-        android:layout_centerInParent="true"
+        android:id="@+id/attd_list"
         />
 
 </RelativeLayout>
