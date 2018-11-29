@@ -17,6 +17,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/mess_textbox"
         android:layout_centerInParent="true"
+        android:textAlignment="center"
+        android:textSize="18sp"
         />
 
 </RelativeLayout>
