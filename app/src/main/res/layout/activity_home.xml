@@ -32,4 +32,13 @@
         android:layout_below="@id/attd_btn"
     />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mess_cancel_btn"
+        android:text="Cancel Mess"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/assgn_btn"
+        />
+
 </RelativeLayout>

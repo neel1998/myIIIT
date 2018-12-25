@@ -20,7 +20,8 @@
         </activity>
         <activity android:name=".HomeActivity" />
         <activity android:name=".MessActivity" />
-        <activity android:name=".AttendenceActivity"></activity>
+        <activity android:name=".AttendenceActivity" />
+        <activity android:name=".MessCancelActivity"></activity>
     </application>
 
 </manifest>

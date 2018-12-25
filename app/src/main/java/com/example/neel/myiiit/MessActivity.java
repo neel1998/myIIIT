@@ -59,84 +59,133 @@ public class MessActivity extends AppCompatActivity {
     private class MessTask extends AsyncTask<Void,Void,String[]>{
         @Override
         protected String[] doInBackground(Void... voids) {
-            //fetching CAS url from reverse proxy
-//            JSONObject data = new JSONObject();
+
             String[] result = new String [3];
             try {
 //                
-                RequestBody body = new FormBody.Builder()
-                                   .add("u","mess.iiit.ac.in")
-                                   .add("encodeURL","on")
-                                   .add("allowCookies","on")
-                                   .add("stripJS","on")
-                                   .add("stripObjects","on")
-                                   .build();
+//                RequestBody body = new FormBody.Builder()
+//                                   .add("u","mess.iiit.ac.in")
+////                                   .add("encodeURL","on")
+//                                   .add("allowCookies","on")
+////                                   .add("stripJS","on")
+//                                   .add("stripObjects","on")
+//                                   .build();
 
                 //Post request to reverse proxy
-                URL final_url = new URL("https://reverseproxy.iiit.ac.in/includes/process.php?action=update");
+//                URL final_url = new URL("https://reverseproxy.iiit.ac.in/includes/process.php?action=update");
 
+
+
+
+//                ClearableCookieJar cookieJar =
+//                        new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(MessActivity.this));
+//
+//                OkHttpClient client = new OkHttpClient.Builder().cookieJar(cookieJar).build();
+
+
+//                Request request = new Request.Builder()
+//                        .url(final_url)
+//                        .post(body)
+//                        .header("Authorization", credentials)
+//                        .build();
+
+//                Response response = client.newCall(request).execute();
+
+//                final Document soup = Jsoup.parse(response.body().string());
+
+//                String url = base_url + soup.selectFirst("meta[http-equiv=REFRESH]").attr("content").replace("0;url=", "");
                 String credentials = Credentials.basic(username, pswd);
+                OkHttpClient client = Client.getClient(MessActivity.this);
+                String url = "https://reverseproxy.iiit.ac.in/browse.php?u=https%3A%2F%2Fmess.iiit.ac.in%2Fmess%2Fweb%2Findex.php&b=20";
 
-                ClearableCookieJar cookieJar =
-                        new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(MessActivity.this));
-
-                OkHttpClient client = new OkHttpClient.Builder().cookieJar(cookieJar).build();
-
-                Request request = new Request.Builder()
-                        .url(final_url)
-                        .post(body)
+                Log.d("mess url", url);
+                Request request2 = new Request.Builder()
+                        .url(url)
                         .header("Authorization", credentials)
                         .build();
 
-                Response response = client.newCall(request).execute();
+                Response response2 = client.newCall(request2).execute();
 
-                Document reverseproxy_soup = Jsoup.parse(response.body().string());
+                final Document mess_soup = Jsoup.parse(response2.body().string());
 
-                String cas_url = base_url + reverseproxy_soup.selectFirst("meta[http-equiv=REFRESH]").attr("content").replace("0;url=", "");
-
-                Request cas_request = new Request.Builder()
-                        .url(cas_url)
-                        .header("Authorization", credentials)
-                        .build();
-                Response cas_response = client.newCall(cas_request).execute();
-                Document cas_soup = Jsoup.parse(cas_response.body().string());
-
-
-                Element form = cas_soup.getElementById("fm1");
-
-                String mess_url = base_url + form.attr("action");
-
-                Elements fields = form.getElementsByTag("input");
-
-                FormBody.Builder mess_builder = new FormBody.Builder();
-                for ( Element field:  fields ){
-                    if (field.attr("name").equals("username")) {
-                        mess_builder.add(field.attr("name"), username);
-                    }
-                    else if (field.attr("name").equals("password")) {
-                        mess_builder.add(field.attr("name"), pswd);
-                    }
-                    else {
-                        mess_builder.add(field.attr("name"), field.attr("value"));
-                    }
-                }
-                RequestBody mess_body = mess_builder.build();
-
-                Request mess_request = new Request.Builder()
-                        .url(mess_url)
-                        .post(mess_body)
-                        .header("Authorization", credentials)
-                        .build();
-                Response mess_response = client.newCall(mess_request).execute();
-
-
-                Document mess_soup = Jsoup.parse( mess_response.body().string());
 
                 Elements meals = mess_soup.getElementById("content").getElementsByTag("tr");
 
                 result[0] = meals.get(5).getElementsByTag("td").get(1).text();
                 result[1] = meals.get(6).getElementsByTag("td").get(1).text();
                 result[2] = meals.get(7).getElementsByTag("td").get(1).text();
+
+//                Thread thread = new Thread(){
+//                    @Override
+//                    public void run() {
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                mess_databox.setText(mess_soup.toString());
+//                            }
+//                        });
+//                    }
+//                };
+//                thread.start();
+
+
+//                Element div = mess_soup.getElementById("content");
+//                Log.d("div", div.toString());
+
+//                Element form = mess_soup.getElementById("fm1");
+//                Log.d("form", form.toString());
+//                Log.d("mess soup", mess_soup.toString());
+
+//                Elements meals = mess_soup.getElementById("content").getElementsByTag("tr");
+
+//                Log.d("meals", meals.toString());
+//                Document reverseproxy_soup = Jsoup.parse(response.body().string());
+//
+//                String cas_url = base_url + reverseproxy_soup.selectFirst("meta[http-equiv=REFRESH]").attr("content").replace("0;url=", "");
+//
+//                Request cas_request = new Request.Builder()
+//                        .url(cas_url)
+//                        .header("Authorization", credentials)
+//                        .build();
+//                Response cas_response = client.newCall(cas_request).execute();
+//                Document cas_soup = Jsoup.parse(cas_response.body().string());
+//
+//
+//                Element form = cas_soup.getElementById("fm1");
+//
+//                String mess_url = base_url + form.attr("action");
+//
+//                Elements fields = form.getElementsByTag("input");
+//
+//                FormBody.Builder mess_builder = new FormBody.Builder();
+//                for ( Element field:  fields ){
+//                    if (field.attr("name").equals("username")) {
+//                        mess_builder.add(field.attr("name"), username);
+//                    }
+//                    else if (field.attr("name").equals("password")) {
+//                        mess_builder.add(field.attr("name"), pswd);
+//                    }
+//                    else {
+//                        mess_builder.add(field.attr("name"), field.attr("value"));
+//                    }
+//                }
+//                RequestBody mess_body = mess_builder.build();
+//
+//                Request mess_request = new Request.Builder()
+//                        .url(mess_url)
+//                        .post(mess_body)
+//                        .header("Authorization", credentials)
+//                        .build();
+//                Response mess_response = client.newCall(mess_request).execute();
+//
+//
+//                Document mess_soup = Jsoup.parse( mess_response.body().string());
+//
+//                Elements meals = mess_soup.getElementById("content").getElementsByTag("tr");
+//
+//                result[0] = meals.get(5).getElementsByTag("td").get(1).text();
+//                result[1] = meals.get(6).getElementsByTag("td").get(1).text();
+//                result[2] = meals.get(7).getElementsByTag("td").get(1).text();
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
