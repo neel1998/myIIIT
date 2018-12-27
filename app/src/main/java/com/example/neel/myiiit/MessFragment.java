@@ -32,10 +32,8 @@ public class MessFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-            final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.MealsTheme);
-            inflater.cloneInContext(contextThemeWrapper);
-
             View rootView = inflater.inflate(R.layout.activity_mess, container, false);
+
             username = CredentialsClass.getUsername();
             pswd = CredentialsClass.getPswd();
 

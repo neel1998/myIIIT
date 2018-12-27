@@ -1,5 +1,9 @@
 package com.example.neel.myiiit;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,22 +26,73 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
 
+    MessCancelFragment messCancelFragment;
+    MessFragment messFragment;
+    AttendanceFragment attendanceFragment;
+    HomeFragment homeFragment;
+    Toolbar toolbar;
+    TabLayout tabLayout;
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         mViewPager =  findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout =  findViewById(R.id.tabs);
+        tabLayout =  findViewById(R.id.tabs);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
+        getWindow().setStatusBarColor(getResources().getColor(R.color.Home3));
+        tabLayout.setBackgroundColor(getResources().getColor(R.color.Home2));
+        toolbar.setBackgroundColor(getResources().getColor(R.color.Home1));
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        getWindow().setStatusBarColor(getResources().getColor(R.color.Home3));
+                        tabLayout.setBackgroundColor(getResources().getColor(R.color.Home2));
+                        toolbar.setBackgroundColor(getResources().getColor(R.color.Home1));
+                        break;
+                    case 1:
+                        getWindow().setStatusBarColor(getResources().getColor(R.color.Meals3));
+                        tabLayout.setBackgroundColor(getResources().getColor(R.color.Meals2));
+                        toolbar.setBackgroundColor(getResources().getColor(R.color.Meals1));
+                        break;
+                    case 2:
+                        getWindow().setStatusBarColor(getResources().getColor(R.color.Cancel3));
+                        tabLayout.setBackgroundColor(getResources().getColor(R.color.Cancel2));
+                        toolbar.setBackgroundColor(getResources().getColor(R.color.Cancel1));
+                        break;
+                    case 3:
+                        getWindow().setStatusBarColor(getResources().getColor(R.color.Attd3));
+                        tabLayout.setBackgroundColor(getResources().getColor(R.color.Attd2));
+                        toolbar.setBackgroundColor(getResources().getColor(R.color.Attd1));
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -86,16 +141,16 @@ public class MainActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position){
                 case 0:
-                    HomeFragment homeFragment = new HomeFragment();
+                    homeFragment = new HomeFragment();
                     return homeFragment;
                 case 1:
-                    MessFragment messFragment = new MessFragment();
+                    messFragment = new MessFragment();
                     return  messFragment;
                 case 2:
-                    MessCancelFragment messCancelFragment = new MessCancelFragment();
+                    messCancelFragment = new MessCancelFragment();
                     return messCancelFragment;
                 case 3:
-                    AttendanceFragment attendanceFragment = new AttendanceFragment();
+                    attendanceFragment = new AttendanceFragment();
                     return attendanceFragment;
                 default:
                     return null;

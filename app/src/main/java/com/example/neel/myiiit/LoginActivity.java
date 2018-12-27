@@ -46,10 +46,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 username=username_box.getText().toString();
                 pswd=pswd_box.getText().toString();
-//                Intent intent=new Intent(LoginActivity.this,HomeActivity.class);
-//                intent.putExtra("username",username);
-//                intent.putExtra("pswd",pswd);
-//                startActivity(intent);
+
                 LoginTask loginTask = new LoginTask();
                 loginTask.execute();
             }
@@ -65,10 +62,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 RequestBody body = new FormBody.Builder()
                         .add("u", "login.iiit.ac.in")
-//                        .add("encodeURL", "on")
                         .add("allowCookies", "on")
-//                        .add("stripJS", "on")
-                        .add("stripObjects", "on")
+//                        .add("stripObjects", "on")
                         .build();
 
                 URL final_url = new URL("https://reverseproxy.iiit.ac.in/includes/process.php?action=update");
@@ -117,8 +112,6 @@ public class LoginActivity extends AppCompatActivity {
                 CredentialsClass credentialsClass = new CredentialsClass(username, pswd);
 
                 Intent intent=new Intent(LoginActivity.this,MainActivity.class);
-//                intent.putExtra("username",username);
-//                intent.putExtra("pswd",pswd);
                 startActivity(intent);
             } catch (MalformedURLException e) {
                 e.printStackTrace();

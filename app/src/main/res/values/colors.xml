@@ -3,8 +3,24 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
     <color name="Meals1">#d40b1f</color>
     <color name="Meals2">#64030d</color>
     <color name="Meals3">#f71804</color>
 
+    <color name="Home1">#2780c6</color>
+    <color name="Home2">#023f6e</color>
+    <color name="Home3">#03bdfc</color>
+
+    <color name="Cancel1">#e25d03</color>
+    <color name="Cancel2">#7b3100</color>
+    <color name="Cancel3">#fc7f03</color>
+
+    <color name="Attd1">#196401</color>
+    <color name="Attd2">#0e3601</color>
+    <color name="Attd3">#279f01</color>
+
+    <color name="Login1">#196401</color>
+    <color name="Login2">#196401</color>
+    <color name="Login3">#196401</color>
 </resources>

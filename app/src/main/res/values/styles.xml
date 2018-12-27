@@ -17,10 +17,5 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="MealsTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/Meals1</item>
-        <item name="colorPrimaryDark">@color/Meals2</item>
-        <item name="colorAccent">@color/Meals3</item>
-    </style>
+
 </resources>
