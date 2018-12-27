@@ -1,19 +1,17 @@
 package com.example.neel.myiiit;
 
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -25,37 +23,36 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class MessCancelActivity extends AppCompatActivity {
-
+public class MessCancelFragment extends Fragment {
     String username, pswd, date1, month1, year1, date2, month2, year2 ;
     Spinner date_select1, month_select1, year_select1, date_select2, month_select2, year_select2;
     CheckBox breakfast_box, lunch_box, dinner_box;
     Button submit_btn;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mess_cancel);
-        username = getIntent().getStringExtra("username");
-        pswd = getIntent().getStringExtra("pswd");
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.activity_mess_cancel, container, false);
+        username = CredentialsClass.getUsername();
+        pswd = CredentialsClass.getPswd();
 
-        date_select1 = findViewById(R.id.date_select1);
-        month_select1 = findViewById(R.id.month_select1);
-        year_select1 = findViewById(R.id.year_select1);
-        date_select2 = findViewById(R.id.date_select2);
-        month_select2 = findViewById(R.id.month_select2);
-        year_select2 = findViewById(R.id.year_select2);
+        date_select1 = rootView.findViewById(R.id.date_select1);
+        month_select1 = rootView.findViewById(R.id.month_select1);
+        year_select1 = rootView.findViewById(R.id.year_select1);
+        date_select2 = rootView.findViewById(R.id.date_select2);
+        month_select2 = rootView.findViewById(R.id.month_select2);
+        year_select2 = rootView.findViewById(R.id.year_select2);
 
-        breakfast_box = findViewById(R.id.breakfast_box);
-        lunch_box = findViewById(R.id.lunch_box);
-        dinner_box = findViewById(R.id.dinner_box);
+        breakfast_box = rootView.findViewById(R.id.breakfast_box);
+        lunch_box = rootView.findViewById(R.id.lunch_box);
+        dinner_box = rootView.findViewById(R.id.dinner_box);
 
-        submit_btn = findViewById(R.id.submit_btn);
+        submit_btn = rootView.findViewById(R.id.submit_btn);
 
         String[] dates=new String[31];
         for(int x=1;x<=31;x++){
             dates[x-1]=String.valueOf(x);
         }
-        ArrayAdapter<String> dateAdapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item, dates);
+        ArrayAdapter<String> dateAdapter=new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_dropdown_item, dates);
         date_select1.setAdapter(dateAdapter);
         date_select2.setAdapter(dateAdapter);
         date_select1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -86,7 +83,7 @@ public class MessCancelActivity extends AppCompatActivity {
 
 
         String[] months={"JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"};
-        ArrayAdapter<String> monthAdapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,months);
+        ArrayAdapter<String> monthAdapter=new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_dropdown_item,months);
         month_select1.setAdapter(monthAdapter);
         month_select2.setAdapter(monthAdapter);
         month_select1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -119,7 +116,7 @@ public class MessCancelActivity extends AppCompatActivity {
         for(int x=2018;x<=2027;x++){
             years[x-2018]=String.valueOf(x);
         }
-        ArrayAdapter<String> yearAdapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,years);
+        ArrayAdapter<String> yearAdapter=new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_dropdown_item,years);
         year_select1.setAdapter(yearAdapter);
         year_select2.setAdapter(yearAdapter);
         year_select1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -155,16 +152,17 @@ public class MessCancelActivity extends AppCompatActivity {
                 messCancelTask.execute();
             }
         });
-    }
 
-    public class MessCancelTask extends AsyncTask<Void, Void, String>{
+        return rootView;
+    }
+    private class MessCancelTask extends AsyncTask<Void, Void, String> {
 
         @Override
         protected String doInBackground(Void... voids) {
             String result = "";
             try{
                 String credentials = Credentials.basic(username, pswd);
-                OkHttpClient client = Client.getClient(MessCancelActivity.this);
+                OkHttpClient client = Client.getClient(getContext());
                 String url = "https://reverseproxy.iiit.ac.in/browse.php?u=https%3A%2F%2Fmess.iiit.ac.in%2Fmess%2Fweb%2Fstudent_cancel_process.php&b=4";
 
                 if(date1.length() == 1) {

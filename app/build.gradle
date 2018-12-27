@@ -28,4 +28,5 @@ dependencies {
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
 
 
+    implementation 'com.android.support:design:28.0.0'
 }

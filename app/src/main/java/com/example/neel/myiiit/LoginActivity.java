@@ -46,9 +46,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 username=username_box.getText().toString();
                 pswd=pswd_box.getText().toString();
-                Intent intent=new Intent(LoginActivity.this,HomeActivity.class);
-                intent.putExtra("username",username);
-                intent.putExtra("pswd",pswd);
+//                Intent intent=new Intent(LoginActivity.this,HomeActivity.class);
+//                intent.putExtra("username",username);
+//                intent.putExtra("pswd",pswd);
 //                startActivity(intent);
                 LoginTask loginTask = new LoginTask();
                 loginTask.execute();
@@ -114,9 +114,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 Log.d("soup", login_soup.toString());
 
-                Intent intent=new Intent(LoginActivity.this,HomeActivity.class);
-                intent.putExtra("username",username);
-                intent.putExtra("pswd",pswd);
+                CredentialsClass credentialsClass = new CredentialsClass(username, pswd);
+
+                Intent intent=new Intent(LoginActivity.this,MainActivity.class);
+//                intent.putExtra("username",username);
+//                intent.putExtra("pswd",pswd);
                 startActivity(intent);
             } catch (MalformedURLException e) {
                 e.printStackTrace();

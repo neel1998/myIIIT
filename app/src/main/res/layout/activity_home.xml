@@ -4,41 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity">
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/mess_btn"
-        android:text="Mess"
-        android:layout_above="@+id/attd_btn"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/attd_btn"
-        android:text="Attendence"
+    tools:context=".HomeFragment">
+
+    <TextView
         android:layout_centerInParent="true"
-        android:layout_marginBottom="10dp"
-    />
-
-    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/assgn_btn"
-        android:text="Assignment"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/attd_btn"
-    />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/mess_cancel_btn"
-        android:text="Cancel Mess"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/assgn_btn"
+        android:text="Welcome"
         />
 
 </RelativeLayout>
