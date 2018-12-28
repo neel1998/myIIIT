@@ -1,5 +1,6 @@
 package com.example.neel.myiiit;
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
+import android.widget.TextView;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -26,8 +31,9 @@ import okhttp3.Response;
 public class MessCancelFragment extends Fragment {
     String username, pswd, date1, month1, year1, date2, month2, year2 ;
     Spinner date_select1, month_select1, year_select1, date_select2, month_select2, year_select2;
-    CheckBox breakfast_box, lunch_box, dinner_box;
+    CheckBox breakfast_box, lunch_box, dinner_box, uncancel_box;
     Button submit_btn;
+    TextView cancel_msg;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -41,10 +47,12 @@ public class MessCancelFragment extends Fragment {
         date_select2 = rootView.findViewById(R.id.date_select2);
         month_select2 = rootView.findViewById(R.id.month_select2);
         year_select2 = rootView.findViewById(R.id.year_select2);
+        cancel_msg = rootView.findViewById(R.id.cancel_msg);
 
         breakfast_box = rootView.findViewById(R.id.breakfast_box);
         lunch_box = rootView.findViewById(R.id.lunch_box);
         dinner_box = rootView.findViewById(R.id.dinner_box);
+        uncancel_box = rootView.findViewById(R.id.uncancel_box);
 
         submit_btn = rootView.findViewById(R.id.submit_btn);
 
@@ -182,8 +190,9 @@ public class MessCancelFragment extends Fragment {
                         .add("startdate", startdate)
                         .add("enddate", enddate)
                         .add("breakfast[]", (breakfast_box.isChecked())?"1":"0")
-                        .add("lunch[]", (dinner_box.isChecked())?"1":"0")
+                        .add("lunch[]", (lunch_box.isChecked())?"1":"0")
                         .add("dinner[]", (dinner_box.isChecked())?"1":"0")
+                        .add("uncancel[]",(dinner_box.isChecked())?"1":"0")
                         .build();
 
                 Request request = new Request.Builder()
@@ -194,7 +203,8 @@ public class MessCancelFragment extends Fragment {
 
                 Response response = client.newCall(request).execute();
 
-                Log.d("response", response.body().string());
+                Document cancel_soup = Jsoup.parse(response.body().string());
+                result = cancel_soup.getElementsByClass("post").get(1).getElementsByTag("font").get(0).text();
 
             }catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -202,6 +212,12 @@ public class MessCancelFragment extends Fragment {
                 e.printStackTrace();
             }
             return result;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("message", result);
+            cancel_msg.setText(result);
         }
     }
 }

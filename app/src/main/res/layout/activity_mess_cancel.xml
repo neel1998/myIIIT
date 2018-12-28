@@ -83,12 +83,27 @@
         android:text="Dinner"
         android:id="@+id/dinner_box"
         />
+    <CheckBox
+        android:layout_below="@+id/dinner_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Uncancel"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/uncancel_box"
+        />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/breakfast_box"
+        android:layout_below="@+id/uncancel_box"
         android:layout_centerHorizontal="true"
         android:text="Submit"
         android:id="@+id/submit_btn"
+        />
+    <TextView
+        android:id="@+id/cancel_msg"
+        android:layout_below="@+id/submit_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
         />
 </RelativeLayout>
