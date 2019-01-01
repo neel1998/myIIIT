@@ -2,6 +2,7 @@ package com.example.neel.myiiit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
@@ -20,36 +21,34 @@ public class Network {
 
     public static Document makeRequest(Context context, RequestBody body, String url){
 
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String credentials = Credentials.basic(
-                PreferenceManager.getDefaultSharedPreferences(context).getString("username", null),
-                PreferenceManager.getDefaultSharedPreferences(context).getString("password", null));
+                preferences.getString("username", null),
+                preferences.getString("password", null));
         OkHttpClient client = Client.getClient(context);
         Document soup = null;
-        Request request;
+
+        Request.Builder builder = new Request.Builder()
+                .url(url)
+                .header("Authorization", credentials);
+
         if (body != null) {
-            request = new Request.Builder()
-                    .url(url)
-                    .post(body)
-                    .header("Authorization", credentials)
-                    .build();
+            builder.post(body);
         }
-        else {
-            request = new Request.Builder()
-                    .url(url)
-                    .header("Authorization", credentials)
-                    .build();
-        }
+        
+        Request request = builder.build();
         try {
             Response response = client.newCall(request).execute();
             soup = Jsoup.parse(response.body().string());
-            if (soup.title().equals(context.getString(R.string.cas_title)) || soup.title().equals(context.getString(R.string.rev_title))) {
+            if (soup.title().equals("Central Authentication Service - IIIT Hyderabad") || soup.title().equals("reverseproxy.iiit.ac.in Glype® proxy")) {
 
                 String result = LoginActivity.Login(context);
 
                 if (!result.equals("200")) {
                     Toast.makeText(context, "Invalid Credentials", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(context, LoginActivity.class);
-                    context.startActivity(intent);
+//                    Intent intent = new Intent(context, LoginActivity.class);
+//                    context.startActivity(intent);
                 }
                 client = Client.getClient(context);
                 response = client.newCall(request).execute();
