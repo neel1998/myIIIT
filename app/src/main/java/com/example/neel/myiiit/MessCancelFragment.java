@@ -1,8 +1,10 @@
 package com.example.neel.myiiit;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,12 +36,15 @@ public class MessCancelFragment extends Fragment {
     CheckBox breakfast_box, lunch_box, dinner_box, uncancel_box;
     Button submit_btn;
     TextView cancel_msg;
+    SharedPreferences preferences;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_mess_cancel, container, false);
-        username = CredentialsClass.getUsername();
-        pswd = CredentialsClass.getPswd();
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        username = preferences.getString("username", null);
+        pswd = preferences.getString("password", null);
 
         date_select1 = rootView.findViewById(R.id.date_select1);
         month_select1 = rootView.findViewById(R.id.month_select1);
@@ -161,8 +166,10 @@ public class MessCancelFragment extends Fragment {
             }
         });
 
+        Log.d("Mess Cancel Fragment", "Created");
         return rootView;
     }
+
     private class MessCancelTask extends AsyncTask<Void, Void, String> {
 
         @Override
@@ -192,7 +199,7 @@ public class MessCancelFragment extends Fragment {
                         .add("breakfast[]", (breakfast_box.isChecked())?"1":"0")
                         .add("lunch[]", (lunch_box.isChecked())?"1":"0")
                         .add("dinner[]", (dinner_box.isChecked())?"1":"0")
-                        .add("uncancel[]",(dinner_box.isChecked())?"1":"0")
+                        .add("uncancel[]",(uncancel_box.isChecked())?"1":"0")
                         .build();
 
                 Request request = new Request.Builder()
@@ -204,6 +211,16 @@ public class MessCancelFragment extends Fragment {
                 Response response = client.newCall(request).execute();
 
                 Document cancel_soup = Jsoup.parse(response.body().string());
+
+                if (cancel_soup.title().equals(getString(R.string.cas_title)) || cancel_soup.title().equals(getString(R.string.rev_title)) ) {
+                    String r =  LoginActivity.Login(getContext());
+                    Log.d("login result", r);
+
+                    client = Client.getClient(getContext());
+                    response = client.newCall(request).execute();
+                    cancel_soup = Jsoup.parse(response.body().string());
+                }
+
                 result = cancel_soup.getElementsByClass("post").get(1).getElementsByTag("font").get(0).text();
 
             }catch (MalformedURLException e) {

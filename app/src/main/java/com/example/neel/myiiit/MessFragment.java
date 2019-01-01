@@ -1,8 +1,10 @@
 package com.example.neel.myiiit;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
@@ -28,23 +30,32 @@ public class MessFragment extends Fragment {
     String username,pswd;
     TextView mess_databox;
     ProgressBar mess_prog;
+    SharedPreferences preferences;
+    MessTask messTask;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
             View rootView = inflater.inflate(R.layout.activity_mess, container, false);
 
-            username = CredentialsClass.getUsername();
-            pswd = CredentialsClass.getPswd();
+            preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            username = preferences.getString("username", null);
+            pswd = preferences.getString("password", null);
 
             mess_databox = rootView.findViewById(R.id.mess_textbox);
             mess_prog = rootView.findViewById(R.id.mess_progress);
             mess_prog.setVisibility(View.VISIBLE);
 
-            MessTask messTask = new MessTask();
-            messTask.execute();
+            Log.d("Mess Fragment", "Created");
 
             return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        messTask = new MessTask();
+        messTask.execute();
     }
 
     private class MessTask extends AsyncTask<Void,Void,String[]> {
@@ -65,8 +76,16 @@ public class MessFragment extends Fragment {
 
                 Response response2 = client.newCall(request2).execute();
 
-                final Document mess_soup = Jsoup.parse(response2.body().string());
+                Document mess_soup = Jsoup.parse(response2.body().string());
 
+                if (mess_soup.title().equals(getString(R.string.cas_title)) || mess_soup.title().equals(getString(R.string.rev_title)) ) {
+                    String r =  LoginActivity.Login(getContext());
+                    Log.d("login result", r);
+
+                    client = Client.getClient(getContext());
+                    response2 = client.newCall(request2).execute();
+                    mess_soup = Jsoup.parse(response2.body().string());
+                }
 
                 Elements meals = mess_soup.getElementById("content").getElementsByTag("tr");
 

@@ -1,7 +1,10 @@
 package com.example.neel.myiiit;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,8 +34,8 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText username_box,pswd_box;
     Button login_btn;
-    String username, pswd;
-    String base_url = "https://reverseproxy.iiit.ac.in";
+    static String username, pswd;
+    static String base_url = "https://reverseproxy.iiit.ac.in";
     TextView username_err, pswd_err;
     ProgressBar login_prog;
     @Override
@@ -40,6 +43,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        username = PreferenceManager.getDefaultSharedPreferences(this).getString("username", null);
+        pswd = PreferenceManager.getDefaultSharedPreferences(this).getString("password", null);
+
+        if (username != null){
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
 
         username_box = findViewById(R.id.username_box);
         pswd_box = findViewById(R.id.pswd_box);
@@ -67,6 +77,13 @@ public class LoginActivity extends AppCompatActivity {
                 if ( !username.equals("") && !pswd.equals("")) {
                     login_prog.setVisibility(View.VISIBLE);
                     login_btn.setVisibility(View.GONE);
+
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("username", username);
+                    editor.putString("password", pswd);
+                    editor.commit();
+
                     LoginTask loginTask = new LoginTask();
                     loginTask.execute();
                 }
@@ -78,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             String result = "";
-            result = Login();
+            result = Login(LoginActivity.this);
             return result;
         }
 
@@ -109,11 +126,13 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public String Login() {
+    public static String Login(Context context) {
        String result = "";
        try {
+            username = PreferenceManager.getDefaultSharedPreferences(context).getString("username", null);
+            pswd = PreferenceManager.getDefaultSharedPreferences(context).getString("password", null);
             Client.makeNull();
-            OkHttpClient client = Client.getClient(LoginActivity.this);
+            OkHttpClient client = Client.getClient(context);
 
             //401 Authorization Required
 
