@@ -31,20 +31,16 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class MessCancelFragment extends Fragment {
-    String username, pswd, date1, month1, year1, date2, month2, year2 ;
+    String date1, month1, year1, date2, month2, year2 ;
     Spinner date_select1, month_select1, year_select1, date_select2, month_select2, year_select2;
     CheckBox breakfast_box, lunch_box, dinner_box, uncancel_box;
     Button submit_btn;
     TextView cancel_msg;
-    SharedPreferences preferences;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_mess_cancel, container, false);
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        username = preferences.getString("username", null);
-        pswd = preferences.getString("password", null);
 
         date_select1 = rootView.findViewById(R.id.date_select1);
         month_select1 = rootView.findViewById(R.id.month_select1);
@@ -166,7 +162,6 @@ public class MessCancelFragment extends Fragment {
             }
         });
 
-        Log.d("Mess Cancel Fragment", "Created");
         return rootView;
     }
 
@@ -175,59 +170,32 @@ public class MessCancelFragment extends Fragment {
         @Override
         protected String doInBackground(Void... voids) {
             String result = "";
-            try{
-                String credentials = Credentials.basic(username, pswd);
-                OkHttpClient client = Client.getClient(getContext());
-                String url = "https://reverseproxy.iiit.ac.in/browse.php?u=https%3A%2F%2Fmess.iiit.ac.in%2Fmess%2Fweb%2Fstudent_cancel_process.php&b=4";
+            String url = "https://reverseproxy.iiit.ac.in/browse.php?u=https%3A%2F%2Fmess.iiit.ac.in%2Fmess%2Fweb%2Fstudent_cancel_process.php&b=4";
 
-                if(date1.length() == 1) {
-                    date1 = "0" + date1;
-                }
-                if(date2.length() == 1) {
-                    date2 = "0" + date2;
-                }
-
-                String startdate = date1 + "-" + month1 + "-" + year1;
-                String enddate = date2 + "-" + month2 + "-" + year2;
-
-                Log.d("start date", startdate);
-                Log.d("end date", enddate);
-
-                RequestBody body = new FormBody.Builder()
-                        .add("startdate", startdate)
-                        .add("enddate", enddate)
-                        .add("breakfast[]", (breakfast_box.isChecked())?"1":"0")
-                        .add("lunch[]", (lunch_box.isChecked())?"1":"0")
-                        .add("dinner[]", (dinner_box.isChecked())?"1":"0")
-                        .add("uncancel[]",(uncancel_box.isChecked())?"1":"0")
-                        .build();
-
-                Request request = new Request.Builder()
-                        .url(url)
-                        .post(body)
-                        .header("Authorization", credentials)
-                        .build();
-
-                Response response = client.newCall(request).execute();
-
-                Document cancel_soup = Jsoup.parse(response.body().string());
-
-                if (cancel_soup.title().equals(getString(R.string.cas_title)) || cancel_soup.title().equals(getString(R.string.rev_title)) ) {
-                    String r =  LoginActivity.Login(getContext());
-                    Log.d("login result", r);
-
-                    client = Client.getClient(getContext());
-                    response = client.newCall(request).execute();
-                    cancel_soup = Jsoup.parse(response.body().string());
-                }
-
-                result = cancel_soup.getElementsByClass("post").get(1).getElementsByTag("font").get(0).text();
-
-            }catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if(date1.length() == 1) {
+               date1 = "0" + date1;
             }
+            if(date2.length() == 1) {
+               date2 = "0" + date2;
+            }
+
+            String startdate = date1 + "-" + month1 + "-" + year1;
+            String enddate = date2 + "-" + month2 + "-" + year2;
+
+            Log.d("start date", startdate);
+            Log.d("end date", enddate);
+
+            RequestBody body = new FormBody.Builder()
+                  .add("startdate", startdate)
+                  .add("enddate", enddate)
+                  .add("breakfast[]", (breakfast_box.isChecked())?"1":"0")
+                  .add("lunch[]", (lunch_box.isChecked())?"1":"0")
+                  .add("dinner[]", (dinner_box.isChecked())?"1":"0")
+                  .add("uncancel[]",(uncancel_box.isChecked())?"1":"0")
+                  .build();
+
+            Document cancel_soup = Network.makeRequest(getContext(), body, url);
+            result = cancel_soup.getElementsByClass("post").get(1).getElementsByTag("font").get(0).text();
             return result;
         }
 

@@ -13,7 +13,6 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_home, container, false);
 
-        Log.d("Home Fragment", "Created");
         return rootView;
     }
 }

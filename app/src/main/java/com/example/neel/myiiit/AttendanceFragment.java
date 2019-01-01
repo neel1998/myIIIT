@@ -1,5 +1,6 @@
 package com.example.neel.myiiit;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,28 +30,19 @@ import okhttp3.Response;
 
 public class AttendanceFragment extends Fragment {
 
-    String username, pswd;
     String base_url = "https://reverseproxy.iiit.ac.in";
     ListView attd_listview;
     ProgressBar attd_prog;
     AttendanceAdapter attendanceAdapter;
-    SharedPreferences preferences;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_attendence, container, false);
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        username = preferences.getString("username", null);
-        pswd = preferences.getString("password", null);
-
         attendanceAdapter = new AttendanceAdapter(getContext() ,new ArrayList<AttendanceData>());
         attd_listview = rootView.findViewById(R.id.attd_list);
         attd_prog = rootView.findViewById(R.id.attd_progress);
         attd_prog.setVisibility(View.VISIBLE);
-
-
-        Log.d("Attendance Fragment", "Created");
         return  rootView;
     }
 
@@ -66,101 +58,34 @@ public class AttendanceFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
 
-            try{
-                OkHttpClient client = Client.getClient(getContext());
-                String credentials = Credentials.basic(username, pswd);
+            Context context = getContext();
 
-                URL home_url = new URL("https://reverseproxy.iiit.ac.in/browse.php?u=https%3A%2F%2Fmoodle.iiit.ac.in%2Fmy%2F&b=4");
+            String home_url = "https://reverseproxy.iiit.ac.in/browse.php?u=https%3A%2F%2Fmoodle.iiit.ac.in%2Fmy%2F&b=4";
+            Document home_soup = Network.makeRequest(context, null, home_url);
 
-                Request home_request = new Request.Builder()
-                        .url(home_url)
-                        .header("Authorization", credentials)
-                        .build();
-                Response home_response = client.newCall(home_request).execute();
-                Document home_soup = Jsoup.parse(home_response.body().string());
+            String course_url = "https://reverseproxy.iiit.ac.in//browse.php?u=https%3A%2F%2Fmoodle.iiit.ac.in%2F%3Fredirect%3D0&amp;b=4";
+            Document course_soup = Network.makeRequest(context, null, course_url);
 
-                if (home_soup.title().equals(getString(R.string.cas_title)) || home_soup.title().equals(getString(R.string.rev_title)) ) {
-                    String r =  LoginActivity.Login(getContext());
-                    Log.d("login result", r);
+            String single_url = base_url + course_soup.getElementById("frontpage-course-list").getElementsByTag("a").get(0).attr("href");
+            Document single_soup = Network.makeRequest(context, null, single_url);
 
-                    client = Client.getClient(getContext());
-                    home_response = client.newCall(home_request).execute();
-                }
+            String attendance_url = base_url + single_soup.getElementsByClass("mod-indent-outer").get(1).getElementsByTag("a").get(0).attr("href");
+            String allattd_url = attendance_url.split("&")[0] + "%26mode%3D1&" + attendance_url.split("&")[1];
+            Document allAttendance_soup = Network.makeRequest(context, null, allattd_url);
 
-                URL course_url = new URL("https://reverseproxy.iiit.ac.in//browse.php?u=https%3A%2F%2Fmoodle.iiit.ac.in%2F%3Fredirect%3D0&amp;b=4");
-                Request course_request = new Request.Builder()
-                        .url(course_url)
-                        .header("Authorization", credentials)
-                        .build();
-                Response course_response = client.newCall(course_request).execute();
-                Document course_soup = Jsoup.parse(course_response.body().string());
-//
-                if (course_soup.title().equals(getString(R.string.cas_title)) || course_soup.title().equals(getString(R.string.rev_title)) ) {
-                    String r =  LoginActivity.Login(getContext());
-                    Log.d("login result", r);
+            //list of all course title and table
+            Elements course_titles = allAttendance_soup.getElementsByClass("cell c1 lastcol").get(0).getElementsByTag("h3");
+            Elements course_tables = allAttendance_soup.getElementsByClass("cell c1 lastcol").get(0).getElementsByTag("table");
 
-                    client = Client.getClient(getContext());
-                    course_response = client.newCall(course_request).execute();
-                    course_soup = Jsoup.parse(course_response.body().string());
-                }
+            //adding object of attendance data to adapter
+            int i = 0;
+            for ( Element table : course_tables ){
 
-                String single_url = base_url + course_soup.getElementById("frontpage-course-list").getElementsByTag("a").get(0).attr("href");
-                Request single_request = new Request.Builder()
-                        .url(single_url)
-                        .header("Authorization", credentials)
-                        .build();
-                Response single_response = client.newCall(single_request).execute();
-                Document single_soup = Jsoup.parse(single_response.body().string());
-//
-                if (single_soup.title().equals(getString(R.string.cas_title)) || single_soup.title().equals(getString(R.string.rev_title)) ) {
-                    String r =  LoginActivity.Login(getContext());
-                    Log.d("login result", r);
-
-                    client = Client.getClient(getContext());
-                    single_response = client.newCall(single_request).execute();
-                    single_soup = Jsoup.parse(single_response.body().string());
-                }
-
-
-                String attendance_url = base_url + single_soup.getElementsByClass("mod-indent-outer").get(1).getElementsByTag("a").get(0).attr("href");
-
-                String allattd_url = attendance_url.split("&")[0] + "%26mode%3D1&" + attendance_url.split("&")[1];
-
-                Request allAttendance_request = new Request.Builder()
-                        .url(allattd_url)
-                        .header("Authorization", credentials)
-                        .build();
-                Response allAttendance_response = client.newCall(allAttendance_request).execute();
-                Document allAttendance_soup = Jsoup.parse(allAttendance_response.body().string());
-//
-
-                if (allAttendance_soup.title().equals(getString(R.string.cas_title)) || allAttendance_soup.title().equals(getString(R.string.rev_title)) ) {
-                    String r =  LoginActivity.Login(getContext());
-                    Log.d("login result", r);
-
-                    client = Client.getClient(getContext());
-                    allAttendance_response = client.newCall(allAttendance_request).execute();
-                    allAttendance_soup = Jsoup.parse(allAttendance_response.body().string());
-                }
-                //list of all course title and table
-                Elements course_titles = allAttendance_soup.getElementsByClass("cell c1 lastcol").get(0).getElementsByTag("h3");
-
-                Elements course_tables = allAttendance_soup.getElementsByClass("cell c1 lastcol").get(0).getElementsByTag("table");
-
-                //adding object of attendance data to adapter
-                int i = 0;
-                for ( Element table : course_tables ){
-
-                    String course_name = course_titles.get(i).text();
-                    String session_completed = table.getElementsByClass("cell c1 lastcol").get(0).text();
-                    String session_present = table.getElementsByClass("cell c1 lastcol").get(1).text();
-                    attendanceAdapter.add(new AttendanceData(course_name, session_completed, session_present));
-                    i++;
-                }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+                String course_name = course_titles.get(i).text();
+                String session_completed = table.getElementsByClass("cell c1 lastcol").get(0).text();
+                String session_present = table.getElementsByClass("cell c1 lastcol").get(1).text();
+                attendanceAdapter.add(new AttendanceData(course_name, session_completed, session_present));
+                i++;
             }
 
             return null;
