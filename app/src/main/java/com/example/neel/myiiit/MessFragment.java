@@ -55,9 +55,10 @@ public class MessFragment extends Fragment {
 
             String[] result = new String [3];
 
-            String url = "https://reverseproxy.iiit.ac.in/browse.php?u=https%3A%2F%2Fmess.iiit.ac.in%2Fmess%2Fweb%2Findex.php&b=20";
+            String rev_url = "https://reverseproxy.iiit.ac.in/browse.php?u=https%3A%2F%2Fmess.iiit.ac.in%2Fmess%2Fweb%2Findex.php&b=20";
+            String intra_url = "https://mess.iiit.ac.in/mess/web/index.php";
 
-            Document mess_soup = Network.makeRequest(getContext(), null, url);
+            Document mess_soup = Network.makeRequest(getContext(), null, rev_url, intra_url, false);
             Elements meals = mess_soup.getElementById("content").getElementsByTag("tr");
 
             result[0] = meals.get(5).getElementsByTag("td").get(1).text();

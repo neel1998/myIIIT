@@ -1,6 +1,4 @@
 <resources>
     <string name="app_name">myIIIT</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="cas_title">Central Authentication Service - IIIT Hyderabad</string>
-    <string name="rev_title">reverseproxy.iiit.ac.in Glype® proxy</string>
 </resources>

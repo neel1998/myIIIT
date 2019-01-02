@@ -128,70 +128,45 @@ public class LoginActivity extends AppCompatActivity {
 
     public static String Login(Context context) {
        String result = "";
-       try {
-            username = PreferenceManager.getDefaultSharedPreferences(context).getString("username", null);
-            pswd = PreferenceManager.getDefaultSharedPreferences(context).getString("password", null);
-            Client.makeNull();
-            OkHttpClient client = Client.getClient(context);
+       Client.makeNull();
+       Document cas_soup;
+       if (!Network.OnIntranet(context)) {
+           RequestBody body = new FormBody.Builder()
+                   .add("u", "login.iiit.ac.in")
+                   .add("allowCookies", "on")
+                   .build();
 
-            //401 Authorization Required
+           String final_url = "https://reverseproxy.iiit.ac.in/includes/process.php?action=update";
 
-            RequestBody body = new FormBody.Builder()
-                    .add("u", "login.iiit.ac.in")
-                    .add("allowCookies", "on")
-                    .build();
-
-            URL final_url = new URL("https://reverseproxy.iiit.ac.in/includes/process.php?action=update");
-            String credentials = Credentials.basic(username, pswd);
-
-            Request request = new Request.Builder()
-                    .url(final_url)
-                    .post(body)
-                    .header("Authorization", credentials)
-                    .build();
-
-            Response response = client.newCall(request).execute();
-            Document cas_soup = Jsoup.parse(response.body().string());
-
-            if (cas_soup.title().equals("401 Authorization Required")) {
-                result = "401";
-                return result;
-            }
-
-            Element form = cas_soup.getElementById("fm1");
-            String login_url = base_url + form.attr("action");
-
-            Elements fields = form.getElementsByTag("input");
-
-            FormBody.Builder login_builder = new FormBody.Builder();
-            for ( Element field:  fields ){
-                if (field.attr("name").equals("username")) {
-                    login_builder.add(field.attr("name"), username);
-                }
-                else if (field.attr("name").equals("password")) {
-                    login_builder.add(field.attr("name"), pswd);
-                }
-                else {
-                    login_builder.add(field.attr("name"), field.attr("value"));
-                }
-            }
-            RequestBody login_body = login_builder.build();
-
-            Request login_request = new Request.Builder()
-                    .url(login_url)
-                    .post(login_body)
-                    .header("Authorization", credentials)
-                    .build();
-
-            Response login_response = client.newCall(login_request).execute();
-
-            result = "200";
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+           cas_soup = Network.makeRequest(context, body, final_url, final_url, true);
        }
+       else {
+           base_url = "https://login.iiit.ac.in";
+           String final_url = "https://login.iiit.ac.in/cas/login";
+           cas_soup = Network.makeRequest(context, null, final_url, final_url, true);
+       }
+       if (cas_soup.title().equals("401 Authorization Required")) {
+            result = "401";
+            return result;
+       }
+       Element form = cas_soup.getElementById("fm1");
+       String login_url = base_url + form.attr("action");
+
+       Elements fields = form.getElementsByTag("input");
+
+       FormBody.Builder login_builder = new FormBody.Builder();
+       for (Element field : fields) {
+            if (field.attr("name").equals("username")) {
+                login_builder.add(field.attr("name"), username);
+            } else if (field.attr("name").equals("password")) {
+                login_builder.add(field.attr("name"), pswd);
+            } else {
+                login_builder.add(field.attr("name"), field.attr("value"));
+            }
+       }
+       RequestBody login_body = login_builder.build();
+       Document login_soup = Network.makeRequest(context, login_body, login_url, login_url, true);
+       result = "200";
        return result;
     }
 }

@@ -60,18 +60,28 @@ public class AttendanceFragment extends Fragment {
 
             Context context = getContext();
 
-            String home_url = "https://reverseproxy.iiit.ac.in/browse.php?u=https%3A%2F%2Fmoodle.iiit.ac.in%2Fmy%2F&b=4";
-            Document home_soup = Network.makeRequest(context, null, home_url);
+            String home_url_rev = "https://reverseproxy.iiit.ac.in/browse.php?u=https%3A%2F%2Fmoodle.iiit.ac.in%2Fmy%2F&b=4";
+            String home_url_intra = "https://moodle.iiit.ac.in/login/index.php?authCAS=CAS";
+            Document home_soup = Network.makeRequest(context, null, home_url_rev, home_url_intra, false);
 
-            String course_url = "https://reverseproxy.iiit.ac.in//browse.php?u=https%3A%2F%2Fmoodle.iiit.ac.in%2F%3Fredirect%3D0&amp;b=4";
-            Document course_soup = Network.makeRequest(context, null, course_url);
+            String course_url_rev = "https://reverseproxy.iiit.ac.in//browse.php?u=https%3A%2F%2Fmoodle.iiit.ac.in%2F%3Fredirect%3D0&amp;b=4";
+            String course_url_intra = "https://moodle.iiit.ac.in/?redirect=0";
+            Document course_soup = Network.makeRequest(context, null, course_url_rev, course_url_intra, false);
 
-            String single_url = base_url + course_soup.getElementById("frontpage-course-list").getElementsByTag("a").get(0).attr("href");
-            Document single_soup = Network.makeRequest(context, null, single_url);
+            String single_url_rev = base_url + course_soup.getElementById("frontpage-course-list").getElementsByTag("a").get(0).attr("href");
+            String single_url_intra = course_soup.getElementById("frontpage-course-list").getElementsByTag("a").get(0).attr("href");
+            Document single_soup = Network.makeRequest(context, null, single_url_rev, single_url_intra, false);
 
-            String attendance_url = base_url + single_soup.getElementsByClass("mod-indent-outer").get(1).getElementsByTag("a").get(0).attr("href");
-            String allattd_url = attendance_url.split("&")[0] + "%26mode%3D1&" + attendance_url.split("&")[1];
-            Document allAttendance_soup = Network.makeRequest(context, null, allattd_url);
+            String attendance_url_rev = base_url + single_soup.getElementsByClass("mod-indent-outer").get(1).getElementsByTag("a").get(0).attr("href");
+            String allattd_url_rev = attendance_url_rev;
+            try {
+                allattd_url_rev = attendance_url_rev.split("&")[0] + "%26mode%3D1&" + attendance_url_rev.split("&")[1];
+            }catch (Exception e){}
+
+            String attendance_url_intra = single_soup.getElementsByClass("mod-indent-outer").get(1).getElementsByTag("a").get(0).attr("href");
+            String allattd_url_intra = attendance_url_intra + "&mode=1";
+
+            Document allAttendance_soup = Network.makeRequest(context, null, allattd_url_rev, allattd_url_intra, false);
 
             //list of all course title and table
             Elements course_titles = allAttendance_soup.getElementsByClass("cell c1 lastcol").get(0).getElementsByTag("h3");
