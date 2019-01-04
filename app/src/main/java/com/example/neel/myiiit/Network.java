@@ -11,17 +11,21 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okio.Utf8;
 
 public class Network {
 
-    public static Document makeRequest(Context context, RequestBody body, String rev_url, String intra_url, boolean login){
+    public static Document makeRequest(Context context, RequestBody body, String url, boolean login) {
 
+        String base_url = "https://reverseproxy.iiit.ac.in/browse.php?u=";
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String credentials = Credentials.basic(
@@ -29,16 +33,14 @@ public class Network {
                 preferences.getString("password", null));
         OkHttpClient client = Client.getClient(context);
         Document soup = null;
-        String url;
         boolean intranet = OnIntranet(context);
-//        boolean intranet = true;
-        if (intranet) {
-            url = intra_url;
+        if (!login) {
+            try {
+                if (!intranet) {
+                    url = base_url + URLEncoder.encode(url, "UTF-8");
+                }
+            } catch (UnsupportedEncodingException e) {}
         }
-        else {
-            url = rev_url;
-        }
-//        Log.d("url", url);
         Request.Builder builder = new Request.Builder()
                 .url(url);
 
@@ -71,7 +73,6 @@ public class Network {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(url, soup.toString());
         return soup;
     }
 

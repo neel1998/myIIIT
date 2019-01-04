@@ -170,9 +170,8 @@ public class MessCancelFragment extends Fragment {
         @Override
         protected String doInBackground(Void... voids) {
             String result = "";
-            String rev_url = "https://reverseproxy.iiit.ac.in/browse.php?u=https%3A%2F%2Fmess.iiit.ac.in%2Fmess%2Fweb%2Fstudent_cancel_process.php&b=4";
-            String intra_url = "https://mess.iiit.ac.in/mess/web/student_cancel_process.php";
 
+            String url = "https://mess.iiit.ac.in/mess/web/student_cancel_process.php";
             if(date1.length() == 1) {
                date1 = "0" + date1;
             }
@@ -195,7 +194,7 @@ public class MessCancelFragment extends Fragment {
                   .add("uncancel[]",(uncancel_box.isChecked())?"1":"0")
                   .build();
 
-            Document cancel_soup = Network.makeRequest(getContext(), body, rev_url, intra_url, false);
+            Document cancel_soup = Network.makeRequest(getContext(), body, url, false);
             result = cancel_soup.getElementsByClass("post").get(1).getElementsByTag("font").get(0).text();
             return result;
         }

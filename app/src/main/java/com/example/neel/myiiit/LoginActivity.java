@@ -138,12 +138,12 @@ public class LoginActivity extends AppCompatActivity {
 
            String final_url = "https://reverseproxy.iiit.ac.in/includes/process.php?action=update";
 
-           cas_soup = Network.makeRequest(context, body, final_url, final_url, true);
+           cas_soup = Network.makeRequest(context, body, final_url, true);
        }
        else {
            base_url = "https://login.iiit.ac.in";
            String final_url = "https://login.iiit.ac.in/cas/login";
-           cas_soup = Network.makeRequest(context, null, final_url, final_url, true);
+           cas_soup = Network.makeRequest(context, null, final_url, true);
        }
        if (cas_soup.title().equals("401 Authorization Required")) {
             result = "401";
@@ -165,7 +165,7 @@ public class LoginActivity extends AppCompatActivity {
             }
        }
        RequestBody login_body = login_builder.build();
-       Document login_soup = Network.makeRequest(context, login_body, login_url, login_url, true);
+       Document login_soup = Network.makeRequest(context, login_body, login_url, true);
        result = "200";
        return result;
     }

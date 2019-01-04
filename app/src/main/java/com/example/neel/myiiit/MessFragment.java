@@ -49,34 +49,36 @@ public class MessFragment extends Fragment {
         messTask.execute();
     }
 
-    private class MessTask extends AsyncTask<Void,Void,String[]> {
+    private class MessTask extends AsyncTask<Void,Void,String> {
         @Override
-        protected String[] doInBackground(Void... voids) {
+        protected String doInBackground(Void... voids) {
 
-            String[] result = new String [3];
+            String[] meal = new String [3];
+            String result = "";
 
-            String rev_url = "https://reverseproxy.iiit.ac.in/browse.php?u=https%3A%2F%2Fmess.iiit.ac.in%2Fmess%2Fweb%2Findex.php&b=20";
-            String intra_url = "https://mess.iiit.ac.in/mess/web/index.php";
+            try {
+                String url = "https://mess.iiit.ac.in/mess/web/index.php";
+                Document mess_soup = Network.makeRequest(getContext(), null, url, false);
+                Elements meals = mess_soup.getElementById("content").getElementsByTag("tr");
 
-            Document mess_soup = Network.makeRequest(getContext(), null, rev_url, intra_url, false);
-            Elements meals = mess_soup.getElementById("content").getElementsByTag("tr");
-
-            result[0] = meals.get(5).getElementsByTag("td").get(1).text();
-            result[1] = meals.get(6).getElementsByTag("td").get(1).text();
-            result[2] = meals.get(7).getElementsByTag("td").get(1).text();
-
+                meal[0] = meals.get(5).getElementsByTag("td").get(1).text();
+                meal[1] = meals.get(6).getElementsByTag("td").get(1).text();
+                meal[2] = meals.get(7).getElementsByTag("td").get(1).text();
+                result = "Breakfast: " + meal[0] + "\n"
+                        + "Lunch: " + meal[1] + "\n"
+                        + "Dinner: " + meal[2] + "\n";
+            }
+            catch (Exception e){
+                result = "Connection Error";
+            }
             return result;
         }
 
         @Override
-        protected void onPostExecute(String[] strings) {
+        protected void onPostExecute(String result) {
             mess_prog.setVisibility(View.GONE);
-            String result = "Breakfast: " + strings[0] + "\n"
-                    + "Lunch: " + strings[1] + "\n"
-                    + "Dinner: " + strings[2] + "\n";
             mess_databox.setText(result);
         }
-
     }
 
 }
