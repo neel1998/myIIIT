@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,7 @@ public class AttendanceFragment extends Fragment {
     JSONArray jsonArray;
     SharedPreferences preferences;
     String date_cur, date_stor;
+    SwipeRefreshLayout pullToRefresh;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -53,6 +55,18 @@ public class AttendanceFragment extends Fragment {
         last_update = rootView.findViewById(R.id.attd_last_update);
         attd_listview = rootView.findViewById(R.id.attd_list);
         attd_prog = rootView.findViewById(R.id.attd_progress);
+        pullToRefresh = rootView.findViewById(R.id.pullToRefresh);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                attendanceAdapter = new AttendanceAdapter(getContext() ,new ArrayList<AttendanceData>());
+                attd_prog.setVisibility(View.VISIBLE);
+                AttendanceTask attendanceTask = new AttendanceTask();
+                attendanceTask.execute(); // your code
+                pullToRefresh.setRefreshing(false);
+            }
+        });
+
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         jsonArray = new JSONArray();
