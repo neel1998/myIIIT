@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".AttendanceFragment">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/attd_last_update"
+        android:layout_alignParentTop="true"
+        />
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,6 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/attd_list"
+        android:layout_below="@+id/attd_last_update"
         />
 
 </RelativeLayout>

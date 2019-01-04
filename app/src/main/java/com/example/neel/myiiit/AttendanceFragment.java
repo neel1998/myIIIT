@@ -12,7 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,7 +27,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
@@ -32,27 +38,59 @@ import okhttp3.Response;
 
 public class AttendanceFragment extends Fragment {
 
-    String base_url = "https://reverseproxy.iiit.ac.in";
+    TextView last_update;
     ListView attd_listview;
     ProgressBar attd_prog;
     AttendanceAdapter attendanceAdapter;
+    JSONArray jsonArray;
+    SharedPreferences preferences;
+    String date_cur, date_stor;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_attendence, container, false);
 
-        attendanceAdapter = new AttendanceAdapter(getContext() ,new ArrayList<AttendanceData>());
+        last_update = rootView.findViewById(R.id.attd_last_update);
         attd_listview = rootView.findViewById(R.id.attd_list);
         attd_prog = rootView.findViewById(R.id.attd_progress);
-        attd_prog.setVisibility(View.VISIBLE);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        jsonArray = new JSONArray();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        date_cur = dateFormat.format(new Date());
+        date_stor = preferences.getString("date", null);
+        last_update.setText("Last Updated : " + date_stor);
+        attendanceAdapter = new AttendanceAdapter(getContext() ,new ArrayList<AttendanceData>());
+
         return  rootView;
     }
 
     @Override
     public void onStart() {
+
         super.onStart();
-        AttendanceTask attendanceTask = new AttendanceTask();
-        attendanceTask.execute();
+        if (date_stor != null) {
+            attendanceAdapter.clear();
+            try {
+                JSONArray data = new JSONArray(preferences.getString("attendance", null));
+                for (int i = 0; i < data.length(); i++) {
+                    JSONObject object = data.getJSONObject(i);
+                    attendanceAdapter.add(new AttendanceData(object.getString("course_name"),
+                            object.getString("session_completed"),
+                            object.getString("session_present")));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            attd_listview.setAdapter(attendanceAdapter);
+        }
+        if (date_stor == null || !date_stor.equals(date_cur)){
+            attendanceAdapter = new AttendanceAdapter(getContext() ,new ArrayList<AttendanceData>());
+            attd_prog.setVisibility(View.VISIBLE);
+            AttendanceTask attendanceTask = new AttendanceTask();
+            attendanceTask.execute();
+        }
+
     }
 
     private class AttendanceTask extends AsyncTask<Void, Void, Void> {
@@ -91,6 +129,7 @@ public class AttendanceFragment extends Fragment {
             Elements course_titles = allAttendance_soup.getElementsByClass("cell c1 lastcol").get(0).getElementsByTag("h3");
             Elements course_tables = allAttendance_soup.getElementsByClass("cell c1 lastcol").get(0).getElementsByTag("table");
 
+            attendanceAdapter.clear();
             //adding object of attendance data to adapter
             int i = 0;
             for ( Element table : course_tables ){
@@ -98,15 +137,29 @@ public class AttendanceFragment extends Fragment {
                 String course_name = course_titles.get(i).text();
                 String session_completed = table.getElementsByClass("cell c1 lastcol").get(0).text();
                 String session_present = table.getElementsByClass("cell c1 lastcol").get(1).text();
-                attendanceAdapter.add(new AttendanceData(course_name, session_completed, session_present));
+                AttendanceData data = new AttendanceData(course_name, session_completed, session_present);
+                attendanceAdapter.add(data);
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("course_name", data.getCourse_name());
+                    jsonObject.put("session_completed", data.getSession_completed());
+                    jsonObject.put("session_present", data.getSession_present());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                jsonArray.put(jsonObject);
                 i++;
             }
-
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("date", date_cur);
+            editor.putString("attendance", jsonArray.toString());
+            editor.commit();
+            last_update.setText("Last Updated : " + date_cur);
             attd_prog.setVisibility(View.GONE);
             attd_listview.setAdapter(attendanceAdapter);
         }
