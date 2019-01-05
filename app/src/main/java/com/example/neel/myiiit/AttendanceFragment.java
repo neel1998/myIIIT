@@ -72,7 +72,7 @@ public class AttendanceFragment extends Fragment {
         jsonArray = new JSONArray();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         date_cur = dateFormat.format(new Date());
-        date_stor = preferences.getString("date", null);
+        date_stor = preferences.getString("attd_date", null);
         last_update.setText("Last Updated : " + date_stor);
         attendanceAdapter = new AttendanceAdapter(getContext() ,new ArrayList<AttendanceData>());
 
@@ -95,6 +95,10 @@ public class AttendanceFragment extends Fragment {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+                attendanceAdapter = new AttendanceAdapter(getContext() ,new ArrayList<AttendanceData>());
+                attd_prog.setVisibility(View.VISIBLE);
+                AttendanceTask attendanceTask = new AttendanceTask();
+                attendanceTask.execute();
             }
             attd_listview.setAdapter(attendanceAdapter);
         }
@@ -170,7 +174,7 @@ public class AttendanceFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("date", date_cur);
+            editor.putString("attd_date", date_cur);
             editor.putString("attendance", jsonArray.toString());
             editor.commit();
             last_update.setText("Last Updated : " + date_cur);

@@ -62,8 +62,6 @@ public class Network {
 
                 if (!result.equals("200")) {
                     Toast.makeText(context, "Invalid Credentials", Toast.LENGTH_LONG).show();
-//                    Intent intent = new Intent(context, LoginActivity.class);
-//                    context.startActivity(intent);
                 }
                 client = Client.getClient(context);
                 response = client.newCall(request).execute();
