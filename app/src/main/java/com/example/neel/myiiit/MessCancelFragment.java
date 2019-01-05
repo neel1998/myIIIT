@@ -68,7 +68,6 @@ public class MessCancelFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 date1 = (String) parent.getItemAtPosition(position);
-                Log.d("date1", date1);
             }
 
             @Override
@@ -81,7 +80,6 @@ public class MessCancelFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 date2 = (String) parent.getItemAtPosition(position);
-                Log.d("date2", date2);
             }
 
             @Override
@@ -99,7 +97,6 @@ public class MessCancelFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 month1 = (String)parent.getItemAtPosition(position);
-                Log.d("month1", month1);
             }
 
             @Override
@@ -112,7 +109,6 @@ public class MessCancelFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 month2 = (String)parent.getItemAtPosition(position);
-                Log.d("month2", month2);
             }
 
             @Override
@@ -132,7 +128,6 @@ public class MessCancelFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 year1 = (String)parent.getItemAtPosition(position);
-                Log.d("year1", year1);
             }
 
             @Override
@@ -144,7 +139,6 @@ public class MessCancelFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 year2 = (String)parent.getItemAtPosition(position);
-                Log.d("year2", year2);
             }
 
             @Override
@@ -182,8 +176,6 @@ public class MessCancelFragment extends Fragment {
             String startdate = date1 + "-" + month1 + "-" + year1;
             String enddate = date2 + "-" + month2 + "-" + year2;
 
-            Log.d("start date", startdate);
-            Log.d("end date", enddate);
 
             RequestBody body = new FormBody.Builder()
                   .add("startdate", startdate)
@@ -201,7 +193,6 @@ public class MessCancelFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d("message", result);
             cancel_msg.setText(result);
         }
     }

@@ -41,6 +41,7 @@ public class Network {
                 }
             } catch (UnsupportedEncodingException e) {}
         }
+        Log.d("url", url);
         Request.Builder builder = new Request.Builder()
                 .url(url);
 
