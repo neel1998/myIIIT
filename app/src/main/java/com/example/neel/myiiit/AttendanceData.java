@@ -1,6 +1,8 @@
 package com.example.neel.myiiit;
 
-public class AttendanceData {
+import java.io.Serializable;
+
+public class AttendanceData implements Serializable{
     private String course_name;
     private String session_completed;
     private String session_present;
@@ -35,5 +37,10 @@ public class AttendanceData {
 
     public String getPercentage() {
         return percentage;
+    }
+
+    @Override
+    public String toString() {
+        return course_name + "," + session_completed + "," + session_present;
     }
 }
