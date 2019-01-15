@@ -1,4 +1,4 @@
-package com.example.neel.myiiit;
+package com.example.neel.myiiit.Model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,6 +7,8 @@ import android.preference.PreferenceManager;
 import android.util.Pair;
 import android.view.View;
 
+import com.example.neel.myiiit.AttendanceData;
+import com.example.neel.myiiit.Network;
 import com.example.neel.myiiit.utils.AsyncTaskResult;
 import com.example.neel.myiiit.utils.Callback2;
 import com.example.neel.myiiit.utils.DeSerialize;

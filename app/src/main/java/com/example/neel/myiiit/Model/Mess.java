@@ -1,4 +1,4 @@
-package com.example.neel.myiiit;
+package com.example.neel.myiiit.Model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Pair;
 
+import com.example.neel.myiiit.Network;
 import com.example.neel.myiiit.utils.AsyncTaskResult;
 import com.example.neel.myiiit.utils.Callback3;
 
@@ -15,9 +16,7 @@ import org.jsoup.select.Elements;
 import java.util.Calendar;
 
 public class Mess {
-    public static final int MEAL_BREAKFAST = 1;
-    public static final int MEAL_LUNCH = 2;
-    public static final int MEAL_DINNER = 4;
+
 
     /**
      * Get meals for a day.
@@ -38,6 +37,14 @@ public class Mess {
                         allMeals[(dayOfMonth - 1) * 4 + 12],
                         allMeals[(dayOfMonth - 1) * 4 + 13],
                         allMeals[(dayOfMonth - 1) * 4 + 14],
+
+                        allMeals[(dayOfMonth - 1) * 4 + 15],
+                        allMeals[(dayOfMonth - 1) * 4 + 16],
+                        allMeals[(dayOfMonth - 1) * 4 + 17],
+
+                        allMeals[(dayOfMonth - 1) * 4 + 18],
+                        allMeals[(dayOfMonth - 1) * 4 + 19],
+                        allMeals[(dayOfMonth - 1) * 4 + 20],
                 };
 
                 callback.onMealsReceived(date, meals, lastUpdated, maybeCalledAgain);
@@ -49,15 +56,6 @@ public class Mess {
             }
         });
     }
-
-    public void cancelMeal(Calendar startDate, Calendar endDate, int meals, CancellationCallback callback) {
-
-    }
-
-    public void uncancelMeal(Calendar startDate, Calendar endDate, int meals, CancellationCallback callback) {
-
-    }
-
 
     private static void getMealsForMonth(final Context context, final Calendar date, final boolean forceRefresh, final Callback3<String, Calendar, Boolean> callback) {
         final Pair<String, Calendar> cachedMonth = getCachedMonth(context, date);
@@ -186,16 +184,4 @@ public class Mess {
         void onError(String errorMessage);
     }
 
-    public interface CancellationCallback {
-        /**
-         * Called on success
-         */
-        void onSuccess();
-
-        /**
-         * Called on failure
-         * @param errorMessage Error message
-         */
-        void onError(String errorMessage);
-    }
 }

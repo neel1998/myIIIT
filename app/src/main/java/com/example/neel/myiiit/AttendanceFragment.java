@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.neel.myiiit.Model.Attendance;
 import com.example.neel.myiiit.utils.Callback2;
 
 

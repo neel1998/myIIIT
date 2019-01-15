@@ -1,6 +1,5 @@
 package com.example.neel.myiiit.utils;
 
-import com.example.neel.myiiit.Attendance;
 import com.example.neel.myiiit.AttendanceData;
 
 import java.util.ArrayList;

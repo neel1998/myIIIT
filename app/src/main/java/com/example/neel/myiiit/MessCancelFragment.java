@@ -1,5 +1,6 @@
 package com.example.neel.myiiit;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -17,11 +18,15 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.neel.myiiit.Model.Cancellation;
+import com.example.neel.myiiit.utils.Callback1;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Calendar;
 
 import okhttp3.Credentials;
 import okhttp3.FormBody;
@@ -31,7 +36,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class MessCancelFragment extends Fragment {
-    String date1, month1, year1, date2, month2, year2 ;
+    Integer date1, year1, date2, year2, month1, month2;
     Spinner date_select1, month_select1, year_select1, date_select2, month_select2, year_select2;
     CheckBox breakfast_box, lunch_box, dinner_box, uncancel_box;
     Button submit_btn;
@@ -67,7 +72,7 @@ public class MessCancelFragment extends Fragment {
         date_select1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                date1 = (String) parent.getItemAtPosition(position);
+                date1 = Integer.parseInt((String)parent.getItemAtPosition(position));
             }
 
             @Override
@@ -79,7 +84,7 @@ public class MessCancelFragment extends Fragment {
         date_select2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                date2 = (String) parent.getItemAtPosition(position);
+                date2 = Integer.parseInt((String)parent.getItemAtPosition(position));
             }
 
             @Override
@@ -96,7 +101,7 @@ public class MessCancelFragment extends Fragment {
         month_select1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                month1 = (String)parent.getItemAtPosition(position);
+                month1 = position;
             }
 
             @Override
@@ -108,7 +113,7 @@ public class MessCancelFragment extends Fragment {
         month_select2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                month2 = (String)parent.getItemAtPosition(position);
+                month2 = position;
             }
 
             @Override
@@ -127,7 +132,7 @@ public class MessCancelFragment extends Fragment {
         year_select1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                year1 = (String)parent.getItemAtPosition(position);
+                year1 = Integer.parseInt((String)parent.getItemAtPosition(position));
             }
 
             @Override
@@ -138,7 +143,7 @@ public class MessCancelFragment extends Fragment {
         year_select2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                year2 = (String)parent.getItemAtPosition(position);
+                year2 = Integer.parseInt((String)parent.getItemAtPosition(position));
             }
 
             @Override
@@ -151,49 +156,44 @@ public class MessCancelFragment extends Fragment {
         submit_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MessCancelTask messCancelTask = new MessCancelTask();
-                messCancelTask.execute();
+                  cancelMeals();
             }
         });
 
         return rootView;
     }
 
-    private class MessCancelTask extends AsyncTask<Void, Void, String> {
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
 
-        @Override
-        protected String doInBackground(Void... voids) {
-            String result = "";
+    private void cancelMeals(){
+        int meals = 0;
+        if (breakfast_box.isChecked()) meals += Cancellation.MEAL_BREAKFAST;
+        if (lunch_box.isChecked()) meals += Cancellation.MEAL_LUNCH;
+        if (dinner_box.isChecked()) meals += Cancellation.MEAL_DINNER;
 
-            String url = "https://mess.iiit.ac.in/mess/web/student_cancel_process.php";
-            if(date1.length() == 1) {
-               date1 = "0" + date1;
+        Calendar startdate = Calendar.getInstance();
+        startdate.set(Calendar.DATE, date1);
+        startdate.set(Calendar.MONTH, month1 );
+        startdate.set(Calendar.YEAR, year1);
+
+        Calendar enddate = Calendar.getInstance();
+        enddate.set(Calendar.DATE, date2);
+        enddate.set(Calendar.MONTH, month2 );
+        enddate.set(Calendar.YEAR, year2);
+
+        Cancellation.cancelMeals(getContext(), startdate, enddate, meals, uncancel_box.isChecked(), new Callback1<String>() {
+            @Override
+            public void success(String s) {
+                cancel_msg.setText(s);
             }
-            if(date2.length() == 1) {
-               date2 = "0" + date2;
+
+            @Override
+            public void error(Exception e) {
+                Log.d("Cancellation Fragment", e.getLocalizedMessage());
             }
-
-            String startdate = date1 + "-" + month1 + "-" + year1;
-            String enddate = date2 + "-" + month2 + "-" + year2;
-
-
-            RequestBody body = new FormBody.Builder()
-                  .add("startdate", startdate)
-                  .add("enddate", enddate)
-                  .add("breakfast[]", (breakfast_box.isChecked())?"1":"0")
-                  .add("lunch[]", (lunch_box.isChecked())?"1":"0")
-                  .add("dinner[]", (dinner_box.isChecked())?"1":"0")
-                  .add("uncancel[]",(uncancel_box.isChecked())?"1":"0")
-                  .build();
-
-            Document cancel_soup = Network.makeRequest(getContext(), body, url, false);
-            result = cancel_soup.getElementsByClass("post").get(1).getElementsByTag("font").get(0).text();
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            cancel_msg.setText(result);
-        }
+        });
     }
 }
