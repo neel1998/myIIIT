@@ -5,18 +5,19 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Pair;
-import android.view.View;
 
 import com.example.neel.myiiit.AttendanceData;
 import com.example.neel.myiiit.Network;
 import com.example.neel.myiiit.utils.AsyncTaskResult;
 import com.example.neel.myiiit.utils.Callback2;
-import com.example.neel.myiiit.utils.DeSerialize;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -24,7 +25,7 @@ public class Attendance {
     private static final String ATTENDANCE_DATA_KEY = "attendance_data";
     private static final String ATTENDANCE_LAST_UPDATE_KEY = "attendance_last_update";
 
-    public static void getAttendance(final Context context, Calendar date, boolean forceUpdate, final Callback2<ArrayList<AttendanceData>, Calendar> callback){
+    public static void getAttendance(final Context context, boolean forceUpdate, final Callback2<ArrayList<AttendanceData>, Calendar> callback){
 
         Pair<ArrayList<AttendanceData>, Calendar> cachedData = getCachedAttendance(context);
         if (!forceUpdate && cachedData.first != null) {
@@ -60,7 +61,9 @@ public class Attendance {
         Calendar lastUpdate = Calendar.getInstance();
         String serial = pref.getString(ATTENDANCE_DATA_KEY, null);
         if (serial != null){
-            result = DeSerialize.deSerializeAttendance(serial);
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<AttendanceData>>(){}.getType();
+            result = gson.fromJson(serial, type);
         }
         lastUpdate.setTimeInMillis(pref.getLong(ATTENDANCE_LAST_UPDATE_KEY, 0));
         return new Pair<>(result, lastUpdate);
@@ -69,7 +72,9 @@ public class Attendance {
 
     private static void cacheAttendance(Context context, ArrayList<AttendanceData> result, Calendar lastUpdate) {
         SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        edit.putString(ATTENDANCE_DATA_KEY, result.toString());
+        Gson gson = new Gson();
+        String serial = gson.toJson(result);
+        edit.putString(ATTENDANCE_DATA_KEY, serial);
         edit.putLong(ATTENDANCE_LAST_UPDATE_KEY, lastUpdate.getTimeInMillis());
         edit.apply();
     }

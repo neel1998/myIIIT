@@ -14,13 +14,17 @@ import com.example.neel.myiiit.Model.Mess;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MessFragment extends Fragment {
-    TextView mealsTextView, lastUpdatedTextView;
+    TextView  lastUpdatedTextView, today_meal1,today_meal2,today_meal3,tom_meal1,tom_meal2,tom_meal3,th_meal1,th_meal2,th_meal3,th_date;
     ProgressBar progressBar;
     SwipeRefreshLayout pullToRefresh;
-
+    ArrayList<TextView> mealsTextView;
+    /*TODO
+    * upcoming meals
+    * */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -28,7 +32,6 @@ public class MessFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.activity_mess, container, false);
 
         lastUpdatedTextView = rootView.findViewById(R.id.mess_last_update);
-        mealsTextView = rootView.findViewById(R.id.mess_textbox);
         progressBar = rootView.findViewById(R.id.mess_progress);
 
         pullToRefresh = rootView.findViewById(R.id.mess_pullToRefresh);
@@ -40,6 +43,21 @@ public class MessFragment extends Fragment {
             updateMeals(true);
             }
         });
+
+        today_meal1 = rootView.findViewById(R.id.today_meal1);
+        today_meal2 = rootView.findViewById(R.id.today_meal2);
+        today_meal3 = rootView.findViewById(R.id.today_meal3);
+
+        tom_meal1 = rootView.findViewById(R.id.tomorrow_meal1);
+        tom_meal2 = rootView.findViewById(R.id.tomorrow_meal2);
+        tom_meal3 = rootView.findViewById(R.id.tomorrow_meal3);
+
+        th_meal1 = rootView.findViewById(R.id.third_meal1);
+        th_meal2 = rootView.findViewById(R.id.third_meal2);
+        th_meal3 = rootView.findViewById(R.id.third_meal3);
+
+        th_date = rootView.findViewById(R.id.third_label);
+
 
         return rootView;
     }
@@ -57,11 +75,28 @@ public class MessFragment extends Fragment {
         Mess.getMealsForADay(getContext(), Calendar.getInstance(), forceUpdate, new Mess.GetMealCallback() {
             @Override
             public void onMealsReceived(Calendar date, String[] meals, Calendar lastUpdated, boolean maybeCalledAgain) {
-                mealsTextView.setText(
-                        "Breakfast: " + meals[0] + "\n"
-                                + "Lunch: " + meals[1] + "\n"
-                                + "Dinner: " + meals[2] + "\n"
-                );
+
+//                mealsTextView.setText(
+//                        "Breakfast: " + meals[0] + "\n"
+//                                + "Lunch: " + meals[1] + "\n"
+//                                + "Dinner: " + meals[2] + "\n"
+//                );
+                today_meal1.setText("Breakfast: " + meals[0]);
+                today_meal2.setText("Lunch: " + meals[1]);
+                today_meal3.setText("Dinner: " + meals[2]);
+
+                tom_meal1.setText("Breakfast: " + meals[3]);
+                tom_meal2.setText("Lunch: " + meals[4]);
+                tom_meal3.setText("Dinner: " + meals[5]);
+
+                th_meal1.setText("Breakfast: " + meals[6]);
+                th_meal2.setText("Breakfast: " + meals[7]);
+                th_meal3.setText("Breakfast: " + meals[8]);
+
+                Calendar temp = Calendar.getInstance();
+                temp.add(Calendar.DATE, 2);
+                DateFormat tempFormat = SimpleDateFormat.getDateInstance();
+                th_date.setText(tempFormat.format(temp.getTimeInMillis()).toUpperCase());
 
                 DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
 

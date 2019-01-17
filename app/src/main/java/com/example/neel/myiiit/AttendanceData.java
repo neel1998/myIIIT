@@ -39,8 +39,5 @@ public class AttendanceData implements Serializable{
         return percentage;
     }
 
-    @Override
-    public String toString() {
-        return course_name + "," + session_completed + "," + session_present;
-    }
+    
 }

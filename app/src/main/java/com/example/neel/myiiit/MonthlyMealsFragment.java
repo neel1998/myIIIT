@@ -26,7 +26,9 @@ public class MonthlyMealsFragment extends Fragment{
     CalendarView calendarView;
     ProgressBar monthly_prog;
     SwipeRefreshLayout pullToRefresh;
-
+    /*TODO
+    * Add refresh functionality
+    * */
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {

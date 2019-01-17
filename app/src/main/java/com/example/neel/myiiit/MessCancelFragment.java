@@ -41,6 +41,10 @@ public class MessCancelFragment extends Fragment {
     CheckBox breakfast_box, lunch_box, dinner_box, uncancel_box;
     Button submit_btn;
     TextView cancel_msg;
+    /*TODO
+    * Reset Fragment to default on changin tab
+    * */
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

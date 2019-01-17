@@ -55,7 +55,7 @@ public class AttendanceFragment extends Fragment {
 
     }
     private void updateAttendance(boolean forceUpdate){
-        Attendance.getAttendance(getContext(), Calendar.getInstance(), forceUpdate, new Callback2<ArrayList<AttendanceData>, Calendar>() {
+        Attendance.getAttendance(getContext(), forceUpdate, new Callback2<ArrayList<AttendanceData>, Calendar>() {
             @Override
             public void success(ArrayList<AttendanceData> attendanceData, Calendar lastUpdated) {
                 DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();

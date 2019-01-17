@@ -38,13 +38,13 @@ public class Mess {
                         allMeals[(dayOfMonth - 1) * 4 + 13],
                         allMeals[(dayOfMonth - 1) * 4 + 14],
 
-                        allMeals[(dayOfMonth - 1) * 4 + 15],
-                        allMeals[(dayOfMonth - 1) * 4 + 16],
-                        allMeals[(dayOfMonth - 1) * 4 + 17],
+                        allMeals[(dayOfMonth) * 4 + 12],
+                        allMeals[(dayOfMonth) * 4 + 13],
+                        allMeals[(dayOfMonth) * 4 + 14],
 
-                        allMeals[(dayOfMonth - 1) * 4 + 18],
-                        allMeals[(dayOfMonth - 1) * 4 + 19],
-                        allMeals[(dayOfMonth - 1) * 4 + 20],
+                        allMeals[(dayOfMonth + 1) * 4 + 12],
+                        allMeals[(dayOfMonth + 1) * 4 + 13],
+                        allMeals[(dayOfMonth + 1) * 4 + 14],
                 };
 
                 callback.onMealsReceived(date, meals, lastUpdated, maybeCalledAgain);
