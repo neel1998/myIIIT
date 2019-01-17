@@ -1,29 +1,36 @@
 package com.example.neel.myiiit.Model;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.Pair;
 
-import com.example.neel.myiiit.MessCancelFragment;
+import com.example.neel.myiiit.AttendanceData;
 import com.example.neel.myiiit.Network;
 import com.example.neel.myiiit.utils.AsyncTaskResult;
 import com.example.neel.myiiit.utils.Callback1;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.jsoup.nodes.Document;
 
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
-public class Cancellation {
+public class MessCancellation {
     public static final int MEAL_BREAKFAST = 1;
     public static final int MEAL_LUNCH = 2;
     public static final int MEAL_DINNER = 4;
-
-    public static void cancelMeals(final Context context, Calendar startDate, Calendar endDate, int meals, boolean uncancel, final Callback1<String> callback){
+    private  static String DIRTY_MONTHS_KEY = "dirty_months";
+    public static void cancelMeals(final Context context, final Calendar startDate,final Calendar endDate, int meals, boolean uncancel, final Callback1<String> callback){
         MessCancelTask messCancelTask = new MessCancelTask(context, meals, uncancel, startDate,endDate ) {
             @Override
             protected void onPostExecute(AsyncTaskResult<String> result) {
@@ -32,11 +39,34 @@ public class Cancellation {
                     return;
                 }
                 callback.success(result.getResult());
+                cacheDirtyMonths(context, startDate, endDate);
             }
         };
         messCancelTask.execute();
     }
-
+    private static void cacheDirtyMonths(Context context, Calendar startDate, Calendar endDate) {
+        ArrayList<Pair<Integer, Integer>> dirtyMonths;
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        String serial = pref.getString(DIRTY_MONTHS_KEY, null);
+        if (serial != null){
+            Type type = new TypeToken<ArrayList<Pair<Integer, Integer>>>(){}.getType();
+            dirtyMonths = new Gson().fromJson(serial, type);
+        }
+        else {
+            dirtyMonths = new ArrayList<>();
+        }
+        while (startDate.get(Calendar.MONTH) != endDate.get(Calendar.MONTH) ||
+                startDate.get(Calendar.YEAR) != endDate.get(Calendar.YEAR) ) {
+            dirtyMonths.add(new Pair<Integer, Integer>(startDate.get(Calendar.MONTH), startDate.get(Calendar.YEAR)));
+            startDate.add(Calendar.MONTH, 1);
+        }
+        dirtyMonths.add(new Pair<Integer, Integer>(startDate.get(Calendar.MONTH), startDate.get(Calendar.YEAR)));
+        SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        Gson gson = new Gson();
+        serial = gson.toJson(dirtyMonths);
+        edit.putString(DIRTY_MONTHS_KEY, serial);
+        edit.apply();
+    }
     private static class MessCancelTask extends AsyncTask<Void, Void, AsyncTaskResult<String>> {
 
         private Context mContext;

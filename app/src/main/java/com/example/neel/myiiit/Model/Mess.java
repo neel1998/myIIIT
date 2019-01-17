@@ -4,20 +4,25 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.util.Pair;
 
 import com.example.neel.myiiit.Network;
 import com.example.neel.myiiit.utils.AsyncTaskResult;
 import com.example.neel.myiiit.utils.Callback3;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Mess {
 
-
+    private  static String DIRTY_MONTHS_KEY = "dirty_months";
     /**
      * Get meals for a day.
      *
@@ -27,6 +32,10 @@ public class Mess {
      * @param callback Callback to handle result or error
      */
     public static void getMealsForADay(Context context, final Calendar date, boolean forceRefresh, final GetMealCallback callback) {
+
+        if (checkDirtyMonths(context, date)) {
+            forceRefresh = true;
+        }
         getMealsForMonth(context, date, forceRefresh, new Callback3<String, Calendar, Boolean>() {
             @Override
             public void success(String result, Calendar lastUpdated, Boolean maybeCalledAgain) {
@@ -55,6 +64,27 @@ public class Mess {
                 callback.onError(e.getMessage());
             }
         });
+    }
+
+    private static boolean checkDirtyMonths(Context context, Calendar date) {
+        boolean result = false;
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        String serial = pref.getString(DIRTY_MONTHS_KEY, null);
+        if (serial != null){
+            Type type = new TypeToken<ArrayList<Pair<Integer, Integer>>>(){}.getType();
+            ArrayList<Pair<Integer, Integer>> dirtyMonths = new Gson().fromJson(serial, type);
+            if (dirtyMonths.contains(new Pair<Integer, Integer>(date.get(Calendar.MONTH), date.get(Calendar.YEAR)))){
+                result = true;
+                Log.d("Mess.java", "Current Month is dirty");
+                dirtyMonths.remove(new Pair<Integer, Integer>(date.get(Calendar.MONTH), date.get(Calendar.YEAR)));
+                SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(context).edit();
+                Gson gson = new Gson();
+                serial = gson.toJson(dirtyMonths);
+                edit.putString(DIRTY_MONTHS_KEY, serial);
+                edit.apply();
+            }
+        }
+        return result;
     }
 
     private static void getMealsForMonth(final Context context, final Calendar date, final boolean forceRefresh, final Callback3<String, Calendar, Boolean> callback) {

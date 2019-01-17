@@ -1,6 +1,8 @@
 package com.example.neel.myiiit;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -21,7 +23,6 @@ public class MessFragment extends Fragment {
     TextView  lastUpdatedTextView, today_meal1,today_meal2,today_meal3,tom_meal1,tom_meal2,tom_meal3,th_meal1,th_meal2,th_meal3,th_date;
     ProgressBar progressBar;
     SwipeRefreshLayout pullToRefresh;
-    ArrayList<TextView> mealsTextView;
     /*TODO
     * upcoming meals
     * */
@@ -76,11 +77,6 @@ public class MessFragment extends Fragment {
             @Override
             public void onMealsReceived(Calendar date, String[] meals, Calendar lastUpdated, boolean maybeCalledAgain) {
 
-//                mealsTextView.setText(
-//                        "Breakfast: " + meals[0] + "\n"
-//                                + "Lunch: " + meals[1] + "\n"
-//                                + "Dinner: " + meals[2] + "\n"
-//                );
                 today_meal1.setText("Breakfast: " + meals[0]);
                 today_meal2.setText("Lunch: " + meals[1]);
                 today_meal3.setText("Dinner: " + meals[2]);

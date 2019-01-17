@@ -39,5 +39,5 @@ public class AttendanceData implements Serializable{
         return percentage;
     }
 
-    
+
 }
