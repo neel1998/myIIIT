@@ -1,20 +1,18 @@
 package com.example.neel.myiiit;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.neel.myiiit.Model.MessCancellation;
+import com.example.neel.myiiit.Model.Mess;
 import com.example.neel.myiiit.utils.Callback1;
 
 import java.util.Calendar;
@@ -24,9 +22,19 @@ public class MessCancelFragment extends Fragment {
     Button submit_btn;
     TextView cancel_msg;
     DatePicker datePicker1, datePicker2;
+
+    Mess mess;
+
     /*TODO
     * Reset Fragment to default on changin tab
     * */
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        mess = Mess.getInstance(context);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,9 +73,9 @@ public class MessCancelFragment extends Fragment {
 
     private void cancelMeals(){
         int meals = 0;
-        if (breakfast_box.isChecked()) meals += MessCancellation.MEAL_BREAKFAST;
-        if (lunch_box.isChecked()) meals += MessCancellation.MEAL_LUNCH;
-        if (dinner_box.isChecked()) meals += MessCancellation.MEAL_DINNER;
+        if (breakfast_box.isChecked()) meals |= Mess.MEAL_BREAKFAST;
+        if (lunch_box.isChecked()) meals |= Mess.MEAL_LUNCH;
+        if (dinner_box.isChecked()) meals |= Mess.MEAL_DINNER;
 
         Calendar startdate = Calendar.getInstance();
         startdate.set(Calendar.DATE, datePicker1.getDayOfMonth());
@@ -79,7 +87,7 @@ public class MessCancelFragment extends Fragment {
         enddate.set(Calendar.MONTH, datePicker2.getMonth());
         enddate.set(Calendar.YEAR, datePicker2.getYear());
 
-        MessCancellation.cancelMeals(getContext(), startdate, enddate, meals, uncancel_box.isChecked(), new Callback1<String>() {
+        mess.cancelMeals(startdate, enddate, meals, uncancel_box.isChecked(), new Callback1<String>() {
             @Override
             public void success(String s) {
                 cancel_msg.setText(s);

@@ -2,17 +2,12 @@ package com.example.neel.myiiit.Model;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.util.Pair;
 
-import com.example.neel.myiiit.Network;
 import com.example.neel.myiiit.utils.AsyncTaskCallback;
 import com.example.neel.myiiit.utils.AsyncTaskResult;
+import com.example.neel.myiiit.utils.Callback1;
 import com.example.neel.myiiit.utils.Callback3;
-import com.example.neel.myiiit.utils.CallbackAsyncTask;
-
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,6 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 public class Mess {
+    public static final int MEAL_BREAKFAST = 1;
+    public static final int MEAL_LUNCH = 2;
+    public static final int MEAL_DINNER = 4;
+
     private static Mess sInstance = null;
 
     private Context mContext;
@@ -70,11 +69,41 @@ public class Mess {
         });
     }
 
+    /**
+     * Cancel/Uncancel meals
+     * @param startDate Start date range
+     * @param endDate End date range
+     * @param meals Which meals to cancel. Mess.MEAL_BREAKFAST | Mess.MEAL_LUNCH | Mess.MEAL_DINNER
+     * @param uncancel Whether to uncancel the meals
+     * @param callback Callback
+     */
+    public void cancelMeals(final Calendar startDate, final Calendar endDate, int meals, boolean uncancel, final Callback1<String> callback){
+        MessCancellationAsyncTask messCancelTask = new MessCancellationAsyncTask(mContext, startDate, endDate, meals, uncancel, new AsyncTaskCallback<String>() {
+            @Override
+            public void call(AsyncTaskResult<String> result) {
+                if (result.isError()) {
+                    callback.error(result.getError());
+                    return;
+                }
+                markMonthsDirty(startDate, endDate);
+                callback.success(result.getResult());
+            }
+        });
+        messCancelTask.execute();
+    }
+
+    private void markMonthsDirty(Calendar startDate, Calendar endDate) {
+        while (startDate.before(endDate)) {
+            messCache.markMonthDirty(startDate.get(Calendar.MONTH), startDate.get(Calendar.YEAR));
+            startDate.roll(Calendar.MONTH, 1);
+        }
+    }
+
     private void getMealsForMonth(final int month, final int year, final boolean forceRefresh, final Callback3<List<Meals>, Calendar, Boolean> callback) {
         final CachedMonth cachedMonth = messCache.getCachedMonth(month, year);
 
-        // Callback with cached value if not forceUpdate and cache is found
-        if (!forceRefresh && cachedMonth != null) {
+        // Callback with cached value if not forceUpdate and not dirty
+        if (cachedMonth != null && !cachedMonth.isDirty && !forceRefresh) {
             Calendar expirationDate = Calendar.getInstance();
             expirationDate.add(Calendar.HOUR, -6);
 
@@ -101,7 +130,7 @@ public class Mess {
             mRefreshMonthCallbackMap.put(monthKey, callbacks);
         }
 
-        MonthlyMealsTask refreshMonth = new MonthlyMealsTask(new AsyncTaskCallback<List<Meals>>() {
+        MessMonthlyMealsAsyncTask refreshMonth = new MessMonthlyMealsAsyncTask(mContext, new AsyncTaskCallback<List<Meals>>() {
             @Override
             public void call(AsyncTaskResult<List<Meals>> result) {
                 if (result.isError()) {
@@ -124,56 +153,6 @@ public class Mess {
         });
 
         refreshMonth.execute(month, year);
-    }
-
-    private class MonthlyMealsTask extends CallbackAsyncTask<Integer, Void, List<Meals>> {
-        MonthlyMealsTask(AsyncTaskCallback<List<Meals>> callback) {
-            super(callback);
-        }
-
-        @Override
-        protected AsyncTaskResult<List<Meals>> doInBackground(Integer... monthYear) {
-            int month = monthYear[0] + 1;
-            int year = monthYear[1];
-
-            // Make one request to mess homepage to ensure login
-            Network.makeRequest(mContext, null, "https://mess.iiit.ac.in/mess/web/index.php", false);
-
-            // Request month-wise registration page
-            String url = "https://mess.iiit.ac.in/mess/web/student_view_registration.php?month="
-                    + Integer.toString(month) + "&year=" + Integer.toString(year);
-
-            Document soup = Network.makeRequest(mContext, null, url, false);
-
-            if (soup == null) {
-                return new AsyncTaskResult<List<Meals>>(new RuntimeException("Error while connecting to mess portal"));
-            }
-
-            // Get calendar table
-            Elements calendarTable = soup.getElementsByClass("calendar");
-
-            if (calendarTable == null || calendarTable.size() == 0) {
-                return new AsyncTaskResult<List<Meals>>(new RuntimeException("Error while connecting to mess portal"));
-            }
-
-            // Parse table
-            String[] tableTokens = calendarTable.get(0).text().split(" ");
-
-            List<Meals> allMeals = new ArrayList<>();
-            for (int date = 1, i = 11; i < tableTokens.length - 3; ++date, i += 4) {
-                if (Integer.parseInt(tableTokens[i]) != date) {
-                    // Sanity check. The date from text should be same as the calculated one
-                    Log.w("Mess", "Something is wrong. The dates don't match");
-                }
-                Meals meals = new Meals();
-                meals.breakfast = tableTokens[i + 1];
-                meals.lunch = tableTokens[i + 2];
-                meals.dinner = tableTokens[i + 3];
-                allMeals.add(meals);
-            }
-
-            return new AsyncTaskResult<List<Meals>>(allMeals);
-        }
     }
 
     public interface GetMealsCallback {

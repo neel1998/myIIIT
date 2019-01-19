@@ -52,21 +52,11 @@ class MessCache {
     void markMonthDirty(int month, int year) {
         CachedMonth cachedMonth = getCachedMonth(month, year);
 
-        if (cachedMonth != null) {
+        if (cachedMonth != null && !cachedMonth.isDirty) {
             cachedMonth.isDirty = true;
+
+            save();
         }
-
-        save();
-    }
-
-    boolean isMonthDirty(int month, int year) {
-        CachedMonth cachedMonth = getCachedMonth(month, year);
-
-        if (cachedMonth != null) {
-            return cachedMonth.isDirty;
-        }
-
-        return false;
     }
 
     private String getMonthKey(int month, int year) {
