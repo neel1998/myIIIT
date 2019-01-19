@@ -1,62 +1,66 @@
 package com.example.neel.myiiit.Model;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Pair;
 
 import com.example.neel.myiiit.Network;
+import com.example.neel.myiiit.utils.AsyncTaskCallback;
 import com.example.neel.myiiit.utils.AsyncTaskResult;
 import com.example.neel.myiiit.utils.Callback3;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.example.neel.myiiit.utils.CallbackAsyncTask;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Mess {
+    private static Mess sInstance = null;
 
-    private  static String DIRTY_MONTHS_KEY = "dirty_months";
+    private Context mContext;
+    private MessCache messCache;
+
+    private Map<Pair<Integer, Integer>, List<Callback3<List<Meals>, Calendar, Boolean>>>
+            mRefreshMonthCallbackMap = new HashMap<>();
+
+    public static Mess getInstance(Context context) {
+        if (sInstance == null) {
+            sInstance = new Mess(context.getApplicationContext());
+        }
+
+        return sInstance;
+    }
+
+    private Mess(Context context) {
+        mContext = context;
+
+        messCache = new MessCache(PreferenceManager.getDefaultSharedPreferences(mContext));
+    }
+
     /**
      * Get meals for a day.
      *
-     * @param context Android context
      * @param date Date for which you wish to request the meals
      * @param forceRefresh Don't give cached data
      * @param callback Callback to handle result or error
      */
-    public static void getMealsForADay(Context context, final Calendar date, boolean forceRefresh, final GetMealCallback callback) {
-
-        if (checkDirtyMonths(context, date)) {
-            forceRefresh = true;
-        }
-        getMealsForMonth(context, date, forceRefresh, new Callback3<String, Calendar, Boolean>() {
+    public void getMealsForADay(final Calendar date, boolean forceRefresh, final GetMealsCallback callback) {
+        getMealsForMonth(date.get(Calendar.MONTH), date.get(Calendar.YEAR), forceRefresh, new Callback3<List<Meals>, Calendar, Boolean>() {
             @Override
-            public void success(String result, Calendar lastUpdated, Boolean maybeCalledAgain) {
-                String[] allMeals = result.split(" ");
+            public void success(List<Meals> allMeals, Calendar lastUpdated, Boolean maybeCalledAgain) {
+                int dayIndex = date.get(Calendar.DATE) - 1;
 
-                int dayOfMonth = date.get(Calendar.DATE);
-                String[] meals = {
-                        allMeals[(dayOfMonth - 1) * 4 + 12],
-                        allMeals[(dayOfMonth - 1) * 4 + 13],
-                        allMeals[(dayOfMonth - 1) * 4 + 14],
-
-                        allMeals[(dayOfMonth) * 4 + 12],
-                        allMeals[(dayOfMonth) * 4 + 13],
-                        allMeals[(dayOfMonth) * 4 + 14],
-
-                        allMeals[(dayOfMonth + 1) * 4 + 12],
-                        allMeals[(dayOfMonth + 1) * 4 + 13],
-                        allMeals[(dayOfMonth + 1) * 4 + 14],
-                };
-
-                callback.onMealsReceived(date, meals, lastUpdated, maybeCalledAgain);
+                if (dayIndex < allMeals.size()) {
+                    callback.onMealsReceived(date, allMeals.get(dayIndex), lastUpdated, maybeCalledAgain);
+                } else {
+                    callback.onError("Something went wrong. Could not get meals.");
+                }
             }
 
             @Override
@@ -66,110 +70,69 @@ public class Mess {
         });
     }
 
-    private static boolean checkDirtyMonths(Context context, Calendar date) {
-        boolean result = false;
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        String serial = pref.getString(DIRTY_MONTHS_KEY, null);
-        if (serial != null){
-            Type type = new TypeToken<ArrayList<Pair<Integer, Integer>>>(){}.getType();
-            ArrayList<Pair<Integer, Integer>> dirtyMonths = new Gson().fromJson(serial, type);
-            if (dirtyMonths.contains(new Pair<Integer, Integer>(date.get(Calendar.MONTH), date.get(Calendar.YEAR)))){
-                result = true;
-                Log.d("Mess.java", "Current Month is dirty");
-                dirtyMonths.remove(new Pair<Integer, Integer>(date.get(Calendar.MONTH), date.get(Calendar.YEAR)));
-                SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(context).edit();
-                Gson gson = new Gson();
-                serial = gson.toJson(dirtyMonths);
-                edit.putString(DIRTY_MONTHS_KEY, serial);
-                edit.apply();
-            }
-        }
-        return result;
-    }
-
-    private static void getMealsForMonth(final Context context, final Calendar date, final boolean forceRefresh, final Callback3<String, Calendar, Boolean> callback) {
-        final Pair<String, Calendar> cachedMonth = getCachedMonth(context, date);
+    private void getMealsForMonth(final int month, final int year, final boolean forceRefresh, final Callback3<List<Meals>, Calendar, Boolean> callback) {
+        final CachedMonth cachedMonth = messCache.getCachedMonth(month, year);
 
         // Callback with cached value if not forceUpdate and cache is found
         if (!forceRefresh && cachedMonth != null) {
             Calendar expirationDate = Calendar.getInstance();
             expirationDate.add(Calendar.HOUR, -6);
 
-            boolean isExpired = cachedMonth.second.before(expirationDate);
+            boolean isExpired = cachedMonth.lastUpdated.before(expirationDate);
 
-            callback.success(cachedMonth.first, cachedMonth.second, isExpired);
+            callback.success(cachedMonth.mealsList, cachedMonth.lastUpdated, isExpired);
 
             // Only proceed if expired
             if (!isExpired) return;
         }
 
-        MonthlyMealsTask refreshMonth = new MonthlyMealsTask(context) {
-            @Override
-            protected void onPostExecute(AsyncTaskResult<String> result) {
-                super.onPostExecute(result);
+        final Pair<Integer, Integer> monthKey = new Pair<>(month, year);
 
+        // Run single AsyncTask for a month at a time
+        if (mRefreshMonthCallbackMap.containsKey(monthKey)) {
+            // If the callback list already exists, add to it and return.
+            mRefreshMonthCallbackMap.get(monthKey).add(callback);
+            return;
+        } else {
+            // If callback list does not exists, create one and create AsyncTask
+            List<Callback3<List<Meals>, Calendar, Boolean>> callbacks = new ArrayList<>();
+            callbacks.add(callback);
+
+            mRefreshMonthCallbackMap.put(monthKey, callbacks);
+        }
+
+        MonthlyMealsTask refreshMonth = new MonthlyMealsTask(new AsyncTaskCallback<List<Meals>>() {
+            @Override
+            public void call(AsyncTaskResult<List<Meals>> result) {
                 if (result.isError()) {
-                    callback.error(result.getError());
+                    for (Callback3 callback: mRefreshMonthCallbackMap.get(monthKey)) {
+                        callback.error(result.getError());
+                    }
+                    mRefreshMonthCallbackMap.remove(monthKey);
                     return;
                 }
 
                 Calendar lastUpdated = Calendar.getInstance();
-                cacheMonth(context, date, result.getResult(), lastUpdated);
+                messCache.cacheMonth(month, year, result.getResult(), lastUpdated);
 
                 callback.success(result.getResult(), lastUpdated, false);
+                for (Callback3 callback: mRefreshMonthCallbackMap.get(monthKey)) {
+                    callback.success(result.getResult(), lastUpdated, false);
+                }
+                mRefreshMonthCallbackMap.remove(monthKey);
             }
-        };
+        });
 
-        refreshMonth.execute(date.get(Calendar.MONTH), date.get(Calendar.YEAR));
+        refreshMonth.execute(month, year);
     }
 
-    private static Pair<String, Calendar> getCachedMonth(Context context, Calendar date) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-        Calendar lastUpdated = Calendar.getInstance();
-
-        Pair<String, String> cachingKeys = getCachingKeysForMonth(date);
-
-        String cachedMonth = sharedPreferences.getString(cachingKeys.first, null);
-        lastUpdated.setTimeInMillis(sharedPreferences.getLong(cachingKeys.second, 0));
-
-        if (cachedMonth == null) {
-            return null;
-        }
-
-        return new Pair<>(cachedMonth, lastUpdated);
-    }
-
-    private static void cacheMonth(Context context, Calendar date, String meals, Calendar lastUpdated) {
-        SharedPreferences.Editor sharedPreferencesEditor =
-                PreferenceManager.getDefaultSharedPreferences(context).edit();
-
-        Pair<String, String> cachingKeys = getCachingKeysForMonth(date);
-
-        sharedPreferencesEditor.putString(cachingKeys.first, meals);
-        sharedPreferencesEditor.putLong(cachingKeys.second, lastUpdated.getTimeInMillis());
-
-        sharedPreferencesEditor.apply();
-    }
-
-    private static Pair<String, String> getCachingKeysForMonth(Calendar date) {
-        String month = Integer.toString(date.get(Calendar.MONTH));
-        String year = Integer.toString(date.get(Calendar.YEAR));
-        return new Pair<>(
-                "cache-mess-month-" + month + "-" + year,
-                "cache-mess-month-" + month + "-" + year + "-last-updated"
-        );
-    }
-
-    private static class MonthlyMealsTask extends AsyncTask<Integer, Void, AsyncTaskResult<String>> {
-        private Context mContext;
-
-        MonthlyMealsTask(Context context) {
-            mContext = context;
+    private class MonthlyMealsTask extends CallbackAsyncTask<Integer, Void, List<Meals>> {
+        MonthlyMealsTask(AsyncTaskCallback<List<Meals>> callback) {
+            super(callback);
         }
 
         @Override
-        protected AsyncTaskResult<String> doInBackground(Integer... monthYear) {
+        protected AsyncTaskResult<List<Meals>> doInBackground(Integer... monthYear) {
             int month = monthYear[0] + 1;
             int year = monthYear[1];
 
@@ -183,29 +146,46 @@ public class Mess {
             Document soup = Network.makeRequest(mContext, null, url, false);
 
             if (soup == null) {
-                return new AsyncTaskResult<String>(new RuntimeException("Error while connecting to mess portal"));
+                return new AsyncTaskResult<List<Meals>>(new RuntimeException("Error while connecting to mess portal"));
             }
 
             // Get calendar table
             Elements calendarTable = soup.getElementsByClass("calendar");
 
             if (calendarTable == null || calendarTable.size() == 0) {
-                return new AsyncTaskResult<String>(new RuntimeException("Error while connecting to mess portal"));
+                return new AsyncTaskResult<List<Meals>>(new RuntimeException("Error while connecting to mess portal"));
             }
 
-            return new AsyncTaskResult<>(calendarTable.get(0).text());
+            // Parse table
+            String[] tableTokens = calendarTable.get(0).text().split(" ");
+
+            List<Meals> allMeals = new ArrayList<>();
+            for (int date = 1, i = 11; i < tableTokens.length - 3; ++date, i += 4) {
+                if (Integer.parseInt(tableTokens[i]) != date) {
+                    // Sanity check. The date from text should be same as the calculated one
+                    Log.w("Mess", "Something is wrong. The dates don't match");
+                }
+                Meals meals = new Meals();
+                meals.breakfast = tableTokens[i + 1];
+                meals.lunch = tableTokens[i + 2];
+                meals.dinner = tableTokens[i + 3];
+                allMeals.add(meals);
+            }
+
+            return new AsyncTaskResult<List<Meals>>(allMeals);
         }
     }
 
-    public interface GetMealCallback {
+    public interface GetMealsCallback {
         /**
          * Will be called with the meals data for the date
          *
          * @param date Date for which the result is for
          * @param meals String array for mess registration for breakfast, lunch, dinner.
+         * @param lastUpdated Last updated time
          * @param maybeCalledAgain Will be true in case cached data is returned and this function may be called again with new data.
          */
-        void onMealsReceived(Calendar date, String[] meals, Calendar lastUpdated, boolean maybeCalledAgain);
+        void onMealsReceived(Calendar date, Meals meals, Calendar lastUpdated, boolean maybeCalledAgain);
 
         /**
          *

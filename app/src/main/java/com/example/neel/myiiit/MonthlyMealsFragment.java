@@ -1,6 +1,7 @@
 package com.example.neel.myiiit;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,11 +15,13 @@ import android.widget.CalendarView;
 import android.widget.ProgressBar;
 
 
+import com.example.neel.myiiit.Model.Meals;
 import com.example.neel.myiiit.Model.Mess;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 public class MonthlyMealsFragment extends Fragment{
     Integer cur_month;
@@ -26,6 +29,8 @@ public class MonthlyMealsFragment extends Fragment{
     CalendarView calendarView;
     ProgressBar monthly_prog;
     SwipeRefreshLayout pullToRefresh;
+
+    Mess mess;
     /*TODO
     * Add refresh functionality
     * */
@@ -52,17 +57,24 @@ public class MonthlyMealsFragment extends Fragment{
         return rootView;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        mess = Mess.getInstance(context);
+    }
+
     private void getMeals(boolean forceUpdate, Calendar date) {
         monthly_prog.setVisibility(View.VISIBLE);
 
-        Mess.getMealsForADay(getContext(), date, forceUpdate, new Mess.GetMealCallback() {
+        mess.getMealsForADay(date, forceUpdate, new Mess.GetMealsCallback() {
             @Override
-            public void onMealsReceived(Calendar date, String[] meals, Calendar lastUpdated, boolean maybeCalledAgain) {
+            public void onMealsReceived(Calendar date, Meals meals, Calendar lastUpdated, boolean maybeCalledAgain) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle( date.get(Calendar.DATE) + "-" + (date.get(Calendar.MONTH)+1) + "-" + date.get(Calendar.YEAR))
-                        .setMessage("breakfast : " + meals[0] + "\n" +
-                                "lunch : " + meals[1] + "\n" +
-                                "dinner : " + meals[2] )
+                        .setMessage("breakfast : " + meals.breakfast + "\n" +
+                                "lunch : " + meals.lunch + "\n" +
+                                "dinner : " + meals.dinner )
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

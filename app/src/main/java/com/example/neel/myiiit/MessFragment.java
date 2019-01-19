@@ -1,8 +1,7 @@
 package com.example.neel.myiiit;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -12,17 +11,21 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.neel.myiiit.Model.Meals;
 import com.example.neel.myiiit.Model.Mess;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class MessFragment extends Fragment {
     TextView  lastUpdatedTextView, today_meal1,today_meal2,today_meal3,tom_meal1,tom_meal2,tom_meal3,th_meal1,th_meal2,th_meal3,th_date;
     ProgressBar progressBar;
     SwipeRefreshLayout pullToRefresh;
+
+    Mess mess;
+
     /*TODO
     * upcoming meals
     * */
@@ -64,6 +67,13 @@ public class MessFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        mess = Mess.getInstance(context);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
 
@@ -73,41 +83,68 @@ public class MessFragment extends Fragment {
     private void updateMeals(boolean forceUpdate) {
         progressBar.setVisibility(View.VISIBLE);
 
-        Mess.getMealsForADay(getContext(), Calendar.getInstance(), forceUpdate, new Mess.GetMealCallback() {
+        Calendar today = Calendar.getInstance();
+        mess.getMealsForADay(today, forceUpdate, new Mess.GetMealsCallback() {
             @Override
-            public void onMealsReceived(Calendar date, String[] meals, Calendar lastUpdated, boolean maybeCalledAgain) {
+            public void onMealsReceived(Calendar date, Meals meals, Calendar lastUpdated, boolean maybeCalledAgain) {
+                today_meal1.setText("Breakfast: " + meals.breakfast);
+                today_meal2.setText("Lunch: " + meals.lunch);
+                today_meal3.setText("Dinner: " + meals.dinner);
 
-                today_meal1.setText("Breakfast: " + meals[0]);
-                today_meal2.setText("Lunch: " + meals[1]);
-                today_meal3.setText("Dinner: " + meals[2]);
-
-                tom_meal1.setText("Breakfast: " + meals[3]);
-                tom_meal2.setText("Lunch: " + meals[4]);
-                tom_meal3.setText("Dinner: " + meals[5]);
-
-                th_meal1.setText("Breakfast: " + meals[6]);
-                th_meal2.setText("Breakfast: " + meals[7]);
-                th_meal3.setText("Breakfast: " + meals[8]);
-
-                Calendar temp = Calendar.getInstance();
-                temp.add(Calendar.DATE, 2);
-                DateFormat tempFormat = SimpleDateFormat.getDateInstance();
-                th_date.setText(tempFormat.format(temp.getTimeInMillis()).toUpperCase());
-
-                DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
-
-                lastUpdatedTextView.setText("Last Updated : " + dateFormat.format(lastUpdated.getTimeInMillis()));
-
-                progressBar.setVisibility(View.GONE);
+//                TODO
+//                DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
+//
+//                lastUpdatedTextView.setText("Last Updated : " + dateFormat.format(lastUpdated.getTimeInMillis()));
+//
+//                progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onError(String errorMessage) {
                 Log.e("MessFragment", errorMessage);
 
-                progressBar.setVisibility(View.GONE);
+//                progressBar.setVisibility(View.GONE);
             }
         });
+
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.add(Calendar.DATE, 1);
+        mess.getMealsForADay(tomorrow, forceUpdate, new Mess.GetMealsCallback() {
+            @Override
+            public void onMealsReceived(Calendar date, Meals meals, Calendar lastUpdated, boolean maybeCalledAgain) {
+                tom_meal1.setText("Breakfast: " + meals.breakfast);
+                tom_meal2.setText("Lunch: " + meals.lunch);
+                tom_meal3.setText("Dinner: " + meals.dinner);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("MessFragment", errorMessage);
+            }
+        });
+
+
+        Calendar dayAfter = Calendar.getInstance();
+        dayAfter.add(Calendar.DATE, 2);
+        mess.getMealsForADay(tomorrow, forceUpdate, new Mess.GetMealsCallback() {
+            @Override
+            public void onMealsReceived(Calendar date, Meals meals, Calendar lastUpdated, boolean maybeCalledAgain) {
+                th_meal1.setText("Breakfast: " + meals.breakfast);
+                th_meal2.setText("Lunch: " + meals.lunch);
+                th_meal3.setText("Dinner: " + meals.dinner);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("MessFragment", errorMessage);
+            }
+        });
+
+        DateFormat tempFormat = SimpleDateFormat.getDateInstance();
+        th_date.setText(tempFormat.format(dayAfter.getTimeInMillis()).toUpperCase());
+
+        // TODO: fix this.
+        progressBar.setVisibility(View.GONE);
     }
 
 }
