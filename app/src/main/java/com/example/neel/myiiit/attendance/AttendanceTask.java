@@ -8,7 +8,6 @@ import com.example.neel.myiiit.utils.AsyncTaskCallback;
 import com.example.neel.myiiit.utils.AsyncTaskResult;
 import com.example.neel.myiiit.utils.CallbackAsyncTask;
 
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -32,19 +31,19 @@ class AttendanceTask extends CallbackAsyncTask<Void, Void, List<AttendanceData>>
         Context context = mContext;
 
         String home_url = "https://moodle.iiit.ac.in/login/index.php?authCAS=CAS";
-        Network.makeRequest(context, null, home_url);
+        Network.request(context, null, home_url);
 
         NetworkResponse response;
 
         String course_url = "https://moodle.iiit.ac.in/?redirect=0";
-        response = Network.makeRequest(context, null, course_url);
+        response = Network.request(context, null, course_url);
 
         URI baseUrl = response.getResponse().request().url().uri();
 
         String single_url = response.getSoup().getElementById("frontpage-course-list").getElementsByTag("a").get(0).attr("href");
         single_url = baseUrl.resolve(single_url).toString();
 
-        response = Network.makeRequest(context, null, single_url);
+        response = Network.request(context, null, single_url);
 
         String attendance_url = response.getSoup().getElementsByClass("mod-indent-outer").get(1).getElementsByTag("a").get(0).attr("href");
         attendance_url = baseUrl.resolve(attendance_url).toString();
@@ -58,7 +57,7 @@ class AttendanceTask extends CallbackAsyncTask<Void, Void, List<AttendanceData>>
             allattd_url = attendance_url + "&mode=1";
         }
 
-        response = Network.makeRequest(context, null, allattd_url);
+        response = Network.request(context, null, allattd_url);
         Elements course_titles = response.getSoup().getElementsByClass("cell c1 lastcol").get(0).getElementsByTag("h3");
         Elements course_tables = response.getSoup().getElementsByClass("cell c1 lastcol").get(0).getElementsByTag("table");
 

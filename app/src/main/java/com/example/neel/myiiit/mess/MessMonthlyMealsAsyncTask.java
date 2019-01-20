@@ -9,7 +9,6 @@ import com.example.neel.myiiit.utils.AsyncTaskCallback;
 import com.example.neel.myiiit.utils.AsyncTaskResult;
 import com.example.neel.myiiit.utils.CallbackAsyncTask;
 
-import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
@@ -30,13 +29,13 @@ class MessMonthlyMealsAsyncTask extends CallbackAsyncTask<Integer, Void, List<Me
         int year = monthYear[1];
 
         // Make one request to mess homepage to ensure login
-        Network.makeRequest(mContext, null, "https://mess.iiit.ac.in/mess/web/index.php");
+        Network.request(mContext, null, "https://mess.iiit.ac.in/mess/web/index.php");
 
         // Request month-wise registration page
         String url = "https://mess.iiit.ac.in/mess/web/student_view_registration.php?month="
                 + Integer.toString(month) + "&year=" + Integer.toString(year);
 
-        NetworkResponse request = Network.makeRequest(mContext, null, url);
+        NetworkResponse request = Network.request(mContext, null, url);
 
         if (request.getSoup() == null) {
             return new AsyncTaskResult<List<Meals>>(new RuntimeException("Error while connecting to mess portal"));
