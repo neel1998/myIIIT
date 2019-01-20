@@ -92,6 +92,10 @@ public class Mess {
         messCancelTask.execute();
     }
 
+    public void clearCache() {
+        mCacheManager.clearCache();
+    }
+
     private void markMonthsDirty(Calendar startDate, Calendar endDate) {
         while (startDate.before(endDate)) {
             mCacheManager.markMonthDirty(startDate.get(Calendar.MONTH), startDate.get(Calendar.YEAR));
