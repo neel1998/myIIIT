@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.neel.myiiit.network.Network;
+import com.example.neel.myiiit.network.NetworkResponse;
 import com.example.neel.myiiit.utils.AsyncTaskCallback;
 import com.example.neel.myiiit.utils.AsyncTaskResult;
 import com.example.neel.myiiit.utils.CallbackAsyncTask;
@@ -37,7 +38,7 @@ class MessCancellationAsyncTask extends CallbackAsyncTask<Void, Void, String>  {
     protected AsyncTaskResult<String> doInBackground(Void... voids) {
         String result = "";
 
-        Network.makeRequest(mContext, null, "https://mess.iiit.ac.in/mess/web/index.php", false);
+        Network.makeRequest(mContext, null, "https://mess.iiit.ac.in/mess/web/index.php");
 
         String url = "https://mess.iiit.ac.in/mess/web/student_cancel_process.php";
         DateFormat dateFormat = SimpleDateFormat.getDateInstance();
@@ -56,8 +57,8 @@ class MessCancellationAsyncTask extends CallbackAsyncTask<Void, Void, String>  {
                 .add("uncancel[]",(mUncancel)?"1":"0")
                 .build();
 
-        Document cancel_soup = Network.makeRequest(mContext, body, url, false);
-        result = cancel_soup.getElementsByClass("post").get(1).getElementsByTag("font").get(0).text();
+        NetworkResponse response = Network.makeRequest(mContext, body, url);
+        result = response.getSoup().getElementsByClass("post").get(1).getElementsByTag("font").get(0).text();
         return new AsyncTaskResult<>(result);
     }
 }

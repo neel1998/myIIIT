@@ -23,6 +23,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.neel.myiiit.network.Network;
+
 public class MainActivity extends AppCompatActivity {
 
 
@@ -127,10 +129,10 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
+            Network.removeCredentials(this);
+
             preferences = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("username", null);
-            editor.putString("password", null);
             editor.putString("date", null);
             editor.putString("attendance", null);
             editor.commit();

@@ -1,13 +1,9 @@
 package com.example.neel.myiiit.network;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
-
-import com.example.neel.myiiit.LoginActivity;
-import com.example.neel.myiiit.network.Client;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,11 +11,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 import okhttp3.Credentials;
 import okhttp3.FormBody;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -27,109 +22,150 @@ import okhttp3.Response;
 
 public class Network {
 
-    public static Document makeRequest(Context context, RequestBody body, String url, boolean login) {
+    private static String getUrl(String url, boolean intranet) {
+        HttpUrl httpUrl = HttpUrl.get(url);
 
-        String base_url = "https://reverseproxy.iiit.ac.in/browse.php?u=";
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String credentials = Credentials.basic(
-                preferences.getString("username", null),
-                preferences.getString("password", null));
-        OkHttpClient client = Client.getClient(context);
-        Document soup = null;
-        boolean intranet = OnIntranet(context);
-        if (!login) {
-            try {
-                if (!intranet) {
-                    url = base_url + URLEncoder.encode(url, "UTF-8");
-                }
-            } catch (UnsupportedEncodingException e) {}
+        if (intranet || httpUrl.host().equals("reverseproxy.iiit.ac.in")) {
+            return url;
         }
-        Log.d("url", url);
-        Request.Builder builder = new Request.Builder()
-                .url(url);
+
+        HttpUrl browseUrl = HttpUrl.parse("https://reverseproxy.iiit.ac.in/browse.php");
+
+        String final_url = browseUrl.newBuilder()
+                .setQueryParameter("u", url)
+                .build()
+                .toString();
+
+        return final_url;
+    }
+
+    public static NetworkResponse makeRequest(Context context, RequestBody body, String url) {
+        return makeRequest(context, body, url, true);
+    }
+
+    private static NetworkResponse makeRequest(Context context, RequestBody body, String url, boolean canAttemptLogin) {
+        OkHttpClient client = Client.getClient(context);
+
+        boolean intranet = OnIntranet(context);
+
+        Log.d("Network",  "URL: " + url);
+        url = getUrl(url, intranet);
+        Log.d("Network",  "Final URL: " + url);
+
+        Request.Builder requestBuilder = new Request.Builder().url(url);
 
         if (body != null) {
-            builder.post(body);
+            requestBuilder.post(body);
         }
+
         if (!intranet) {
-            builder.header("Authorization", credentials);
+            CredentialStorage credentialStorage = CredentialStorage.getInstance(context);
+            String credentials = Credentials.basic(credentialStorage.getUsername(), credentialStorage.getPassword());
+
+            requestBuilder.header("Authorization", credentials);
         }
-        Request request = builder.build();
+
+        Request request = requestBuilder.build();
+
+        NetworkResponse response = null;
+
         try {
-            Response response = client.newCall(request).execute();
-            soup = Jsoup.parse(response.body().string());
-            if ( (soup.title().equals("Central Authentication Service - IIIT Hyderabad")
-                    || soup.title().equals("reverseproxy.iiit.ac.in Glype® proxy"))
-                    && !login ) {
+            response = new NetworkResponse(client.newCall(request).execute());
 
-                String result = Login(context);
+            boolean shouldRetry = false;
 
-                if (!result.equals("200")) {
-                    Toast.makeText(context, "Invalid Credentials", Toast.LENGTH_LONG).show();
-                }
-                client = Client.getClient(context);
-                response = client.newCall(request).execute();
-                soup = Jsoup.parse(response.body().string());
+            if (canAttemptLogin && shouldInitReverseproxy(response.getSoup())) {
+                Log.d("Network", "Initializing reverseproxy");
+
+                response = initReverseproxy(context);
+
+                shouldRetry = true;
             }
 
+            if (canAttemptLogin && isLoginPage(response.getSoup())) {
+                Log.d("Network", "Attempting login");
+                loginCore(context, response.getSoup());
+                shouldRetry = true;
+            }
+
+            if (shouldRetry) {
+                Log.d("Network", "Retrying URL: " + url);
+                client = Client.getClient(context);
+                response = new NetworkResponse(client.newCall(request).execute());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return soup;
+
+        return response;
     }
 
-    public static String Login(Context context) {
-        String base_url = "https://reverseproxy.iiit.ac.in";
+    private static boolean isLoginPage(Document soup) {
+        return soup.title().equals("Central Authentication Service - IIIT Hyderabad") &&
+                soup.selectFirst("input#username") != null &&
+                soup.selectFirst("input#password") != null;
+    }
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String username = preferences.getString("username", null);
-        String pswd = preferences.getString("password", null);
+    private static boolean shouldInitReverseproxy(Document soup) {
+        return soup.title().equals("reverseproxy.iiit.ac.in Glype® proxy");
+    }
 
-        String result = "";
-        Client.makeNull();
-        Document cas_soup;
-        if (!Network.OnIntranet(context)) {
-            RequestBody body = new FormBody.Builder()
-                    .add("u", "login.iiit.ac.in")
-                    .add("allowCookies", "on")
-                    .build();
+    private static NetworkResponse initReverseproxy(Context context) {
+        RequestBody body = new FormBody.Builder()
+                .add("u", "login.iiit.ac.in")
+                .add("allowCookies", "on")
+                .build();
 
-            String final_url = "https://reverseproxy.iiit.ac.in/includes/process.php?action=update";
+        String final_url = "https://reverseproxy.iiit.ac.in/includes/process.php?action=update";
 
-            cas_soup = Network.makeRequest(context, body, final_url, true);
-        }
-        else {
-            base_url = "https://login.iiit.ac.in";
-            String final_url = "https://login.iiit.ac.in/cas/login";
-            cas_soup = Network.makeRequest(context, null, final_url, true);
-        }
-        if (cas_soup.title().equals("401 Authorization Required")) {
-            result = "401";
-            return result;
-        }
-        Element form = cas_soup.getElementById("fm1");
-        String login_url = base_url + form.attr("action");
+        return Network.makeRequest(context, body, final_url, false);
+    }
+
+    private static boolean loginCore(Context context, Document casSoup) {
+        CredentialStorage credentialStorage = CredentialStorage.getInstance(context);
+
+        Element form = casSoup.getElementById("fm1");
+        String loginUrl = "https://login.iiit.ac.in/cas/login";
 
         Elements fields = form.getElementsByTag("input");
 
-        FormBody.Builder login_builder = new FormBody.Builder();
+        FormBody.Builder loginBodyBuilder = new FormBody.Builder();
         for (Element field : fields) {
-            if (field.attr("name").equals("username")) {
-                login_builder.add(field.attr("name"), username);
-            } else if (field.attr("name").equals("password")) {
-                login_builder.add(field.attr("name"), pswd);
-            } else {
-                login_builder.add(field.attr("name"), field.attr("value"));
+            switch (field.attr("name")) {
+                case "username":
+                    loginBodyBuilder.add(field.attr("name"), credentialStorage.getUsername());
+                    break;
+                case "password":
+                    loginBodyBuilder.add(field.attr("name"), credentialStorage.getPassword());
+                    break;
+                default:
+                    loginBodyBuilder.add(field.attr("name"), field.attr("value"));
+                    break;
             }
         }
-        RequestBody login_body = login_builder.build();
-        Document login_soup = Network.makeRequest(context, login_body, login_url, true);
-        result = "200";
-        return result;
+
+        NetworkResponse loginResponse = Network.makeRequest(context, loginBodyBuilder.build(), loginUrl, false);
+
+        return loginResponse.code() == 200 && !isLoginPage(loginResponse.getSoup());
     }
 
-    public static boolean OnIntranet(Context context) {
+    public static boolean login(Context context) {
+        NetworkResponse response = Network.makeRequest(context, null, "https://login.iiit.ac.in");
+        return response.code() == 200 && !isLoginPage(response.getSoup());
+    }
+
+    public static void setCredentials(Context context, String username, String password) {
+        CredentialStorage credentialStorage = CredentialStorage.getInstance(context);
+        credentialStorage.setCredentials(username, password);
+    }
+
+    public static void removeCredentials(Context context) {
+        CredentialStorage credentialStorage = CredentialStorage.getInstance(context);
+        credentialStorage.removeCredentials();
+        Client.makeNull();
+    }
+
+    private static boolean OnIntranet(Context context) {
         boolean result = false;
         try {
             OkHttpClient client = new OkHttpClient();

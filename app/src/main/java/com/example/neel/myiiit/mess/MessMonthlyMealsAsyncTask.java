@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.neel.myiiit.network.Network;
+import com.example.neel.myiiit.network.NetworkResponse;
 import com.example.neel.myiiit.utils.AsyncTaskCallback;
 import com.example.neel.myiiit.utils.AsyncTaskResult;
 import com.example.neel.myiiit.utils.CallbackAsyncTask;
@@ -29,20 +30,20 @@ class MessMonthlyMealsAsyncTask extends CallbackAsyncTask<Integer, Void, List<Me
         int year = monthYear[1];
 
         // Make one request to mess homepage to ensure login
-        Network.makeRequest(mContext, null, "https://mess.iiit.ac.in/mess/web/index.php", false);
+        Network.makeRequest(mContext, null, "https://mess.iiit.ac.in/mess/web/index.php");
 
         // Request month-wise registration page
         String url = "https://mess.iiit.ac.in/mess/web/student_view_registration.php?month="
                 + Integer.toString(month) + "&year=" + Integer.toString(year);
 
-        Document soup = Network.makeRequest(mContext, null, url, false);
+        NetworkResponse request = Network.makeRequest(mContext, null, url);
 
-        if (soup == null) {
+        if (request.getSoup() == null) {
             return new AsyncTaskResult<List<Meals>>(new RuntimeException("Error while connecting to mess portal"));
         }
 
         // Get calendar table
-        Elements calendarTable = soup.getElementsByClass("calendar");
+        Elements calendarTable = request.getSoup().getElementsByClass("calendar");
 
         if (calendarTable == null || calendarTable.size() == 0) {
             return new AsyncTaskResult<List<Meals>>(new RuntimeException("Error while connecting to mess portal"));

@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -69,11 +70,7 @@ public class LoginActivity extends AppCompatActivity {
                     login_prog.setVisibility(View.VISIBLE);
                     login_btn.setVisibility(View.GONE);
 
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("username", username);
-                    editor.putString("password", pswd);
-                    editor.commit();
+                    Network.setCredentials(LoginActivity.this, username, pswd);
 
                     LoginTask loginTask = new LoginTask();
                     loginTask.execute();
@@ -81,33 +78,22 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-    public class LoginTask extends AsyncTask<Void, Void, String> {
+    public class LoginTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
-        protected String doInBackground(Void... voids) {
-            String result = "";
-            result = Network.Login(LoginActivity.this);
-            return result;
+        protected Boolean doInBackground(Void... voids) {
+            return Network.login(LoginActivity.this);
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(Boolean loginSuccessful) {
             login_prog.setVisibility(View.GONE);
             login_btn.setVisibility(View.VISIBLE);
-            if (result.equals("401")){
-                Thread thread = new Thread(){
-                    @Override
-                    public void run() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                pswd_err.setText("Invalid Credentials");
-                                pswd_err.setVisibility(View.VISIBLE);
-                            }
-                        });
-                    }
-                };
-                thread.start();
+            if (!loginSuccessful){
+                Network.removeCredentials(LoginActivity.this);
+
+                pswd_err.setText("Invalid Credentials");
+                pswd_err.setVisibility(View.VISIBLE);
             }
             else {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
