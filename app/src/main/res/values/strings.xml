@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">myIIIT</string>
-    <string name="title_activity_main">MainActivity</string>
     <string name="prev">&lt;&lt;</string>
     <string name="next">&gt;&gt;</string>
 </resources>

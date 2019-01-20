@@ -161,7 +161,10 @@ public class Network {
         credentialStorage.removeCredentials();
         Client.makeNull();
     }
-
+    public static  boolean isCredentialAvailable (Context context) {
+        CredentialStorage credentialStorage = CredentialStorage.getInstance(context);
+        return credentialStorage.getUsername() != null && credentialStorage.getPassword() != null;
+    }
     private static boolean OnIntranet(Context context) {
         boolean result = false;
         try {

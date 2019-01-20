@@ -35,7 +35,6 @@ public class MessCancelFragment extends Fragment {
 
         mess = Mess.getInstance(context);
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -63,10 +63,6 @@ class AttendanceTask extends CallbackAsyncTask<Void, Void, List<AttendanceData>>
             }catch (Exception e){
             }
         }
-        String single_url = response.getSoup().getElementById("frontpage-course-list").getElementsByTag("a").get(0).attr("href");
-        single_url = baseUrl.resolve(single_url).toString();
-
-        response = Network.request(context, null, single_url);
 
         attendance_url = baseUrl.resolve(attendance_url).toString();
 

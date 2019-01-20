@@ -35,13 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        username = PreferenceManager.getDefaultSharedPreferences(this).getString("username", null);
-        pswd = PreferenceManager.getDefaultSharedPreferences(this).getString("password", null);
 
-        if (username != null){
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-        }
 
         username_box = findViewById(R.id.username_box);
         pswd_box = findViewById(R.id.pswd_box);
@@ -97,6 +91,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             else {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
         }
