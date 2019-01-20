@@ -22,7 +22,8 @@ public class MessFragment extends Fragment {
     TextView  lastUpdatedTextView, today_meal1,today_meal2,today_meal3,tom_meal1,tom_meal2,tom_meal3,th_meal1,th_meal2,th_meal3,th_date;
     ProgressBar progressBar;
     SwipeRefreshLayout pullToRefresh;
-
+    Integer responseCount = 0;
+    Calendar lastUpdatedBase = Calendar.getInstance();
     Mess mess;
 
     /*TODO
@@ -81,7 +82,6 @@ public class MessFragment extends Fragment {
 
     private void updateMeals(boolean forceUpdate) {
         progressBar.setVisibility(View.VISIBLE);
-
         Calendar today = Calendar.getInstance();
         mess.getMealsForADay(today, forceUpdate, new Mess.GetMealsCallback() {
             @Override
@@ -90,19 +90,15 @@ public class MessFragment extends Fragment {
                 today_meal2.setText("Lunch: " + meals.lunch);
                 today_meal3.setText("Dinner: " + meals.dinner);
 
-//                TODO
-//                DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
-//
-//                lastUpdatedTextView.setText("Last Updated : " + dateFormat.format(lastUpdated.getTimeInMillis()));
-//
-//                progressBar.setVisibility(View.GONE);
+                responsesReceived(lastUpdated);
+
             }
 
             @Override
             public void onError(Exception error) {
                 Log.e("MessFragment", error.getLocalizedMessage());
+                responsesReceived(null);
 
-//                progressBar.setVisibility(View.GONE);
             }
         });
 
@@ -114,11 +110,15 @@ public class MessFragment extends Fragment {
                 tom_meal1.setText("Breakfast: " + meals.breakfast);
                 tom_meal2.setText("Lunch: " + meals.lunch);
                 tom_meal3.setText("Dinner: " + meals.dinner);
+                responsesReceived(lastUpdated);
+
+
             }
 
             @Override
             public void onError(Exception error) {
                 Log.e("MessFragment", error.getLocalizedMessage());
+                responsesReceived(null);
             }
         });
 
@@ -131,19 +131,29 @@ public class MessFragment extends Fragment {
                 th_meal1.setText("Breakfast: " + meals.breakfast);
                 th_meal2.setText("Lunch: " + meals.lunch);
                 th_meal3.setText("Dinner: " + meals.dinner);
+                responsesReceived(lastUpdated);
+
             }
 
             @Override
             public void onError(Exception error) {
                 Log.e("MessFragment", error.getLocalizedMessage());
+                responsesReceived(null);
             }
         });
 
         DateFormat tempFormat = SimpleDateFormat.getDateInstance();
         th_date.setText(tempFormat.format(dayAfter.getTimeInMillis()).toUpperCase());
-
-        // TODO: fix this.
-        progressBar.setVisibility(View.GONE);
     }
-
+    private void responsesReceived(Calendar lastUpdated) {
+        if (lastUpdated != null && lastUpdated.before(lastUpdatedBase)) {
+            lastUpdatedBase = lastUpdated;
+        }
+        DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
+        responseCount ++;
+        if (responseCount == 3) {
+            lastUpdatedTextView.setText("Last Updated : " + dateFormat.format(lastUpdatedBase.getTimeInMillis()));
+            progressBar.setVisibility(View.GONE);
+        }
+    }
 }
