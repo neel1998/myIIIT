@@ -2,6 +2,7 @@ package com.example.neel.myiiit.attendance;
 
 import android.content.Context;
 
+import com.example.neel.myiiit.network.AuthenticationException;
 import com.example.neel.myiiit.network.Network;
 import com.example.neel.myiiit.network.NetworkResponse;
 import com.example.neel.myiiit.utils.AsyncTaskCallback;
@@ -11,6 +12,7 @@ import com.example.neel.myiiit.utils.CallbackAsyncTask;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,52 +32,59 @@ class AttendanceTask extends CallbackAsyncTask<Void, Void, List<AttendanceData>>
         ArrayList<AttendanceData> result = new ArrayList<>();
         Context context = mContext;
 
-        String home_url = "https://moodle.iiit.ac.in/login/index.php?authCAS=CAS";
-        Network.request(context, null, home_url);
 
-        NetworkResponse response;
+        NetworkResponse response = null;
 
-        String course_url = "https://moodle.iiit.ac.in/?redirect=0";
-        response = Network.request(context, null, course_url);
+        try {
+            String home_url = "https://moodle.iiit.ac.in/login/index.php?authCAS=CAS";
+            Network.request(context, null, home_url);
 
-        URI baseUrl = response.getResponse().request().url().uri();
+            String course_url = "https://moodle.iiit.ac.in/?redirect=0";
+            response = Network.request(context, null, course_url);
 
-        Elements courses = response.getSoup().getElementById("frontpage-course-list").getElementsByTag("a");
+            URI baseUrl = response.getResponse().request().url().uri();
 
-        String attendance_url = "";
-        boolean found = false;
-        for (Element course : courses) {
-            String single_url = course.attr("href");
-            single_url = baseUrl.resolve(single_url).toString();
-            response = Network.request(context, null, single_url);
-            try {
-                Elements course_class = response.getSoup().getElementsByClass("mod-indent-outer");
-                for (Element element : course_class) {
-                    if (element.text().equals("Attendance")){
-                       attendance_url =  element.getElementsByTag("a").get(0).attr("href");
-                       found = true;
-                       break;
+            Elements courses = response.getSoup().getElementById("frontpage-course-list").getElementsByTag("a");
+
+            String attendance_url = "";
+            boolean found = false;
+            for (Element course : courses) {
+                String single_url = course.attr("href");
+                single_url = baseUrl.resolve(single_url).toString();
+                response = Network.request(context, null, single_url);
+                try {
+                    Elements course_class = response.getSoup().getElementsByClass("mod-indent-outer");
+                    for (Element element : course_class) {
+                        if (element.text().equals("Attendance")){
+                           attendance_url =  element.getElementsByTag("a").get(0).attr("href");
+                           found = true;
+                           break;
+                        }
                     }
+                    if (found) {
+                        break;
+                    }
+                } catch (Exception e) {
                 }
-                if (found) {
-                    break;
-                }
-            }catch (Exception e){
             }
+
+            attendance_url = baseUrl.resolve(attendance_url).toString();
+
+            HttpUrl url = HttpUrl.parse(attendance_url);
+            String allattd_url;
+            if (url.host().equals("reverseproxy.iiit.ac.in")){
+                String orignalUrl = url.queryParameter("u") + "&mode=1";
+                allattd_url = url.newBuilder().setQueryParameter("u", orignalUrl).build().toString();
+            }else{
+                allattd_url = attendance_url + "&mode=1";
+            }
+
+            response = Network.request(context, null, allattd_url);
+        } catch (AuthenticationException|IOException e) {
+            e.printStackTrace();
+            return new AsyncTaskResult<>(e);
         }
 
-        attendance_url = baseUrl.resolve(attendance_url).toString();
-
-        HttpUrl url = HttpUrl.parse(attendance_url);
-        String allattd_url;
-        if (url.host().equals("reverseproxy.iiit.ac.in")){
-            String orignalUrl = url.queryParameter("u") + "&mode=1";
-            allattd_url = url.newBuilder().setQueryParameter("u", orignalUrl).build().toString();
-        }else{
-            allattd_url = attendance_url + "&mode=1";
-        }
-
-        response = Network.request(context, null, allattd_url);
         Elements course_titles = response.getSoup().getElementsByClass("cell c1 lastcol").get(0).getElementsByTag("h3");
         Elements course_tables = response.getSoup().getElementsByClass("cell c1 lastcol").get(0).getElementsByTag("table");
 

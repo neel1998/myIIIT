@@ -36,11 +36,11 @@ public class Network {
         return final_url;
     }
 
-    public static NetworkResponse request(Context context, RequestBody body, String url) {
+    public static NetworkResponse request(Context context, RequestBody body, String url) throws AuthenticationException, IOException {
         return request(context, body, url, true);
     }
 
-    private static NetworkResponse request(Context context, RequestBody body, String url, boolean canAttemptLogin) {
+    private static NetworkResponse request(Context context, RequestBody body, String url, boolean canAttemptLogin) throws AuthenticationException, IOException {
         OkHttpClient client = Client.getClient(context);
 
         boolean intranet = OnIntranet(context);
@@ -64,10 +64,15 @@ public class Network {
 
         Request request = requestBuilder.build();
 
-        NetworkResponse response = null;
+        NetworkResponse response;
 
         try {
             response = new NetworkResponse(client.newCall(request).execute());
+
+            if (!intranet && response.code() == 401) {
+                // Auth failed
+                throw new AuthenticationException();
+            }
 
             boolean shouldRetry = false;
 
@@ -76,12 +81,19 @@ public class Network {
 
                 response = initReverseproxy(context);
 
+                if (response.code() == 401) {
+                    // Auth failed
+                    throw new AuthenticationException();
+                }
+
                 shouldRetry = true;
             }
 
             if (canAttemptLogin && isLoginPage(response.getSoup())) {
                 Log.d("Network", "Attempting login");
-                loginCore(context, response.getSoup());
+                if (!loginCore(context, response.getSoup())) {
+                    throw new AuthenticationException();
+                }
                 shouldRetry = true;
             }
 
@@ -92,6 +104,7 @@ public class Network {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            throw e;
         }
 
         return response;
@@ -107,7 +120,7 @@ public class Network {
         return soup.title().equals("reverseproxy.iiit.ac.in Glype® proxy");
     }
 
-    private static NetworkResponse initReverseproxy(Context context) {
+    private static NetworkResponse initReverseproxy(Context context) throws AuthenticationException, IOException {
         RequestBody body = new FormBody.Builder()
                 .add("u", "login.iiit.ac.in")
                 .add("allowCookies", "on")
@@ -118,7 +131,7 @@ public class Network {
         return Network.request(context, body, final_url, false);
     }
 
-    private static boolean loginCore(Context context, Document casSoup) {
+    private static boolean loginCore(Context context, Document casSoup) throws AuthenticationException, IOException {
         CredentialStorage credentialStorage = CredentialStorage.getInstance(context);
 
         Element form = casSoup.getElementById("fm1");
@@ -146,7 +159,7 @@ public class Network {
         return response.code() == 200 && !isLoginPage(response.getSoup());
     }
 
-    public static boolean login(Context context) {
+    public static boolean login(Context context) throws AuthenticationException, IOException {
         NetworkResponse response = Network.request(context, null, "https://login.iiit.ac.in");
         return response.code() == 200 && !isLoginPage(response.getSoup());
     }

@@ -99,8 +99,8 @@ public class MessFragment extends Fragment {
             }
 
             @Override
-            public void onError(String errorMessage) {
-                Log.e("MessFragment", errorMessage);
+            public void onError(Exception error) {
+                Log.e("MessFragment", error.getLocalizedMessage());
 
 //                progressBar.setVisibility(View.GONE);
             }
@@ -117,8 +117,8 @@ public class MessFragment extends Fragment {
             }
 
             @Override
-            public void onError(String errorMessage) {
-                Log.e("MessFragment", errorMessage);
+            public void onError(Exception error) {
+                Log.e("MessFragment", error.getLocalizedMessage());
             }
         });
 
@@ -134,8 +134,8 @@ public class MessFragment extends Fragment {
             }
 
             @Override
-            public void onError(String errorMessage) {
-                Log.e("MessFragment", errorMessage);
+            public void onError(Exception error) {
+                Log.e("MessFragment", error.getLocalizedMessage());
             }
         });
 
