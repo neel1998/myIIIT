@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.neel.myiiit.attendance.Attendance;
 import com.example.neel.myiiit.mess.Mess;
 import com.example.neel.myiiit.network.Network;
 
@@ -130,15 +131,11 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_logout) {
             Network.removeCredentials(this);
             Mess.getInstance(this).clearCache();
+            Attendance.clearCache(this);
 
-            preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("date", null);
-            editor.putString("attendance", null);
-            editor.commit();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-
         }
 
         return super.onOptionsItemSelected(item);
