@@ -74,4 +74,11 @@ public class Attendance {
         edit.apply();
     }
 
+    public static void clearCache(Context context) {
+        SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        edit.remove(ATTENDANCE_DATA_KEY);
+        edit.remove(ATTENDANCE_LAST_UPDATE_KEY);
+        edit.apply();
+    }
+
 }
