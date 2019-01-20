@@ -3,7 +3,7 @@ package com.example.neel.myiiit.mess;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.neel.myiiit.Network;
+import com.example.neel.myiiit.network.Network;
 import com.example.neel.myiiit.utils.AsyncTaskCallback;
 import com.example.neel.myiiit.utils.AsyncTaskResult;
 import com.example.neel.myiiit.utils.CallbackAsyncTask;

@@ -12,6 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.example.neel.myiiit.network.Client;
+import com.example.neel.myiiit.network.Network;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -23,7 +27,6 @@ public class LoginActivity extends AppCompatActivity {
     EditText username_box,pswd_box;
     Button login_btn;
     static String username, pswd;
-    static String base_url = "https://reverseproxy.iiit.ac.in";
     TextView username_err, pswd_err;
     ProgressBar login_prog;
     @Override
@@ -83,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             String result = "";
-            result = Login(LoginActivity.this);
+            result = Network.Login(LoginActivity.this);
             return result;
         }
 
@@ -107,54 +110,11 @@ public class LoginActivity extends AppCompatActivity {
                 thread.start();
             }
             else {
-                CredentialsClass credentialsClass = new CredentialsClass(username, pswd);
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         }
     }
 
-    public static String Login(Context context) {
-       String result = "";
-       Client.makeNull();
-       Document cas_soup;
-       if (!Network.OnIntranet(context)) {
-           RequestBody body = new FormBody.Builder()
-                   .add("u", "login.iiit.ac.in")
-                   .add("allowCookies", "on")
-                   .build();
 
-           String final_url = "https://reverseproxy.iiit.ac.in/includes/process.php?action=update";
-
-           cas_soup = Network.makeRequest(context, body, final_url, true);
-       }
-       else {
-           base_url = "https://login.iiit.ac.in";
-           String final_url = "https://login.iiit.ac.in/cas/login";
-           cas_soup = Network.makeRequest(context, null, final_url, true);
-       }
-       if (cas_soup.title().equals("401 Authorization Required")) {
-            result = "401";
-            return result;
-       }
-       Element form = cas_soup.getElementById("fm1");
-       String login_url = base_url + form.attr("action");
-
-       Elements fields = form.getElementsByTag("input");
-
-       FormBody.Builder login_builder = new FormBody.Builder();
-       for (Element field : fields) {
-            if (field.attr("name").equals("username")) {
-                login_builder.add(field.attr("name"), username);
-            } else if (field.attr("name").equals("password")) {
-                login_builder.add(field.attr("name"), pswd);
-            } else {
-                login_builder.add(field.attr("name"), field.attr("value"));
-            }
-       }
-       RequestBody login_body = login_builder.build();
-       Document login_soup = Network.makeRequest(context, login_body, login_url, true);
-       result = "200";
-       return result;
-    }
 }

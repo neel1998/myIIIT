@@ -1,4 +1,4 @@
-package com.example.neel.myiiit;
+package com.example.neel.myiiit.network;
 
 import android.content.Context;
 

@@ -2,20 +2,14 @@ package com.example.neel.myiiit.attendance;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Pair;
 
-import com.example.neel.myiiit.Network;
 import com.example.neel.myiiit.utils.AsyncTaskCallback;
 import com.example.neel.myiiit.utils.AsyncTaskResult;
 import com.example.neel.myiiit.utils.Callback2;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

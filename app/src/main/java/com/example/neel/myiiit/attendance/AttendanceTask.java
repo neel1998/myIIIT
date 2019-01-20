@@ -1,9 +1,8 @@
 package com.example.neel.myiiit.attendance;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
-import com.example.neel.myiiit.Network;
+import com.example.neel.myiiit.network.Network;
 import com.example.neel.myiiit.utils.AsyncTaskCallback;
 import com.example.neel.myiiit.utils.AsyncTaskResult;
 import com.example.neel.myiiit.utils.CallbackAsyncTask;
