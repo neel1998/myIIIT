@@ -19,7 +19,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class MessFragment extends Fragment {
-    TextView  lastUpdatedTextView, today_meal1,today_meal2,today_meal3,tom_meal1,tom_meal2,tom_meal3,th_meal1,th_meal2,th_meal3,th_date;
+    TextView  lastUpdatedTextView;
+    MealsFragment mMealsToday, mMealsTomorrow, mMealsDayAfter;
     ProgressBar progressBar;
     SwipeRefreshLayout pullToRefresh;
 
@@ -47,20 +48,16 @@ public class MessFragment extends Fragment {
             }
         });
 
-        today_meal1 = rootView.findViewById(R.id.today_meal1);
-        today_meal2 = rootView.findViewById(R.id.today_meal2);
-        today_meal3 = rootView.findViewById(R.id.today_meal3);
+        mMealsToday = (MealsFragment)getChildFragmentManager().findFragmentById(R.id.meals_today);
+        mMealsTomorrow = (MealsFragment)getChildFragmentManager().findFragmentById(R.id.meals_tomorrow);
+        mMealsDayAfter = (MealsFragment)getChildFragmentManager().findFragmentById(R.id.meals_day_after);
 
-        tom_meal1 = rootView.findViewById(R.id.tomorrow_meal1);
-        tom_meal2 = rootView.findViewById(R.id.tomorrow_meal2);
-        tom_meal3 = rootView.findViewById(R.id.tomorrow_meal3);
-
-        th_meal1 = rootView.findViewById(R.id.third_meal1);
-        th_meal2 = rootView.findViewById(R.id.third_meal2);
-        th_meal3 = rootView.findViewById(R.id.third_meal3);
-
-        th_date = rootView.findViewById(R.id.third_label);
-
+        Calendar date = Calendar.getInstance();
+        mMealsToday.setDate(date);
+        date.add(Calendar.DATE, 1);
+        mMealsTomorrow.setDate(date);
+        date.add(Calendar.DATE, 1);
+        mMealsDayAfter.setDate(date);
 
         return rootView;
     }
@@ -86,9 +83,7 @@ public class MessFragment extends Fragment {
         mess.getMealsForADay(today, forceUpdate, new Mess.GetMealsCallback() {
             @Override
             public void onMealsReceived(Calendar date, Meals meals, Calendar lastUpdated, boolean maybeCalledAgain) {
-                today_meal1.setText("Breakfast: " + meals.breakfast);
-                today_meal2.setText("Lunch: " + meals.lunch);
-                today_meal3.setText("Dinner: " + meals.dinner);
+                mMealsToday.setMeals(meals);
 
 //                TODO
 //                DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
@@ -111,9 +106,7 @@ public class MessFragment extends Fragment {
         mess.getMealsForADay(tomorrow, forceUpdate, new Mess.GetMealsCallback() {
             @Override
             public void onMealsReceived(Calendar date, Meals meals, Calendar lastUpdated, boolean maybeCalledAgain) {
-                tom_meal1.setText("Breakfast: " + meals.breakfast);
-                tom_meal2.setText("Lunch: " + meals.lunch);
-                tom_meal3.setText("Dinner: " + meals.dinner);
+                mMealsTomorrow.setMeals(meals);
             }
 
             @Override
@@ -128,9 +121,7 @@ public class MessFragment extends Fragment {
         mess.getMealsForADay(tomorrow, forceUpdate, new Mess.GetMealsCallback() {
             @Override
             public void onMealsReceived(Calendar date, Meals meals, Calendar lastUpdated, boolean maybeCalledAgain) {
-                th_meal1.setText("Breakfast: " + meals.breakfast);
-                th_meal2.setText("Lunch: " + meals.lunch);
-                th_meal3.setText("Dinner: " + meals.dinner);
+                mMealsDayAfter.setMeals(meals);
             }
 
             @Override
@@ -138,9 +129,6 @@ public class MessFragment extends Fragment {
                 Log.e("MessFragment", error.getLocalizedMessage());
             }
         });
-
-        DateFormat tempFormat = SimpleDateFormat.getDateInstance();
-        th_date.setText(tempFormat.format(dayAfter.getTimeInMillis()).toUpperCase());
 
         // TODO: fix this.
         progressBar.setVisibility(View.GONE);

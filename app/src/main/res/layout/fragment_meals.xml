@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MealsFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/day"
+        android:layout_alignParentTop="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:text="Today" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/breakfast_label"
+        android:layout_below="@id/day"
+        android:text="Breakfast: " />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/breakfast"
+        android:layout_below="@id/day"
+        android:layout_toRightOf="@id/breakfast_label"
+        android:text="Breakfast Mess" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lunch_label"
+        android:layout_below="@id/breakfast"
+        android:text="Lunch: " />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lunch"
+        android:layout_below="@id/breakfast"
+        android:layout_toRightOf="@id/lunch_label"
+        android:text="Lunch Mess"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dinner_label"
+        android:layout_below="@id/lunch_label"
+        android:text="Dinner: " />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dinner"
+        android:layout_below="@id/lunch_label"
+        android:layout_toRightOf="@id/dinner_label"
+        android:text="Dinner Mess" />
+
+</RelativeLayout>

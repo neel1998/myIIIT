@@ -6,12 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MessFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/mess_last_update"
-        android:layout_alignParentTop="true"
-        />
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,130 +13,56 @@
         android:id="@+id/mess_progress"
         android:visibility="gone"
         />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mess_last_update"
+        android:layout_alignParentTop="true"
+        />
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/mess_pullToRefresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/mess_last_update">
+        android:layout_below="@id/mess_last_update" >
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textSize="18sp"
-            android:text="Today"
-            android:textAlignment="center"
-            android:id="@+id/today_label"
-            />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/today_meal1"
-            android:textSize="20sp"
-            android:textAlignment="center"
-            android:layout_margin="5dp"
-            android:layout_below="@+id/today_label"
-        />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/today_meal2"
-            android:textSize="20sp"
-            android:textAlignment="center"
-            android:layout_margin="5dp"
-            android:layout_below="@+id/today_meal1"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/today_meal3"
-            android:textSize="20sp"
-            android:textAlignment="center"
-            android:layout_margin="5dp"
-            android:layout_below="@+id/today_meal2"
-            />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/today_meal3"
-            android:layout_marginTop="20dp"
-            android:textSize="16sp"
-            android:text="Tomorrow"
-            android:textAlignment="center"
-            android:id="@+id/tomorrow_label"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tomorrow_meal1"
-            android:textSize="18sp"
-            android:textAlignment="center"
-            android:layout_margin="5dp"
-            android:layout_below="@+id/tomorrow_label"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tomorrow_meal2"
-            android:textSize="18sp"
-            android:textAlignment="center"
-            android:layout_margin="5dp"
-            android:layout_below="@+id/tomorrow_meal1"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tomorrow_meal3"
-            android:textSize="18sp"
-            android:textAlignment="center"
-            android:layout_margin="5dp"
-            android:layout_below="@+id/tomorrow_meal2"
-            />
+                <fragment
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:name="com.example.neel.myiiit.MealsFragment"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/meals_today"
+                    />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tomorrow_meal3"
-            android:layout_marginTop="20dp"
-            android:textSize="16sp"
-            android:textAlignment="center"
-            android:id="@+id/third_label"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/third_meal1"
-            android:textSize="18sp"
-            android:textAlignment="center"
-            android:layout_margin="5dp"
-            android:layout_below="@+id/third_label"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/third_meal2"
-            android:textSize="18sp"
-            android:textAlignment="center"
-            android:layout_margin="5dp"
-            android:layout_below="@+id/third_meal1"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/third_meal3"
-            android:textSize="18sp"
-            android:textAlignment="center"
-            android:layout_margin="5dp"
-            android:layout_below="@+id/third_meal2"
-            />
-        </RelativeLayout>
+                <fragment
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:name="com.example.neel.myiiit.MealsFragment"
+                    android:id="@+id/meals_tomorrow"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/meals_today"
+                    />
+
+                <fragment
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:name="com.example.neel.myiiit.MealsFragment"
+                    android:id="@+id/meals_day_after"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/meals_tomorrow"
+                    />
+
+            </RelativeLayout>
         </ScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>
