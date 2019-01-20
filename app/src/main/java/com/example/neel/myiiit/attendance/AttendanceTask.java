@@ -44,12 +44,30 @@ class AttendanceTask extends CallbackAsyncTask<Void, Void, List<AttendanceData>>
 
             URI baseUrl = response.getResponse().request().url().uri();
 
-            String single_url = response.getSoup().getElementById("frontpage-course-list").getElementsByTag("a").get(0).attr("href");
-            single_url = baseUrl.resolve(single_url).toString();
+            Elements courses = response.getSoup().getElementById("frontpage-course-list").getElementsByTag("a");
 
-            response = Network.request(context, null, single_url);
+            String attendance_url = "";
+            boolean found = false;
+            for (Element course : courses) {
+                String single_url = course.attr("href");
+                single_url = baseUrl.resolve(single_url).toString();
+                response = Network.request(context, null, single_url);
+                try {
+                    Elements course_class = response.getSoup().getElementsByClass("mod-indent-outer");
+                    for (Element element : course_class) {
+                        if (element.text().equals("Attendance")){
+                           attendance_url =  element.getElementsByTag("a").get(0).attr("href");
+                           found = true;
+                           break;
+                        }
+                    }
+                    if (found) {
+                        break;
+                    }
+                } catch (Exception e) {
+                }
+            }
 
-            String attendance_url = response.getSoup().getElementsByClass("mod-indent-outer").get(1).getElementsByTag("a").get(0).attr("href");
             attendance_url = baseUrl.resolve(attendance_url).toString();
 
             HttpUrl url = HttpUrl.parse(attendance_url);
