@@ -1,4 +1,4 @@
-package com.example.neel.myiiit;
+package com.example.neel.myiiit.attendance;
 
 import java.io.Serializable;
 

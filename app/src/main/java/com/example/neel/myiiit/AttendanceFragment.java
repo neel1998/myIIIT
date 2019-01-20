@@ -12,7 +12,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.neel.myiiit.Model.Attendance;
+import com.example.neel.myiiit.attendance.Attendance;
+import com.example.neel.myiiit.attendance.AttendanceData;
 import com.example.neel.myiiit.utils.Callback2;
 
 
@@ -20,6 +21,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class AttendanceFragment extends Fragment {
 
@@ -55,9 +57,9 @@ public class AttendanceFragment extends Fragment {
 
     }
     private void updateAttendance(boolean forceUpdate){
-        Attendance.getAttendance(getContext(), forceUpdate, new Callback2<ArrayList<AttendanceData>, Calendar>() {
+        Attendance.getAttendance(getContext(), forceUpdate, new Callback2<List<AttendanceData>, Calendar>() {
             @Override
-            public void success(ArrayList<AttendanceData> attendanceData, Calendar lastUpdated) {
+            public void success(List<AttendanceData> attendanceData, Calendar lastUpdated) {
                 DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
                 last_update.setText("Last Updated : " + dateFormat.format(lastUpdated.getTimeInMillis()));
                 attendanceAdapter = new AttendanceAdapter(getContext(), attendanceData);
