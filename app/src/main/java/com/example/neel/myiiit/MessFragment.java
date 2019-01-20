@@ -23,7 +23,8 @@ public class MessFragment extends Fragment {
     MealsFragment mMealsToday, mMealsTomorrow, mMealsDayAfter;
     ProgressBar progressBar;
     SwipeRefreshLayout pullToRefresh;
-
+    Integer mResponseCount = 0;
+    Calendar lastUpdatedBase = Calendar.getInstance();
     Mess mess;
 
     /*TODO
@@ -78,26 +79,20 @@ public class MessFragment extends Fragment {
 
     private void updateMeals(boolean forceUpdate) {
         progressBar.setVisibility(View.VISIBLE);
-
+        mResponseCount = 0;
         Calendar today = Calendar.getInstance();
+
         mess.getMealsForADay(today, forceUpdate, new Mess.GetMealsCallback() {
             @Override
             public void onMealsReceived(Calendar date, Meals meals, Calendar lastUpdated, boolean maybeCalledAgain) {
                 mMealsToday.setMeals(meals);
-
-//                TODO
-//                DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
-//
-//                lastUpdatedTextView.setText("Last Updated : " + dateFormat.format(lastUpdated.getTimeInMillis()));
-//
-//                progressBar.setVisibility(View.GONE);
+                responsesReceived(lastUpdated);
             }
 
             @Override
             public void onError(Exception error) {
                 Log.e("MessFragment", error.getLocalizedMessage());
-
-//                progressBar.setVisibility(View.GONE);
+                responsesReceived(null);
             }
         });
 
@@ -107,31 +102,44 @@ public class MessFragment extends Fragment {
             @Override
             public void onMealsReceived(Calendar date, Meals meals, Calendar lastUpdated, boolean maybeCalledAgain) {
                 mMealsTomorrow.setMeals(meals);
+                responsesReceived(lastUpdated);
             }
 
             @Override
             public void onError(Exception error) {
                 Log.e("MessFragment", error.getLocalizedMessage());
+                responsesReceived(null);
             }
         });
-
 
         Calendar dayAfter = Calendar.getInstance();
         dayAfter.add(Calendar.DATE, 2);
-        mess.getMealsForADay(tomorrow, forceUpdate, new Mess.GetMealsCallback() {
+        mess.getMealsForADay(dayAfter, forceUpdate, new Mess.GetMealsCallback() {
             @Override
             public void onMealsReceived(Calendar date, Meals meals, Calendar lastUpdated, boolean maybeCalledAgain) {
                 mMealsDayAfter.setMeals(meals);
+                responsesReceived(lastUpdated);
             }
 
             @Override
             public void onError(Exception error) {
                 Log.e("MessFragment", error.getLocalizedMessage());
+                responsesReceived(null);
             }
         });
 
-        // TODO: fix this.
-        progressBar.setVisibility(View.GONE);
     }
 
+    private void responsesReceived(Calendar lastUpdated) {
+        if (lastUpdated != null && lastUpdated.before(lastUpdatedBase)) {
+            lastUpdatedBase = lastUpdated;
+        }
+        DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
+
+        mResponseCount++;
+        if (mResponseCount >= 3) {
+            lastUpdatedTextView.setText("Last Updated : " + dateFormat.format(lastUpdatedBase.getTimeInMillis()));
+            progressBar.setVisibility(View.GONE);
+        }
+    }
 }
