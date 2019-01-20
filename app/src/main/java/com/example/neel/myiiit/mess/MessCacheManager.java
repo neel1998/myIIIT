@@ -59,6 +59,12 @@ class MessCacheManager {
         }
     }
 
+    void clearCache() {
+        SharedPreferences.Editor sharedPrefEditor = mSharedPref.edit();
+        sharedPrefEditor.remove(MESS_CACHE_KEY);
+        sharedPrefEditor.apply();
+    }
+
     private String getMonthKey(int month, int year) {
         return year + "-" + month;
     }

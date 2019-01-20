@@ -2,10 +2,7 @@ package com.example.neel.myiiit.network;
 
 import android.content.Context;
 import android.util.Log;
-import android.util.Pair;
-import android.widget.Toast;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -39,11 +36,11 @@ public class Network {
         return final_url;
     }
 
-    public static NetworkResponse makeRequest(Context context, RequestBody body, String url) {
-        return makeRequest(context, body, url, true);
+    public static NetworkResponse request(Context context, RequestBody body, String url) {
+        return request(context, body, url, true);
     }
 
-    private static NetworkResponse makeRequest(Context context, RequestBody body, String url, boolean canAttemptLogin) {
+    private static NetworkResponse request(Context context, RequestBody body, String url, boolean canAttemptLogin) {
         OkHttpClient client = Client.getClient(context);
 
         boolean intranet = OnIntranet(context);
@@ -118,7 +115,7 @@ public class Network {
 
         String final_url = "https://reverseproxy.iiit.ac.in/includes/process.php?action=update";
 
-        return Network.makeRequest(context, body, final_url, false);
+        return Network.request(context, body, final_url, false);
     }
 
     private static boolean loginCore(Context context, Document casSoup) {
@@ -144,13 +141,13 @@ public class Network {
             }
         }
 
-        NetworkResponse loginResponse = Network.makeRequest(context, loginBodyBuilder.build(), loginUrl, false);
+        NetworkResponse response = Network.request(context, loginBodyBuilder.build(), loginUrl, false);
 
-        return loginResponse.code() == 200 && !isLoginPage(loginResponse.getSoup());
+        return response.code() == 200 && !isLoginPage(response.getSoup());
     }
 
     public static boolean login(Context context) {
-        NetworkResponse response = Network.makeRequest(context, null, "https://login.iiit.ac.in");
+        NetworkResponse response = Network.request(context, null, "https://login.iiit.ac.in");
         return response.code() == 200 && !isLoginPage(response.getSoup());
     }
 
@@ -174,7 +171,6 @@ public class Network {
                     .build();
             Response response = client.newCall(request).execute();
         } catch (IOException e) {
-            Log.d("error", "occured");
             result = true;
         }
         return  result;

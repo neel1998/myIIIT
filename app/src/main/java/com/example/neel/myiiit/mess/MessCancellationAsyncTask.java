@@ -9,8 +9,6 @@ import com.example.neel.myiiit.utils.AsyncTaskCallback;
 import com.example.neel.myiiit.utils.AsyncTaskResult;
 import com.example.neel.myiiit.utils.CallbackAsyncTask;
 
-import org.jsoup.nodes.Document;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -38,7 +36,7 @@ class MessCancellationAsyncTask extends CallbackAsyncTask<Void, Void, String>  {
     protected AsyncTaskResult<String> doInBackground(Void... voids) {
         String result = "";
 
-        Network.makeRequest(mContext, null, "https://mess.iiit.ac.in/mess/web/index.php");
+        Network.request(mContext, null, "https://mess.iiit.ac.in/mess/web/index.php");
 
         String url = "https://mess.iiit.ac.in/mess/web/student_cancel_process.php";
         DateFormat dateFormat = SimpleDateFormat.getDateInstance();
@@ -57,7 +55,7 @@ class MessCancellationAsyncTask extends CallbackAsyncTask<Void, Void, String>  {
                 .add("uncancel[]",(mUncancel)?"1":"0")
                 .build();
 
-        NetworkResponse response = Network.makeRequest(mContext, body, url);
+        NetworkResponse response = Network.request(mContext, body, url);
         result = response.getSoup().getElementsByClass("post").get(1).getElementsByTag("font").get(0).text();
         return new AsyncTaskResult<>(result);
     }
