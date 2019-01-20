@@ -27,20 +27,21 @@ import java.util.Calendar;
 import java.util.List;
 
 public class MessFragment extends Fragment {
-    TextView  lastUpdatedTextView;
-    CalendarView mCalendar;
+    private TextView  lastUpdatedTextView;
+    private CalendarView mCalendar;
 
-    ProgressBar progressBar;
-    SwipeRefreshLayout pullToRefresh;
+    private ProgressBar progressBar;
+    private SwipeRefreshLayout pullToRefresh;
+    private FloatingActionButton mFab;
 
-    Integer mResponseCount = 0;
-    Calendar lastUpdatedBase = Calendar.getInstance();
+    private Integer mResponseCount = 0;
+    private Calendar lastUpdatedBase = Calendar.getInstance();
 
-    Calendar mDate = Calendar.getInstance();
+    private Calendar mDate = Calendar.getInstance();
 
-    List<MealsFragment> mealsFragmentList = new ArrayList<>();
+    private List<MealsFragment> mealsFragmentList = new ArrayList<>();
 
-    Mess mess;
+    private Mess mess;
 
     /*TODO
     * upcoming meals
@@ -71,14 +72,16 @@ public class MessFragment extends Fragment {
         mCalendar = rootView.findViewById(R.id.calendar);
         mCalendar.setVisibility(View.GONE);
 
-        FloatingActionButton fab = rootView.findViewById(R.id.open_calendar);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab = rootView.findViewById(R.id.open_calendar);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mCalendar.getVisibility() == View.VISIBLE) {
                     mCalendar.setVisibility(View.GONE);
+                    mFab.setImageResource(R.drawable.ic_date_range_black_24dp);
                 } else {
                     mCalendar.setVisibility(View.VISIBLE);
+                    mFab.setImageResource(R.drawable.ic_close_black_24dp);
                 }
             }
         });

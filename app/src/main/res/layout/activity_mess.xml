@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".MessFragment">
 
     <ProgressBar
@@ -74,7 +75,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/calendar"
         android:layout_margin="16dp"
+        android:src="@drawable/ic_date_range_black_24dp"
+        android:tint="@android:color/white"
         android:id="@+id/open_calendar"/>
 </android.support.constraint.ConstraintLayout>
