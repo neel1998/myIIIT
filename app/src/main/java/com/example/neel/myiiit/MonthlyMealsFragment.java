@@ -86,8 +86,8 @@ public class MonthlyMealsFragment extends Fragment{
             }
 
             @Override
-            public void onError(String errorMessage) {
-                Log.e("MessFragment", errorMessage);
+            public void onError(Exception error) {
+                Log.e("MessFragment", error.getLocalizedMessage());
                 monthly_prog.setVisibility(View.GONE);
             }
         });

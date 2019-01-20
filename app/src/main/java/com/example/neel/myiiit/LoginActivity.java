@@ -14,12 +14,19 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.neel.myiiit.network.AuthenticationException;
 import com.example.neel.myiiit.network.Client;
 import com.example.neel.myiiit.network.Network;
+import com.example.neel.myiiit.utils.AsyncTaskCallback;
+import com.example.neel.myiiit.utils.AsyncTaskResult;
+import com.example.neel.myiiit.utils.CallbackAsyncTask;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import java.io.IOException;
+
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
@@ -78,21 +85,31 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-    public class LoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class LoginTask extends AsyncTask<Void, Void, AsyncTaskResult<Boolean>> {
 
         @Override
-        protected Boolean doInBackground(Void... voids) {
-            return Network.login(LoginActivity.this);
+        protected AsyncTaskResult<Boolean> doInBackground(Void... voids) {
+            try {
+                return new AsyncTaskResult<>(Network.login(LoginActivity.this));
+            } catch (AuthenticationException|IOException e) {
+                return new AsyncTaskResult<>(e);
+            }
         }
 
         @Override
-        protected void onPostExecute(Boolean loginSuccessful) {
+        protected void onPostExecute(AsyncTaskResult<Boolean> loginSuccessful) {
             login_prog.setVisibility(View.GONE);
             login_btn.setVisibility(View.VISIBLE);
-            if (!loginSuccessful){
+
+            if ((loginSuccessful.isError() && loginSuccessful.getError() instanceof AuthenticationException)
+                    || !loginSuccessful.getResult()) {
                 Network.removeCredentials(LoginActivity.this);
 
                 pswd_err.setText("Invalid Credentials");
+                pswd_err.setVisibility(View.VISIBLE);
+            }
+            else if (loginSuccessful.isError()) {
+                pswd_err.setText("Something went wrong");
                 pswd_err.setVisibility(View.VISIBLE);
             }
             else {

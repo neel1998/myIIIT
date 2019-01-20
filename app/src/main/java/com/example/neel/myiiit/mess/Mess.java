@@ -58,13 +58,13 @@ public class Mess {
                 if (dayIndex < allMeals.size()) {
                     callback.onMealsReceived(date, allMeals.get(dayIndex), lastUpdated, maybeCalledAgain);
                 } else {
-                    callback.onError("Something went wrong. Could not get meals.");
+                    callback.onError(new RuntimeException("Something went wrong. Could not get meals."));
                 }
             }
 
             @Override
             public void error(Exception e) {
-                callback.onError(e.getMessage());
+                callback.onError(e);
             }
         });
     }
@@ -171,9 +171,9 @@ public class Mess {
 
         /**
          *
-         * @param errorMessage Error message
+         * @param error Error
          */
-        void onError(String errorMessage);
+        void onError(Exception error);
     }
 
 }

@@ -3,6 +3,7 @@ package com.example.neel.myiiit.mess;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.neel.myiiit.network.AuthenticationException;
 import com.example.neel.myiiit.network.Network;
 import com.example.neel.myiiit.network.NetworkResponse;
 import com.example.neel.myiiit.utils.AsyncTaskCallback;
@@ -11,6 +12,7 @@ import com.example.neel.myiiit.utils.CallbackAsyncTask;
 
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,14 +30,19 @@ class MessMonthlyMealsAsyncTask extends CallbackAsyncTask<Integer, Void, List<Me
         int month = monthYear[0] + 1;
         int year = monthYear[1];
 
-        // Make one request to mess homepage to ensure login
-        Network.request(mContext, null, "https://mess.iiit.ac.in/mess/web/index.php");
-
         // Request month-wise registration page
         String url = "https://mess.iiit.ac.in/mess/web/student_view_registration.php?month="
                 + Integer.toString(month) + "&year=" + Integer.toString(year);
 
-        NetworkResponse request = Network.request(mContext, null, url);
+        NetworkResponse request = null;
+        try {
+            // Make one request to mess homepage to ensure login
+            Network.request(mContext, null, "https://mess.iiit.ac.in/mess/web/index.php");
+
+            request = Network.request(mContext, null, url);
+        } catch (AuthenticationException|IOException e) {
+            return new AsyncTaskResult<>(e);
+        }
 
         if (request.getSoup() == null) {
             return new AsyncTaskResult<List<Meals>>(new RuntimeException("Error while connecting to mess portal"));
@@ -45,7 +52,7 @@ class MessMonthlyMealsAsyncTask extends CallbackAsyncTask<Integer, Void, List<Me
         Elements calendarTable = request.getSoup().getElementsByClass("calendar");
 
         if (calendarTable == null || calendarTable.size() == 0) {
-            return new AsyncTaskResult<List<Meals>>(new RuntimeException("Error while connecting to mess portal"));
+            return new AsyncTaskResult<List<Meals>>(new RuntimeException("Error while extracting data from mess portal"));
         }
 
         // Parse table
