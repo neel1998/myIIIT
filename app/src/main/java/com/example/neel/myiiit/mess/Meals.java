@@ -1,4 +1,4 @@
-package com.example.neel.myiiit.Model;
+package com.example.neel.myiiit.mess;
 
 /**
  * Holds meals for a day

@@ -1,7 +1,6 @@
-package com.example.neel.myiiit.Model;
+package com.example.neel.myiiit.mess;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.neel.myiiit.Network;
@@ -18,7 +17,7 @@ import java.util.Calendar;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
-public class MessCancellationAsyncTask extends CallbackAsyncTask<Void, Void, String>  {
+class MessCancellationAsyncTask extends CallbackAsyncTask<Void, Void, String>  {
     private Context mContext;
     private int mMeals;
     private boolean mUncancel;

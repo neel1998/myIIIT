@@ -15,13 +15,12 @@ import android.widget.CalendarView;
 import android.widget.ProgressBar;
 
 
-import com.example.neel.myiiit.Model.Meals;
-import com.example.neel.myiiit.Model.Mess;
+import com.example.neel.myiiit.mess.Meals;
+import com.example.neel.myiiit.mess.Mess;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 
 public class MonthlyMealsFragment extends Fragment{
     Integer cur_month;

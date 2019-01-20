@@ -1,4 +1,4 @@
-package com.example.neel.myiiit.Model;
+package com.example.neel.myiiit.mess;
 
 import android.content.Context;
 import android.util.Log;
@@ -14,7 +14,7 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessMonthlyMealsAsyncTask extends CallbackAsyncTask<Integer, Void, List<Meals>> {
+class MessMonthlyMealsAsyncTask extends CallbackAsyncTask<Integer, Void, List<Meals>> {
     private Context mContext;
 
     MessMonthlyMealsAsyncTask(Context context, AsyncTaskCallback<List<Meals>> callback) {

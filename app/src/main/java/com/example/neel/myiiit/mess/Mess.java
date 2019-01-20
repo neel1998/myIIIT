@@ -1,4 +1,4 @@
-package com.example.neel.myiiit.Model;
+package com.example.neel.myiiit.mess;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
@@ -23,7 +23,7 @@ public class Mess {
     private static Mess sInstance = null;
 
     private Context mContext;
-    private MessCache messCache;
+    private MessCacheManager mCacheManager;
 
     private Map<Pair<Integer, Integer>, List<Callback3<List<Meals>, Calendar, Boolean>>>
             mRefreshMonthCallbackMap = new HashMap<>();
@@ -39,7 +39,7 @@ public class Mess {
     private Mess(Context context) {
         mContext = context;
 
-        messCache = new MessCache(PreferenceManager.getDefaultSharedPreferences(mContext));
+        mCacheManager = new MessCacheManager(PreferenceManager.getDefaultSharedPreferences(mContext));
     }
 
     /**
@@ -94,13 +94,13 @@ public class Mess {
 
     private void markMonthsDirty(Calendar startDate, Calendar endDate) {
         while (startDate.before(endDate)) {
-            messCache.markMonthDirty(startDate.get(Calendar.MONTH), startDate.get(Calendar.YEAR));
+            mCacheManager.markMonthDirty(startDate.get(Calendar.MONTH), startDate.get(Calendar.YEAR));
             startDate.roll(Calendar.MONTH, 1);
         }
     }
 
     private void getMealsForMonth(final int month, final int year, final boolean forceRefresh, final Callback3<List<Meals>, Calendar, Boolean> callback) {
-        final CachedMonth cachedMonth = messCache.getCachedMonth(month, year);
+        final CachedMonth cachedMonth = mCacheManager.getCachedMonth(month, year);
 
         // Callback with cached value if not forceUpdate and not dirty
         if (cachedMonth != null && !cachedMonth.isDirty && !forceRefresh) {
@@ -142,9 +142,8 @@ public class Mess {
                 }
 
                 Calendar lastUpdated = Calendar.getInstance();
-                messCache.cacheMonth(month, year, result.getResult(), lastUpdated);
+                mCacheManager.cacheMonth(month, year, result.getResult(), lastUpdated);
 
-                callback.success(result.getResult(), lastUpdated, false);
                 for (Callback3 callback: mRefreshMonthCallbackMap.get(monthKey)) {
                     callback.success(result.getResult(), lastUpdated, false);
                 }

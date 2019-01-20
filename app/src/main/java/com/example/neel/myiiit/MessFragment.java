@@ -11,13 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.neel.myiiit.Model.Meals;
-import com.example.neel.myiiit.Model.Mess;
+import com.example.neel.myiiit.mess.Meals;
+import com.example.neel.myiiit.mess.Mess;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 
 public class MessFragment extends Fragment {
     TextView  lastUpdatedTextView, today_meal1,today_meal2,today_meal3,tom_meal1,tom_meal2,tom_meal3,th_meal1,th_meal2,th_meal3,th_date;

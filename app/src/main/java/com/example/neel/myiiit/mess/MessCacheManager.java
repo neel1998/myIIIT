@@ -1,4 +1,4 @@
-package com.example.neel.myiiit.Model;
+package com.example.neel.myiiit.mess;
 
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
@@ -12,14 +12,14 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-class MessCache {
+class MessCacheManager {
     private static final String MESS_CACHE_KEY = "mess_cache";
 
     private CachedMonthMap mCachedMonthMap;
 
     private SharedPreferences mSharedPref;
 
-    MessCache(SharedPreferences sharedPreferences) {
+    MessCacheManager(SharedPreferences sharedPreferences) {
         mSharedPref = sharedPreferences;
 
         load();
@@ -67,7 +67,7 @@ class MessCache {
         Gson gson = new Gson();
         String cacheString = gson.toJson(mCachedMonthMap);
 
-        Log.d("MessCache", "Storing: " + cacheString);
+        Log.d("MessCacheManager", "Storing: " + cacheString);
 
         SharedPreferences.Editor sharedPrefEditor = mSharedPref.edit();
         sharedPrefEditor.putString(MESS_CACHE_KEY, cacheString);
@@ -77,7 +77,7 @@ class MessCache {
     private void load() {
         String cacheString = mSharedPref.getString(MESS_CACHE_KEY, null);
 
-        Log.d("MessCache", "Loading: " + cacheString);
+        Log.d("MessCacheManager", "Loading: " + cacheString);
 
         Gson gson = new Gson();
         CachedMonthMap cachedMonthMap = gson.fromJson(cacheString, CachedMonthMap.class);
@@ -88,12 +88,6 @@ class MessCache {
 
         mCachedMonthMap = cachedMonthMap;
     }
-}
-
-class CachedMonth {
-    List<Meals> mealsList;
-    Calendar lastUpdated;
-    boolean isDirty;
 }
 
 class CachedMonthMap extends HashMap<String, CachedMonth> { }

@@ -12,7 +12,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
-import com.example.neel.myiiit.Model.Mess;
+import com.example.neel.myiiit.mess.Mess;
 import com.example.neel.myiiit.utils.Callback1;
 
 import java.util.Calendar;
