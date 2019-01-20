@@ -88,11 +88,6 @@ public class MainActivity extends AppCompatActivity {
                         toolbar.setBackgroundColor(getResources().getColor(R.color.Cancel1));
                         break;
                     case 3:
-                        getWindow().setStatusBarColor(getResources().getColor(R.color.Cancel3));
-                        tabLayout.setBackgroundColor(getResources().getColor(R.color.Cancel2));
-                        toolbar.setBackgroundColor(getResources().getColor(R.color.Cancel1));
-                        break;
-                    case 4:
                         getWindow().setStatusBarColor(getResources().getColor(R.color.Attd3));
                         tabLayout.setBackgroundColor(getResources().getColor(R.color.Attd2));
                         toolbar.setBackgroundColor(getResources().getColor(R.color.Attd1));
@@ -160,8 +155,6 @@ public class MainActivity extends AppCompatActivity {
                 case 2:
                     return new MessCancelFragment();
                 case 3:
-                    return new MonthlyMealsFragment();
-                case 4:
                     return new AttendanceFragment();
                 default:
                     return null;
@@ -170,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 5;
+            return 4;
         }
     }
 }

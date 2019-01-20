@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,62 +7,74 @@
     tools:context=".MessFragment">
 
     <ProgressBar
+        android:id="@+id/mess_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:id="@+id/mess_progress"
-        android:visibility="gone"
-        />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/mess_last_update"
-        android:layout_alignParentTop="true"
+        app:layout_constraintTop_toTopOf="parent"
         />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/mess_pullToRefresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintTop_toBottomOf="@id/mess_last_update"
+        app:layout_constraintBottom_toTopOf="@id/calendar"
         android:layout_below="@id/mess_last_update" >
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <fragment
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:name="com.example.neel.myiiit.MealsFragment"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
                     android:id="@+id/meals_today"
-                    />
+                    android:name="com.example.neel.myiiit.MealsFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
                 <fragment
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:name="com.example.neel.myiiit.MealsFragment"
                     android:id="@+id/meals_tomorrow"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@id/meals_today"
-                    />
+                    android:name="com.example.neel.myiiit.MealsFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
                 <fragment
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:name="com.example.neel.myiiit.MealsFragment"
                     android:id="@+id/meals_day_after"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@id/meals_tomorrow"
-                    />
+                    android:name="com.example.neel.myiiit.MealsFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-            </RelativeLayout>
+            </LinearLayout>
         </ScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>
-</RelativeLayout>
+
+    <CalendarView
+        android:id="@+id/calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="16dp"
+        android:id="@+id/open_calendar"/>
+</android.support.constraint.ConstraintLayout>

@@ -1,13 +1,19 @@
 package com.example.neel.myiiit;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
+import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -16,15 +22,24 @@ import com.example.neel.myiiit.mess.Mess;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class MessFragment extends Fragment {
     TextView  lastUpdatedTextView;
-    MealsFragment mMealsToday, mMealsTomorrow, mMealsDayAfter;
+    CalendarView mCalendar;
+
     ProgressBar progressBar;
     SwipeRefreshLayout pullToRefresh;
+
     Integer mResponseCount = 0;
     Calendar lastUpdatedBase = Calendar.getInstance();
+
+    Calendar mDate = Calendar.getInstance();
+
+    List<MealsFragment> mealsFragmentList = new ArrayList<>();
+
     Mess mess;
 
     /*TODO
@@ -49,16 +64,32 @@ public class MessFragment extends Fragment {
             }
         });
 
-        mMealsToday = (MealsFragment)getChildFragmentManager().findFragmentById(R.id.meals_today);
-        mMealsTomorrow = (MealsFragment)getChildFragmentManager().findFragmentById(R.id.meals_tomorrow);
-        mMealsDayAfter = (MealsFragment)getChildFragmentManager().findFragmentById(R.id.meals_day_after);
+        mealsFragmentList.add((MealsFragment)getChildFragmentManager().findFragmentById(R.id.meals_today));
+        mealsFragmentList.add((MealsFragment)getChildFragmentManager().findFragmentById(R.id.meals_tomorrow));
+        mealsFragmentList.add((MealsFragment)getChildFragmentManager().findFragmentById(R.id.meals_day_after));
 
-        Calendar date = Calendar.getInstance();
-        mMealsToday.setDate(date);
-        date.add(Calendar.DATE, 1);
-        mMealsTomorrow.setDate(date);
-        date.add(Calendar.DATE, 1);
-        mMealsDayAfter.setDate(date);
+        mCalendar = rootView.findViewById(R.id.calendar);
+        mCalendar.setVisibility(View.GONE);
+
+        FloatingActionButton fab = rootView.findViewById(R.id.open_calendar);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCalendar.getVisibility() == View.VISIBLE) {
+                    mCalendar.setVisibility(View.GONE);
+                } else {
+                    mCalendar.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        mCalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+                mDate.set(year, month, dayOfMonth);
+                updateMeals(false);
+            }
+        });
 
         return rootView;
     }
@@ -78,56 +109,32 @@ public class MessFragment extends Fragment {
     }
 
     private void updateMeals(boolean forceUpdate) {
+        lastUpdatedBase = Calendar.getInstance();
+
         progressBar.setVisibility(View.VISIBLE);
         mResponseCount = 0;
-        Calendar today = Calendar.getInstance();
 
-        mess.getMealsForADay(today, forceUpdate, new Mess.GetMealsCallback() {
-            @Override
-            public void onMealsReceived(Calendar date, Meals meals, Calendar lastUpdated, boolean maybeCalledAgain) {
-                mMealsToday.setMeals(meals);
-                responsesReceived(lastUpdated);
-            }
+        for (int i = 0; i < mealsFragmentList. size(); ++i) {
+            final MealsFragment mealsFragment = mealsFragmentList.get(i);
 
-            @Override
-            public void onError(Exception error) {
-                Log.e("MessFragment", error.getLocalizedMessage());
-                responsesReceived(null);
-            }
-        });
+            Calendar date = (Calendar)mDate.clone();
+            date.add(Calendar.DATE, i);
 
-        Calendar tomorrow = Calendar.getInstance();
-        tomorrow.add(Calendar.DATE, 1);
-        mess.getMealsForADay(tomorrow, forceUpdate, new Mess.GetMealsCallback() {
-            @Override
-            public void onMealsReceived(Calendar date, Meals meals, Calendar lastUpdated, boolean maybeCalledAgain) {
-                mMealsTomorrow.setMeals(meals);
-                responsesReceived(lastUpdated);
-            }
+            mess.getMealsForADay(date, forceUpdate, new Mess.GetMealsCallback() {
+                @Override
+                public void onMealsReceived(Calendar date, Meals meals, Calendar lastUpdated, boolean maybeCalledAgain) {
+                    mealsFragment.setMeals(meals);
+                    mealsFragment.setDate(date);
+                    responsesReceived(lastUpdated);
+                }
 
-            @Override
-            public void onError(Exception error) {
-                Log.e("MessFragment", error.getLocalizedMessage());
-                responsesReceived(null);
-            }
-        });
-
-        Calendar dayAfter = Calendar.getInstance();
-        dayAfter.add(Calendar.DATE, 2);
-        mess.getMealsForADay(dayAfter, forceUpdate, new Mess.GetMealsCallback() {
-            @Override
-            public void onMealsReceived(Calendar date, Meals meals, Calendar lastUpdated, boolean maybeCalledAgain) {
-                mMealsDayAfter.setMeals(meals);
-                responsesReceived(lastUpdated);
-            }
-
-            @Override
-            public void onError(Exception error) {
-                Log.e("MessFragment", error.getLocalizedMessage());
-                responsesReceived(null);
-            }
-        });
-
+                @Override
+                public void onError(Exception error) {
+                    Log.e("MessFragment", error.getLocalizedMessage());
+                    responsesReceived(null);
+                }
+            });
+        }
     }
 
     private void responsesReceived(Calendar lastUpdated) {
@@ -137,7 +144,7 @@ public class MessFragment extends Fragment {
         DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
 
         mResponseCount++;
-        if (mResponseCount >= 3) {
+        if (mResponseCount >= mealsFragmentList.size()) {
             lastUpdatedTextView.setText("Last Updated : " + dateFormat.format(lastUpdatedBase.getTimeInMillis()));
             progressBar.setVisibility(View.GONE);
         }
