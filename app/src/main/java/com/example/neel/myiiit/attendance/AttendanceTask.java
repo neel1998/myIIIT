@@ -1,6 +1,7 @@
 package com.example.neel.myiiit.attendance;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.neel.myiiit.network.AuthenticationException;
 import com.example.neel.myiiit.network.Network;
@@ -31,13 +32,19 @@ class AttendanceTask extends CallbackAsyncTask<Void, Void, List<AttendanceData>>
     protected AsyncTaskResult<List<AttendanceData>> doInBackground(Void... voids) {
         ArrayList<AttendanceData> result = new ArrayList<>();
         Context context = mContext;
-
+        ArrayList<String> current_courses = new ArrayList<>();
 
         NetworkResponse response = null;
 
         try {
             String home_url = "https://moodle.iiit.ac.in/login/index.php?authCAS=CAS";
-            Network.request(context, null, home_url);
+            response = Network.request(context, null, home_url);
+            try {
+                Elements course_list = response.getSoup().getElementsByClass("course_title");
+                for (Element element : course_list) {
+                    current_courses.add(element.text());
+                }
+            }catch (Exception e){}
 
             String course_url = "https://moodle.iiit.ac.in/?redirect=0";
             response = Network.request(context, null, course_url);
@@ -91,11 +98,14 @@ class AttendanceTask extends CallbackAsyncTask<Void, Void, List<AttendanceData>>
         //adding object of attendance data to adapter
         int i = 0;
         for ( Element table : course_tables ){
-
+            boolean isCurrent = false;
             String course_name = course_titles.get(i).text();
+            if (current_courses.contains(course_name)){
+                isCurrent = true;
+            }
             String session_completed = table.getElementsByClass("cell c1 lastcol").get(0).text();
             String session_present = table.getElementsByClass("cell c1 lastcol").get(1).text();
-            AttendanceData data = new AttendanceData(course_name, session_completed, session_present);
+            AttendanceData data = new AttendanceData(course_name, session_completed, session_present, isCurrent, false);
             result.add(data);
             i++;
         }

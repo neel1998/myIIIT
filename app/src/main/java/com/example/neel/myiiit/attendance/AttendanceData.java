@@ -8,12 +8,14 @@ public class AttendanceData implements Serializable{
     private String session_present;
     private String session_absent;
     private String percentage;
-
-    public AttendanceData( String name, String total, String present ) {
+    private boolean isCurrent;
+    private boolean isHeader;
+    public AttendanceData( String name, String total, String present, boolean current, boolean header ) {
         course_name = name;
         session_completed = total;
         session_present = present;
-
+        isCurrent = current;
+        isHeader = header;
         session_absent = String.valueOf( Integer.valueOf(session_completed) - Integer.valueOf(session_present) );
         Double perc = ( Double.valueOf(session_present) / Double.valueOf(session_completed) )*100;
         percentage = String.format("%.2f", perc);
@@ -39,5 +41,7 @@ public class AttendanceData implements Serializable{
         return percentage;
     }
 
+    public boolean getIsCurrent() { return isCurrent; }
 
+    public boolean isHeader() { return isHeader; }
 }

@@ -26,9 +26,9 @@ import java.util.List;
 public class AttendanceFragment extends Fragment {
 
     TextView last_update;
-    ListView attd_listview;
+    ListView coursesListview;
     ProgressBar attd_prog;
-    AttendanceAdapter attendanceAdapter;
+    AttendanceAdapter courseAdapter;
     SwipeRefreshLayout pullToRefresh;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,7 +36,7 @@ public class AttendanceFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.activity_attendence, container, false);
 
         last_update = rootView.findViewById(R.id.attd_last_update);
-        attd_listview = rootView.findViewById(R.id.attd_list);
+        coursesListview = rootView.findViewById(R.id.course_list);
         attd_prog = rootView.findViewById(R.id.attd_progress);
         pullToRefresh = rootView.findViewById(R.id.pullToRefresh);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -62,8 +62,21 @@ public class AttendanceFragment extends Fragment {
             public void success(List<AttendanceData> attendanceData, Calendar lastUpdated) {
                 DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
                 last_update.setText("Last Updated : " + dateFormat.format(lastUpdated.getTimeInMillis()));
-                attendanceAdapter = new AttendanceAdapter(getContext(), attendanceData);
-                attd_listview.setAdapter(attendanceAdapter);
+                ArrayList<AttendanceData> currentCourse = new ArrayList<>();
+                currentCourse.add(new AttendanceData("Current Courses", "1", "1",false, true));
+                ArrayList<AttendanceData> otherCourse = new ArrayList<>();
+                for (AttendanceData course : attendanceData){
+                    if (course.getIsCurrent()){
+                        currentCourse.add(course);
+                    }
+                    else{
+                        otherCourse.add(course);
+                    }
+                }
+                courseAdapter = new AttendanceAdapter(getContext(), currentCourse);
+                courseAdapter.add(new AttendanceData("Other Courses", "1", "1", false, true));
+                courseAdapter.addAll(otherCourse);
+                coursesListview.setAdapter(courseAdapter);
                 attd_prog.setVisibility(View.GONE);
             }
 
