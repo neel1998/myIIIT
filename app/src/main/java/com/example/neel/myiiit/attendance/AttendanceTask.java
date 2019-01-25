@@ -98,14 +98,10 @@ class AttendanceTask extends CallbackAsyncTask<Void, Void, List<AttendanceData>>
         //adding object of attendance data to adapter
         int i = 0;
         for ( Element table : course_tables ){
-            boolean isCurrent = false;
             String course_name = course_titles.get(i).text();
-            if (current_courses.contains(course_name)){
-                isCurrent = true;
-            }
             String session_completed = table.getElementsByClass("cell c1 lastcol").get(0).text();
             String session_present = table.getElementsByClass("cell c1 lastcol").get(1).text();
-            AttendanceData data = new AttendanceData(course_name, session_completed, session_present, isCurrent, false);
+            AttendanceData data = new AttendanceData(course_name, session_completed, session_present, current_courses.contains(course_name));
             result.add(data);
             i++;
         }

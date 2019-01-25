@@ -60,7 +60,7 @@ public class MessFragment extends Fragment {
             updateMeals(true);
             }
         });
-
+        mealsFragmentList.clear();
         mealsFragmentList.add((MealsFragment)getChildFragmentManager().findFragmentById(R.id.meals_today));
         mealsFragmentList.add((MealsFragment)getChildFragmentManager().findFragmentById(R.id.meals_tomorrow));
         mealsFragmentList.add((MealsFragment)getChildFragmentManager().findFragmentById(R.id.meals_day_after));
@@ -96,23 +96,19 @@ public class MessFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
         mess = Mess.getInstance(context);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
         updateMeals(false);
     }
 
     private void updateMeals(boolean forceUpdate) {
         lastUpdatedBase = Calendar.getInstance();
-
         progressBar.setVisibility(View.VISIBLE);
         mResponseCount = 0;
-
         for (int i = 0; i < mealsFragmentList. size(); ++i) {
             final MealsFragment mealsFragment = mealsFragmentList.get(i);
 

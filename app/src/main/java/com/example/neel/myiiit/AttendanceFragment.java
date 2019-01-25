@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.example.neel.myiiit.attendance.Attendance;
 import com.example.neel.myiiit.attendance.AttendanceData;
+import com.example.neel.myiiit.attendance.AttendanceHeader;
+import com.example.neel.myiiit.attendance.AttendanceRow;
 import com.example.neel.myiiit.utils.Callback2;
 
 
@@ -62,9 +64,10 @@ public class AttendanceFragment extends Fragment {
             public void success(List<AttendanceData> attendanceData, Calendar lastUpdated) {
                 DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
                 last_update.setText("Last Updated : " + dateFormat.format(lastUpdated.getTimeInMillis()));
-                ArrayList<AttendanceData> currentCourse = new ArrayList<>();
-                currentCourse.add(new AttendanceData("Current Courses", "1", "1",false, true));
-                ArrayList<AttendanceData> otherCourse = new ArrayList<>();
+
+                ArrayList<AttendanceRow> currentCourse = new ArrayList<>();
+                currentCourse.add(new AttendanceHeader("Current Courses"));
+                ArrayList<AttendanceRow> otherCourse = new ArrayList<>();
                 for (AttendanceData course : attendanceData){
                     if (course.getIsCurrent()){
                         currentCourse.add(course);
@@ -74,7 +77,7 @@ public class AttendanceFragment extends Fragment {
                     }
                 }
                 courseAdapter = new AttendanceAdapter(getContext(), currentCourse);
-                courseAdapter.add(new AttendanceData("Other Courses", "1", "1", false, true));
+                courseAdapter.add(new AttendanceHeader("Other Courses"));
                 courseAdapter.addAll(otherCourse);
                 coursesListview.setAdapter(courseAdapter);
                 attd_prog.setVisibility(View.GONE);

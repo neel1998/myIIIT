@@ -1,8 +1,7 @@
 package com.example.neel.myiiit.attendance;
 
-import java.io.Serializable;
 
-public class AttendanceData implements Serializable{
+public class AttendanceData extends AttendanceRow{
     private String course_name;
     private String session_completed;
     private String session_present;
@@ -10,12 +9,11 @@ public class AttendanceData implements Serializable{
     private String percentage;
     private boolean isCurrent;
     private boolean isHeader;
-    public AttendanceData( String name, String total, String present, boolean current, boolean header ) {
+    public AttendanceData( String name, String total, String present, boolean current ) {
         course_name = name;
         session_completed = total;
         session_present = present;
         isCurrent = current;
-        isHeader = header;
         session_absent = String.valueOf( Integer.valueOf(session_completed) - Integer.valueOf(session_present) );
         Double perc = ( Double.valueOf(session_present) / Double.valueOf(session_completed) )*100;
         percentage = String.format("%.2f", perc);
@@ -43,5 +41,5 @@ public class AttendanceData implements Serializable{
 
     public boolean getIsCurrent() { return isCurrent; }
 
-    public boolean isHeader() { return isHeader; }
+
 }

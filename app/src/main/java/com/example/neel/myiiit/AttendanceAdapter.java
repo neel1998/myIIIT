@@ -8,33 +8,34 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.neel.myiiit.attendance.AttendanceData;
+import com.example.neel.myiiit.attendance.AttendanceHeader;
+import com.example.neel.myiiit.attendance.AttendanceRow;
 
 import java.util.List;
 
-public class AttendanceAdapter extends ArrayAdapter<AttendanceData> {
-    public AttendanceAdapter(Context context, List<AttendanceData> questionData){
+public class AttendanceAdapter extends ArrayAdapter<AttendanceRow> {
+    public AttendanceAdapter(Context context, List<AttendanceRow> questionData){
         super(context,0,questionData);
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View listView;
         listView = convertView;
-        AttendanceData current = getItem(position);
-        int type = getItemViewType(position);
-        if (listView == null) {
-            if (type == 1) {
-                listView = LayoutInflater.from(getContext()).inflate(R.layout.attendance_list_header, parent, false);
-            } else {
-                listView = LayoutInflater.from(getContext()).inflate(R.layout.attendance_layout, parent, false);
-            }
-        }
-        if (type == 1){
 
+        int type = getItemViewType(position);
+        if (type == 1){
+            if (listView == null) {
+                listView = LayoutInflater.from(getContext()).inflate(R.layout.attendance_list_header, parent, false);
+            }
+            AttendanceHeader current = (AttendanceHeader)getItem(position);
             TextView header = listView.findViewById(R.id.header_textView);
-            header.setText(current.getCourse_name());
+            header.setText(current.getHeader());
         }
         else {
-
+            if (listView == null){
+                listView = LayoutInflater.from(getContext()).inflate(R.layout.attendance_layout, parent, false);
+            }
+            AttendanceData current = (AttendanceData) getItem(position);
             String course_name = current.getCourse_name();
             String session_completed = current.getSession_completed();
             String session_present = current.getSession_present();
@@ -63,6 +64,12 @@ public class AttendanceAdapter extends ArrayAdapter<AttendanceData> {
 
     @Override
     public int getItemViewType(int position) {
-        return (getItem(position).isHeader())?1:0;
+
+        if (getItem(position).getClass().equals(AttendanceHeader.class)){
+            return 1;
+        }
+        else{
+            return 0;
+        }
     }
 }
