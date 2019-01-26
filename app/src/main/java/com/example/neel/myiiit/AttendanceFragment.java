@@ -53,12 +53,13 @@ public class AttendanceFragment extends Fragment {
         super.onStart();
         updateAttendance(false);
     }
+
     private void updateAttendance(boolean forceUpdate){
+        pullToRefresh.setRefreshing(true);
+
         Attendance.getAttendance(getContext(), forceUpdate, new Callback2<List<AttendanceData>, Calendar>() {
             @Override
             public void success(List<AttendanceData> attendanceData, Calendar lastUpdated) {
-                pullToRefresh.setRefreshing(true);
-
                 DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
                 last_update.setText("Last Updated : " + dateFormat.format(lastUpdated.getTimeInMillis()));
 
