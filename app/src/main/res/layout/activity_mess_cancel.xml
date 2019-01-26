@@ -6,56 +6,45 @@
     android:layout_height="match_parent"
     tools:context=".MessCancelFragment"
     >
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/startdate_btn"
+        android:layout_centerHorizontal="true"
+        android:text="start date"
+        />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/startdate_btn"
+        android:id="@+id/startdate_text"
         android:layout_centerHorizontal="true"
-        android:text="Start Date"
-        android:id="@+id/startdate_txt"
         />
-    <DatePicker
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:calendarViewShown="false"
-        android:datePickerMode="spinner"
-        android:layout_below="@+id/startdate_txt"
+        android:id="@+id/enddate_btn"
         android:layout_centerHorizontal="true"
-        android:id="@+id/datePicker1"
+        android:text="end date"
+        android:layout_below="@+id/startdate_text"
         />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/enddate_btn"
+        android:id="@+id/enddate_text"
         android:layout_centerHorizontal="true"
-        android:text="End Date"
-        android:id="@+id/enddate_txt"
-        android:layout_below="@+id/datePicker1"
         />
-    <DatePicker
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:calendarViewShown="false"
-        android:datePickerMode="spinner"
-        android:layout_below="@+id/enddate_txt"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/datePicker2"
-        />
-
     <CheckBox
-        android:layout_below="@+id/datePicker2"
+        android:layout_below="@+id/enddate_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Breakfast"
         android:id="@+id/breakfast_box"
         />
     <CheckBox
-        android:layout_below="@+id/datePicker2"
+        android:layout_below="@+id/enddate_text"
         android:layout_toRightOf="@+id/breakfast_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -63,7 +52,7 @@
         android:id="@+id/lunch_box"
         />
     <CheckBox
-        android:layout_below="@+id/datePicker2"
+        android:layout_below="@+id/enddate_text"
         android:layout_toRightOf="@+id/lunch_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -86,13 +75,12 @@
         android:text="Submit"
         android:id="@+id/submit_btn"
         />
-    <TextView
-        android:id="@+id/cancel_msg"
-        android:layout_below="@+id/submit_btn"
-        android:layout_width="match_parent"
+    <ProgressBar
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
+        android:id="@+id/cancel_prog"
+        android:visibility="gone"
+        android:layout_below="@+id/submit_btn"
+        android:layout_centerHorizontal="true"
         />
-        </RelativeLayout>
-    </ScrollView>
 </RelativeLayout>

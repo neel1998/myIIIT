@@ -57,7 +57,7 @@ public class MealsFragment extends Fragment {
         mLunchTextView.setVisibility(View.VISIBLE);
         mDinnerTextView.setVisibility(View.VISIBLE);
 
-        mErrorMessage.setVisibility(View.VISIBLE);
+        mErrorMessage.setVisibility(View.INVISIBLE);
 
         mBreakfastTextView.setText(meals.breakfast);
         mLunchTextView.setText(meals.lunch);
