@@ -15,6 +15,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.net.URI;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,10 +100,16 @@ class AttendanceTask extends CallbackAsyncTask<Void, Void, List<AttendanceData>>
         int i = 0;
         for ( Element table : course_tables ){
             String course_name = course_titles.get(i).text();
-            String session_completed = table.getElementsByClass("cell c1 lastcol").get(0).text();
-            String session_present = table.getElementsByClass("cell c1 lastcol").get(1).text();
-            AttendanceData data = new AttendanceData(course_name, session_completed, session_present, current_courses.contains(course_name));
-            result.add(data);
+            Integer session_completed;
+            Integer session_present;
+            try {
+                session_completed = Integer.parseInt(table.getElementsByClass("cell c1 lastcol").get(0).text());
+                session_present =  Integer.parseInt(table.getElementsByClass("cell c1 lastcol").get(1).text());
+                AttendanceData data = new AttendanceData(course_name,session_completed, session_present, current_courses.contains(course_name));
+                result.add(data);
+            }catch (NumberFormatException | NullPointerException e) {
+                return new AsyncTaskResult<>(e);
+            }
             i++;
         }
         return new AsyncTaskResult<List<AttendanceData>>(result);
