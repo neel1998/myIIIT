@@ -1,5 +1,6 @@
 package com.example.neel.myiiit;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -27,7 +28,6 @@ public class MessFragment extends Fragment {
     private TextView  lastUpdatedTextView;
     private CalendarView mCalendar;
 
-    private ProgressBar progressBar;
     private SwipeRefreshLayout pullToRefresh;
     private FloatingActionButton mFab;
 
@@ -50,15 +50,12 @@ public class MessFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.activity_mess, container, false);
 
         lastUpdatedTextView = rootView.findViewById(R.id.mess_last_update);
-        progressBar = rootView.findViewById(R.id.mess_progress);
 
         pullToRefresh = rootView.findViewById(R.id.mess_pullToRefresh);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-            pullToRefresh.setRefreshing(false);
-
-            updateMeals(true);
+                updateMeals(true);
             }
         });
         mealsFragmentList.clear();
@@ -107,17 +104,20 @@ public class MessFragment extends Fragment {
     }
 
     private void updateMeals(boolean forceUpdate) {
+        lastUpdatedTextView.setVisibility(View.INVISIBLE);
+        pullToRefresh.setRefreshing(true);
+
         lastUpdatedBase = Calendar.getInstance();
-        progressBar.setVisibility(View.VISIBLE);
         mResponseCount = 0;
+
         for (int i = 0; i < mealsFragmentList.size(); ++i) {
             final MealsFragment mealsFragment = mealsFragmentList.get(i);
 
             Calendar date = (Calendar)mDate.clone();
             date.add(Calendar.DATE, i);
 
-            mealsFragment.setDate(date);
             mealsFragment.invalidate();
+            mealsFragment.setDate(date);
 
             mess.getMealsForADay(date, forceUpdate, new Mess.GetMealsCallback() {
                 @Override
@@ -145,7 +145,9 @@ public class MessFragment extends Fragment {
         mResponseCount++;
         if (mResponseCount >= mealsFragmentList.size()) {
             lastUpdatedTextView.setText("Last Updated : " + dateFormat.format(lastUpdatedBase.getTimeInMillis()));
-            progressBar.setVisibility(View.GONE);
+
+            lastUpdatedTextView.setVisibility(View.VISIBLE);
+            pullToRefresh.setRefreshing(false);
         }
     }
 }

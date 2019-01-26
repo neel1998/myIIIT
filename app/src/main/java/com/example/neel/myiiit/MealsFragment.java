@@ -49,6 +49,8 @@ public class MealsFragment extends Fragment {
     }
 
     public void setMeals(Meals meals) {
+        mDayTextView.setVisibility(View.VISIBLE);
+
         mBreakfastLabelTextView.setVisibility(View.VISIBLE);
         mLunchLabelTextView.setVisibility(View.VISIBLE);
         mDinnerLabelTextView.setVisibility(View.VISIBLE);
@@ -71,6 +73,8 @@ public class MealsFragment extends Fragment {
     }
 
     public void invalidate() {
+        mDayTextView.setVisibility(View.INVISIBLE);
+
         mBreakfastLabelTextView.setVisibility(View.INVISIBLE);
         mLunchLabelTextView.setVisibility(View.INVISIBLE);
         mDinnerLabelTextView.setVisibility(View.INVISIBLE);
@@ -84,7 +88,9 @@ public class MealsFragment extends Fragment {
 
     public void setError(Exception exception) {
         invalidate();
-        
+
+        mDayTextView.setVisibility(View.VISIBLE);
+
         mErrorMessage.setText(exception.getLocalizedMessage());
         mErrorMessage.setVisibility(View.VISIBLE);
     }
