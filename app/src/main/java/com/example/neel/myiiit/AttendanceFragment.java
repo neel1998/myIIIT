@@ -8,13 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.ProgressBar;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.example.neel.myiiit.attendance.Attendance;
 import com.example.neel.myiiit.attendance.AttendanceData;
-import com.example.neel.myiiit.attendance.AttendanceHeader;
 import com.example.neel.myiiit.utils.Callback2;
 
 
@@ -27,8 +25,7 @@ import java.util.List;
 public class AttendanceFragment extends Fragment {
 
     TextView last_update;
-    ListView coursesListview;
-    AttendanceAdapter courseAdapter;
+    ExpandableListView coursesListview;
     SwipeRefreshLayout pullToRefresh;
 
     @Override
@@ -75,19 +72,12 @@ public class AttendanceFragment extends Fragment {
                     }
                 }
 
-                courseAdapter = new AttendanceAdapter(getContext());
+                AttendanceAdapter attendanceAdapter = new AttendanceAdapter(getContext(), currentCourse, otherCourse);
+                coursesListview.setAdapter(attendanceAdapter);
 
-                if (currentCourse.size() > 0) {
-                    courseAdapter.add(new AttendanceHeader("Current Courses"));
-                    courseAdapter.addAll(currentCourse);
+                if (attendanceAdapter.getGroupCount() > 0) {
+                    coursesListview.expandGroup(0);
                 }
-
-                if (otherCourse.size() > 0) {
-                    courseAdapter.add(new AttendanceHeader("Past Courses"));
-                    courseAdapter.addAll(otherCourse);
-                }
-
-                coursesListview.setAdapter(courseAdapter);
 
                 pullToRefresh.setRefreshing(false);
             }

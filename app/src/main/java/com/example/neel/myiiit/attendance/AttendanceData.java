@@ -1,7 +1,7 @@
 package com.example.neel.myiiit.attendance;
 
 
-public class AttendanceData extends AttendanceRow{
+public class AttendanceData {
     private String course_name;
     private Integer session_completed;
     private Integer session_present;
