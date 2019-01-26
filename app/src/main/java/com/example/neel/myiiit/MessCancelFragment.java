@@ -1,7 +1,9 @@
 package com.example.neel.myiiit;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,52 +12,87 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.neel.myiiit.mess.Mess;
 import com.example.neel.myiiit.utils.Callback1;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class MessCancelFragment extends Fragment {
-    CheckBox breakfast_box, lunch_box, dinner_box, uncancel_box;
-    Button submit_btn;
-    TextView cancel_msg;
-    DatePicker datePicker1, datePicker2;
-
-    Mess mess;
-
-    /*TODO
-    * Reset Fragment to default on changin tab
-    * */
+    private CheckBox breakFastCheckBox, lunchCheckBox, dinnerCheckBox, uncancelCheckBox;
+    private Button submitButton, startDateButton, endDateButton;
+    private TextView startDateTextView, endDateTextView;
+    private DatePickerDialog startDatePickerDialog, endDatePickerDialog;
+    private Mess mess;
+    private Calendar startDate, endDate;
+    ProgressBar cancelProgrssBar;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
         mess = Mess.getInstance(context);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_mess_cancel, container, false);
 
+        startDateTextView = rootView.findViewById(R.id.startdate_text);
+        endDateTextView = rootView.findViewById(R.id.enddate_text);
+
+        startDatePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                startDate = Calendar.getInstance();
+                startDate.set(year, month, dayOfMonth);
+                startDateTextView.setText(SimpleDateFormat.getDateInstance().format(startDate.getTimeInMillis()));
+            }
+        }, Calendar.getInstance().get(Calendar.YEAR),
+           Calendar.getInstance().get(Calendar.MONTH),
+           Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+
+        endDatePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                endDate = Calendar.getInstance();
+                endDate.set(year, month, dayOfMonth);
+                endDateTextView.setText(SimpleDateFormat.getDateInstance().format(endDate.getTimeInMillis()));
+            }
+        }, Calendar.getInstance().get(Calendar.YEAR),
+           Calendar.getInstance().get(Calendar.MONTH),
+           Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+
+        startDateButton = rootView.findViewById(R.id.startdate_btn);
+        startDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startDatePickerDialog.show();
+            }
+        });
+
+        endDateButton = rootView.findViewById(R.id.enddate_btn);
+        endDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                endDatePickerDialog.show();
+            }
+        });
+
+        cancelProgrssBar = rootView.findViewById(R.id.cancel_prog);
+
+        breakFastCheckBox = rootView.findViewById(R.id.breakfast_box);
+        lunchCheckBox = rootView.findViewById(R.id.lunch_box);
+        dinnerCheckBox = rootView.findViewById(R.id.dinner_box);
+        uncancelCheckBox = rootView.findViewById(R.id.uncancel_box);
+
+        submitButton = rootView.findViewById(R.id.submit_btn);
 
 
-        cancel_msg = rootView.findViewById(R.id.cancel_msg);
-
-        breakfast_box = rootView.findViewById(R.id.breakfast_box);
-        lunch_box = rootView.findViewById(R.id.lunch_box);
-        dinner_box = rootView.findViewById(R.id.dinner_box);
-        uncancel_box = rootView.findViewById(R.id.uncancel_box);
-
-        submit_btn = rootView.findViewById(R.id.submit_btn);
-
-        datePicker1 = rootView.findViewById(R.id.datePicker1);
-        datePicker2 = rootView.findViewById(R.id.datePicker2);
-
-
-        submit_btn.setOnClickListener(new View.OnClickListener() {
+        submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                   cancelMeals();
@@ -65,37 +102,39 @@ public class MessCancelFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
+    
     private void cancelMeals(){
         int meals = 0;
-        if (breakfast_box.isChecked()) meals |= Mess.MEAL_BREAKFAST;
-        if (lunch_box.isChecked()) meals |= Mess.MEAL_LUNCH;
-        if (dinner_box.isChecked()) meals |= Mess.MEAL_DINNER;
+        cancelProgrssBar.setVisibility(View.VISIBLE);
+        if (breakFastCheckBox.isChecked()) meals |= Mess.MEAL_BREAKFAST;
+        if (lunchCheckBox.isChecked()) meals |= Mess.MEAL_LUNCH;
+        if (dinnerCheckBox.isChecked()) meals |= Mess.MEAL_DINNER;
 
-        Calendar startdate = Calendar.getInstance();
-        startdate.set(Calendar.DATE, datePicker1.getDayOfMonth());
-        startdate.set(Calendar.MONTH, datePicker1.getMonth());
-        startdate.set(Calendar.YEAR, datePicker1.getYear());
-
-        Calendar enddate = Calendar.getInstance();
-        enddate.set(Calendar.DATE, datePicker2.getDayOfMonth());
-        enddate.set(Calendar.MONTH, datePicker2.getMonth());
-        enddate.set(Calendar.YEAR, datePicker2.getYear());
-
-        mess.cancelMeals(startdate, enddate, meals, uncancel_box.isChecked(), new Callback1<String>() {
+        Log.d("fragment start date", startDate.toString());
+        Log.d("fragment end date", endDate.toString());
+        mess.cancelMeals((Calendar) startDate.clone(), (Calendar) endDate.clone(), meals, uncancelCheckBox.isChecked(), new Callback1<String>() {
             @Override
             public void success(String s) {
-                cancel_msg.setText(s);
+                resetLayout(s);
             }
 
             @Override
             public void error(Exception e) {
                 Log.d("MessCancellation", e.getLocalizedMessage());
+                resetLayout(e.getLocalizedMessage());
             }
         });
+    }
+    private void resetLayout(String message) {
+        cancelProgrssBar.setVisibility(View.GONE);
+        Snackbar snackbar = Snackbar.make(getView(), message, Snackbar.LENGTH_LONG);
+        snackbar.show();
+        breakFastCheckBox.setChecked(false);
+        lunchCheckBox.setChecked(false);
+        dinnerCheckBox.setChecked(false);
+        uncancelCheckBox.setChecked(false);
+
+
+
     }
 }
