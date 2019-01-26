@@ -89,21 +89,19 @@ public class AttendanceAdapter extends BaseExpandableListAdapter {
 
         TextView name = convertView.findViewById(R.id.course_name);
         TextView total = convertView.findViewById(R.id.session_completed);
-        TextView present = convertView.findViewById(R.id.session_present);
         TextView absent = convertView.findViewById(R.id.session_absent);
         TextView percentage = convertView.findViewById(R.id.percentage);
 
         name.setText(current.getCourse_name());
         total.setText("Sessions Completed : " + current.getSession_completed());
-        present.setText("Present : " + current.getSession_present());
         absent.setText("Absent : " + current.getSession_absent());
-        percentage.setText("Percentage : " +  String.format("%.2f", current.getPercentage()));
+        percentage.setText(String.format("%.2f%%", current.getPercentage()));
 
         return convertView;
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return false;
+        return true;
     }
 }
