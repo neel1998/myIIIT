@@ -3,6 +3,7 @@ package com.example.neel.myiiit.attendance;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.util.Pair;
 
 import com.example.neel.myiiit.utils.AsyncTaskCallback;
@@ -69,6 +70,7 @@ public class Attendance {
         SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(context).edit();
         Gson gson = new Gson();
         String serial = gson.toJson(result);
+        Log.d("cache Attendace", serial);
         edit.putString(ATTENDANCE_DATA_KEY, serial);
         edit.putLong(ATTENDANCE_LAST_UPDATE_KEY, lastUpdate.getTimeInMillis());
         edit.apply();

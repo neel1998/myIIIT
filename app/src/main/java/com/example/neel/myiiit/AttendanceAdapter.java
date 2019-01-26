@@ -36,11 +36,6 @@ public class AttendanceAdapter extends ArrayAdapter<AttendanceRow> {
                 listView = LayoutInflater.from(getContext()).inflate(R.layout.attendance_layout, parent, false);
             }
             AttendanceData current = (AttendanceData) getItem(position);
-            String course_name = current.getCourse_name();
-            String session_completed = current.getSession_completed();
-            String session_present = current.getSession_present();
-            String session_absent = current.getSession_absent();
-            String session_percentage = current.getPercentage();
 
             TextView name = listView.findViewById(R.id.course_name);
             TextView total = listView.findViewById(R.id.session_completed);
@@ -48,11 +43,11 @@ public class AttendanceAdapter extends ArrayAdapter<AttendanceRow> {
             TextView absent = listView.findViewById(R.id.session_absent);
             TextView percentage = listView.findViewById(R.id.percentage);
 
-            name.setText(course_name);
-            total.setText("Sessions Completed : " + session_completed);
-            present.setText("Present : " + session_present);
-            absent.setText("Absent : " + session_absent);
-            percentage.setText("Percentage : " + session_percentage);
+            name.setText(current.getCourse_name());
+            total.setText("Sessions Completed : " + current.getSession_completed());
+            present.setText("Present : " + current.getSession_present());
+            absent.setText("Absent : " + current.getSession_absent());
+            percentage.setText("Percentage : " +  String.format("%.2f", current.getPercentage()));
         }
         return listView;
     }

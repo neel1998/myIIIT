@@ -3,39 +3,42 @@ package com.example.neel.myiiit.attendance;
 
 public class AttendanceData extends AttendanceRow{
     private String course_name;
-    private String session_completed;
-    private String session_present;
-    private String session_absent;
-    private String percentage;
+    private Integer session_completed;
+    private Integer session_present;
+    private Integer session_absent;
+    private Double percentage;
     private boolean isCurrent;
-    private boolean isHeader;
-    public AttendanceData( String name, String total, String present, boolean current ) {
+    public AttendanceData( String name, Integer total, Integer present, boolean current ) {
         course_name = name;
         session_completed = total;
         session_present = present;
         isCurrent = current;
-        session_absent = String.valueOf( Integer.valueOf(session_completed) - Integer.valueOf(session_present) );
-        Double perc = ( Double.valueOf(session_present) / Double.valueOf(session_completed) )*100;
-        percentage = String.format("%.2f", perc);
+        session_absent = session_completed - session_present;
+        if (session_completed != 0) {
+            percentage = (100.0 * session_present) / session_completed;
+        }
+        else {
+            percentage = 0.00;
+        }
     }
 
     public String getCourse_name() {
         return course_name;
     }
 
-    public String getSession_completed() {
+    public Integer getSession_completed() {
         return session_completed;
     }
 
-    public String getSession_present() {
+    public Integer getSession_present() {
         return session_present;
     }
 
-    public String getSession_absent() {
+    public Integer getSession_absent() {
         return session_absent;
     }
 
-    public String getPercentage() {
+    public Double getPercentage() {
         return percentage;
     }
 
