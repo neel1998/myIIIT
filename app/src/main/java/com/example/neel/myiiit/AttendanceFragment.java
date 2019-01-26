@@ -28,9 +28,9 @@ public class AttendanceFragment extends Fragment {
 
     TextView last_update;
     ListView coursesListview;
-    ProgressBar attd_prog;
     AttendanceAdapter courseAdapter;
     SwipeRefreshLayout pullToRefresh;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -38,14 +38,11 @@ public class AttendanceFragment extends Fragment {
 
         last_update = rootView.findViewById(R.id.attd_last_update);
         coursesListview = rootView.findViewById(R.id.course_list);
-        attd_prog = rootView.findViewById(R.id.attd_progress);
         pullToRefresh = rootView.findViewById(R.id.pullToRefresh);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                attd_prog.setVisibility(View.VISIBLE);
                 updateAttendance(true);
-                pullToRefresh.setRefreshing(false);
             }
         });
         return  rootView;
@@ -89,13 +86,13 @@ public class AttendanceFragment extends Fragment {
 
                 coursesListview.setAdapter(courseAdapter);
 
-                attd_prog.setVisibility(View.GONE);
+                pullToRefresh.setRefreshing(false);
             }
 
             @Override
             public void error(Exception e) {
                 Log.d("error", e.getLocalizedMessage());
-                attd_prog.setVisibility(View.GONE);
+                pullToRefresh.setRefreshing(false);
             }
         });
     }
