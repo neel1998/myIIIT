@@ -29,19 +29,6 @@ public class MessCancelFragment extends Fragment {
     private Mess mess;
     private Calendar startDate, endDate;
     ProgressBar cancelProgrssBar;
-    /*TODO
-    * Reset Fragment to default on changin tab
-    * */
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -115,11 +102,7 @@ public class MessCancelFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
+    
     private void cancelMeals(){
         int meals = 0;
         cancelProgrssBar.setVisibility(View.VISIBLE);
