@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.example.neel.myiiit.attendance.Attendance;
 import com.example.neel.myiiit.attendance.AttendanceData;
 import com.example.neel.myiiit.attendance.AttendanceHeader;
-import com.example.neel.myiiit.attendance.AttendanceRow;
 import com.example.neel.myiiit.utils.Callback2;
 
 
@@ -56,7 +55,6 @@ public class AttendanceFragment extends Fragment {
     public void onStart() {
         super.onStart();
         updateAttendance(false);
-
     }
     private void updateAttendance(boolean forceUpdate){
         Attendance.getAttendance(getContext(), forceUpdate, new Callback2<List<AttendanceData>, Calendar>() {
@@ -65,9 +63,9 @@ public class AttendanceFragment extends Fragment {
                 DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
                 last_update.setText("Last Updated : " + dateFormat.format(lastUpdated.getTimeInMillis()));
 
-                ArrayList<AttendanceRow> currentCourse = new ArrayList<>();
-                currentCourse.add(new AttendanceHeader("Current Courses"));
-                ArrayList<AttendanceRow> otherCourse = new ArrayList<>();
+                ArrayList<AttendanceData> currentCourse = new ArrayList<>();
+                ArrayList<AttendanceData> otherCourse = new ArrayList<>();
+
                 for (AttendanceData course : attendanceData){
                     if (course.getIsCurrent()){
                         currentCourse.add(course);
@@ -76,10 +74,21 @@ public class AttendanceFragment extends Fragment {
                         otherCourse.add(course);
                     }
                 }
-                courseAdapter = new AttendanceAdapter(getContext(), currentCourse);
-                courseAdapter.add(new AttendanceHeader("Other Courses"));
-                courseAdapter.addAll(otherCourse);
+
+                courseAdapter = new AttendanceAdapter(getContext());
+
+                if (currentCourse.size() > 0) {
+                    courseAdapter.add(new AttendanceHeader("Current Courses"));
+                    courseAdapter.addAll(currentCourse);
+                }
+
+                if (otherCourse.size() > 0) {
+                    courseAdapter.add(new AttendanceHeader("Past Courses"));
+                    courseAdapter.addAll(otherCourse);
+                }
+
                 coursesListview.setAdapter(courseAdapter);
+
                 attd_prog.setVisibility(View.GONE);
             }
 

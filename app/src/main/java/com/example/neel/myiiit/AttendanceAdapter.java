@@ -11,11 +11,9 @@ import com.example.neel.myiiit.attendance.AttendanceData;
 import com.example.neel.myiiit.attendance.AttendanceHeader;
 import com.example.neel.myiiit.attendance.AttendanceRow;
 
-import java.util.List;
-
 public class AttendanceAdapter extends ArrayAdapter<AttendanceRow> {
-    public AttendanceAdapter(Context context, List<AttendanceRow> questionData){
-        super(context,0,questionData);
+    public AttendanceAdapter(Context context){
+        super(context,0);
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
