@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.neel.myiiit.mess.Meals;
 import com.example.neel.myiiit.mess.Mess;
@@ -109,23 +110,26 @@ public class MessFragment extends Fragment {
         lastUpdatedBase = Calendar.getInstance();
         progressBar.setVisibility(View.VISIBLE);
         mResponseCount = 0;
-        for (int i = 0; i < mealsFragmentList. size(); ++i) {
+        for (int i = 0; i < mealsFragmentList.size(); ++i) {
             final MealsFragment mealsFragment = mealsFragmentList.get(i);
 
             Calendar date = (Calendar)mDate.clone();
             date.add(Calendar.DATE, i);
 
+            mealsFragment.setDate(date);
+            mealsFragment.invalidate();
+
             mess.getMealsForADay(date, forceUpdate, new Mess.GetMealsCallback() {
                 @Override
                 public void onMealsReceived(Calendar date, Meals meals, Calendar lastUpdated, boolean maybeCalledAgain) {
                     mealsFragment.setMeals(meals);
-                    mealsFragment.setDate(date);
                     responsesReceived(lastUpdated);
                 }
 
                 @Override
                 public void onError(Exception error) {
                     Log.e("MessFragment", error.getLocalizedMessage());
+                    mealsFragment.setError(error);
                     responsesReceived(null);
                 }
             });

@@ -10,8 +10,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/day"
         android:layout_alignParentTop="true"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:text="Today" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -25,8 +24,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/breakfast"
         android:layout_below="@id/day"
-        android:layout_toRightOf="@id/breakfast_label"
-        android:text="Breakfast Mess" />
+        android:layout_toRightOf="@id/breakfast_label" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -40,8 +38,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/lunch"
         android:layout_below="@id/breakfast"
-        android:layout_toRightOf="@id/lunch_label"
-        android:text="Lunch Mess"/>
+        android:layout_toRightOf="@id/lunch_label" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -55,7 +52,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/dinner"
         android:layout_below="@id/lunch_label"
-        android:layout_toRightOf="@id/dinner_label"
-        android:text="Dinner Mess" />
+        android:layout_toRightOf="@id/dinner_label" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:id="@+id/errorMessage" />
 
 </RelativeLayout>

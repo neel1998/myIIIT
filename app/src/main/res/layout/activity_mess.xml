@@ -47,7 +47,7 @@
                     android:id="@+id/meals_today"
                     android:name="com.example.neel.myiiit.MealsFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
 
                 <fragment
                     android:id="@+id/meals_tomorrow"
