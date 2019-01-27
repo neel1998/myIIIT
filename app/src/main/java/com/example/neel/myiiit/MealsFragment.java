@@ -27,6 +27,8 @@ public class MealsFragment extends Fragment {
 
     TextView mErrorMessage;
 
+    private SimpleDateFormat mDateFormat = new SimpleDateFormat("EEEE, d MMM y");
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -67,9 +69,7 @@ public class MealsFragment extends Fragment {
     }
 
     public void setDate(Calendar date) {
-        DateFormat dateFormat = SimpleDateFormat.getDateInstance();
-        String formattedDate = dateFormat.format(date.getTimeInMillis());
-        mDayTextView.setText(formattedDate);
+        mDayTextView.setText(mDateFormat.format(date.getTimeInMillis()));
     }
 
     public void invalidate() {

@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MealsFragment">
+    tools:context=".MealsFragment"
+    android:padding="4dp">
 
     <TextView
         android:layout_width="wrap_content"
@@ -17,47 +18,54 @@
         android:layout_height="wrap_content"
         android:id="@+id/breakfast_label"
         android:layout_below="@id/day"
-        android:text="Breakfast: " />
+        android:text="Breakfast: "
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/breakfast"
         android:layout_below="@id/day"
-        android:layout_toRightOf="@id/breakfast_label" />
+        android:layout_toRightOf="@id/breakfast_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/lunch_label"
         android:layout_below="@id/breakfast"
-        android:text="Lunch: " />
+        android:text="Lunch: "
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/lunch"
         android:layout_below="@id/breakfast"
-        android:layout_toRightOf="@id/lunch_label" />
+        android:layout_toRightOf="@id/lunch_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/dinner_label"
         android:layout_below="@id/lunch_label"
-        android:text="Dinner: " />
+        android:text="Dinner: "
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/dinner"
         android:layout_below="@id/lunch_label"
-        android:layout_toRightOf="@id/dinner_label" />
+        android:layout_toRightOf="@id/dinner_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:id="@+id/errorMessage" />
+        android:id="@+id/errorMessage"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
 </RelativeLayout>

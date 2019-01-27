@@ -25,6 +25,10 @@ class MessMonthlyMealsAsyncTask extends CallbackAsyncTask<Integer, Void, List<Me
         mContext = context;
     }
 
+    private String cleanMessName(String messName) {
+        return messName.replaceAll("(.*)\\([BLD]\\)", "$1");
+    }
+
     @Override
     protected AsyncTaskResult<List<Meals>> doInBackground(Integer... monthYear) {
         int month = monthYear[0] + 1;
@@ -65,9 +69,9 @@ class MessMonthlyMealsAsyncTask extends CallbackAsyncTask<Integer, Void, List<Me
                 Log.w("Mess", "Something is wrong. The dates don't match");
             }
             Meals meals = new Meals();
-            meals.breakfast = tableTokens[i + 1];
-            meals.lunch = tableTokens[i + 2];
-            meals.dinner = tableTokens[i + 3];
+            meals.breakfast = cleanMessName(tableTokens[i + 1]);
+            meals.lunch = cleanMessName(tableTokens[i + 2]);
+            meals.dinner = cleanMessName(tableTokens[i + 3]);
             allMeals.add(meals);
         }
 
