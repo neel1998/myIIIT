@@ -102,7 +102,7 @@ public class MessCancelFragment extends Fragment {
         return rootView;
     }
 
-    
+
     private void cancelMeals(){
         int meals = 0;
         cancelProgrssBar.setVisibility(View.VISIBLE);
