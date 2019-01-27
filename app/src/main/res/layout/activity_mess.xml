@@ -21,11 +21,12 @@
         app:layout_constrainedHeight="true"
         app:layout_constraintTop_toBottomOf="@id/mess_last_update"
         app:layout_constraintBottom_toTopOf="@id/calendar"
-        android:layout_below="@id/mess_last_update" >
+        android:layout_below="@id/mess_last_update">
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="12dp">
 
             <LinearLayout
                 android:layout_width="match_parent"

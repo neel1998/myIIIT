@@ -17,5 +17,17 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="AppTheme.TextAppearance.HighlightDate" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textColor">@color/date_highlight</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.IgnoreDateLabel" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@color/date_ignore</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.IgnoreDate" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textColor">@color/date_ignore</item>
+    </style>
 
 </resources>
