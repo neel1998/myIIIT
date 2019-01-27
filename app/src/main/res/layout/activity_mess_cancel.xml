@@ -1,86 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MessCancelFragment"
+    android:gravity="center_horizontal"
+    android:padding="12dp"
     >
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/startdate_btn"
-        android:layout_centerHorizontal="true"
-        android:text="start date"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/startdate_btn"
-        android:id="@+id/startdate_text"
-        android:layout_centerHorizontal="true"
-        />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/enddate_btn"
-        android:layout_centerHorizontal="true"
-        android:text="end date"
-        android:layout_below="@+id/startdate_text"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/enddate_btn"
-        android:id="@+id/enddate_text"
-        android:layout_centerHorizontal="true"
-        />
     <CheckBox
-        android:layout_below="@+id/enddate_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Breakfast"
-        android:id="@+id/breakfast_box"
-        />
-    <CheckBox
-        android:layout_below="@+id/enddate_text"
-        android:layout_toRightOf="@+id/breakfast_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Lunch"
-        android:id="@+id/lunch_box"
-        />
-    <CheckBox
-        android:layout_below="@+id/enddate_text"
-        android:layout_toRightOf="@+id/lunch_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dinner"
-        android:id="@+id/dinner_box"
-        />
-    <CheckBox
-        android:layout_below="@+id/dinner_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Uncancel"
-        android:layout_centerHorizontal="true"
         android:id="@+id/uncancel_box"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         />
-    <Button
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/uncancel_box"
-        android:layout_centerHorizontal="true"
-        android:text="Submit"
-        android:id="@+id/submit_btn"
-        />
-    <ProgressBar
+        android:text="Cancel/Uncancel meals for"
+        android:id="@+id/cancel_uncancel_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_marginTop="24dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/start_date"
+        android:padding="12dp"
+        android:textAlignment="center"
+        android:textAppearance="@style/AppTheme.TextAppearance.HighlightDate" />
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/cancel_prog"
-        android:visibility="gone"
-        android:layout_below="@+id/submit_btn"
-        android:layout_centerHorizontal="true"
-        />
-</RelativeLayout>
+        android:text="to"
+        android:id="@+id/to_end_date_label"
+        android:textAppearance="@style/AppTheme.TextAppearance.IgnoreDateLabel" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/end_date"
+        android:padding="12dp"
+        android:textAlignment="center"
+        android:textAppearance="@style/AppTheme.TextAppearance.IgnoreDate" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="12dp">
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Breakfast"
+            android:id="@+id/breakfast_box"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            />
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lunch"
+            android:id="@+id/lunch_box"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            />
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dinner"
+            android:id="@+id/dinner_box"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:id="@+id/submit_btn"
+            android:textSize="16sp"
+            android:layout_centerInParent="true"
+            />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cancel_prog"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -23,4 +23,7 @@
     <color name="Login1">#196401</color>
     <color name="Login2">#196401</color>
     <color name="Login3">#196401</color>
+
+    <color name="date_highlight">@android:color/holo_blue_dark</color>
+    <color name="date_ignore">@android:color/darker_gray</color>
 </resources>
