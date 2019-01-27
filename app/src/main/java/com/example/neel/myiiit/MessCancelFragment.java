@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -183,6 +184,24 @@ public class MessCancelFragment extends Fragment {
         }
     }
 
+    private String formatDate(Calendar date) {
+        String formattedDate = mDateFormat.format(date.getTimeInMillis());
+
+        Calendar today = Calendar.getInstance();
+        resetTime(today);
+
+        Calendar tomorrow = (Calendar) today.clone();
+        tomorrow.add(Calendar.DAY_OF_MONTH, 1);
+
+        if (date.equals(today)) {
+            return "Today, " + formattedDate;
+        } else if (date.equals(tomorrow)) {
+            return "Tomorrow, " + formattedDate;
+        }
+
+        return formattedDate;
+    }
+
     private void handleDateUpdates() {
         resetTime(mStartDate);
         resetTime(mEndDate);
@@ -197,8 +216,8 @@ public class MessCancelFragment extends Fragment {
             highlightEndDate(false);
         }
 
-        mStartDateTextView.setText(mDateFormat.format(mStartDate.getTimeInMillis()));
-        mEndDateTextView.setText(mDateFormat.format(mEndDate.getTimeInMillis()));
+        mStartDateTextView.setText(formatDate(mStartDate));
+        mEndDateTextView.setText(formatDate(mEndDate));
     }
 
     private void resetTime(Calendar calendar) {
