@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences preferences;
     Toolbar toolbar;
     TabLayout tabLayout;
+    AppBarLayout appBarLayout;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         toolbar = findViewById(R.id.toolbar);
+        appBarLayout = findViewById(R.id.appbar);
         setSupportActionBar(toolbar);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -72,21 +75,25 @@ public class MainActivity extends AppCompatActivity {
                         getWindow().setStatusBarColor(getResources().getColor(R.color.Home3));
                         tabLayout.setBackgroundColor(getResources().getColor(R.color.Home2));
                         toolbar.setBackgroundColor(getResources().getColor(R.color.Home1));
+                        appBarLayout.setBackgroundColor(getResources().getColor(R.color.Home2));
                         break;
                     case 1:
                         getWindow().setStatusBarColor(getResources().getColor(R.color.Meals3));
                         tabLayout.setBackgroundColor(getResources().getColor(R.color.Meals2));
                         toolbar.setBackgroundColor(getResources().getColor(R.color.Meals1));
+                        appBarLayout.setBackgroundColor(getResources().getColor(R.color.Meals2));
                         break;
                     case 2:
                         getWindow().setStatusBarColor(getResources().getColor(R.color.Cancel3));
                         tabLayout.setBackgroundColor(getResources().getColor(R.color.Cancel2));
                         toolbar.setBackgroundColor(getResources().getColor(R.color.Cancel1));
+                        appBarLayout.setBackgroundColor(getResources().getColor(R.color.Cancel2));
                         break;
                     case 3:
                         getWindow().setStatusBarColor(getResources().getColor(R.color.Attd3));
                         tabLayout.setBackgroundColor(getResources().getColor(R.color.Attd2));
                         toolbar.setBackgroundColor(getResources().getColor(R.color.Attd1));
+                        appBarLayout.setBackgroundColor(getResources().getColor(R.color.Attd2));
                         break;
                     default:
                         break;

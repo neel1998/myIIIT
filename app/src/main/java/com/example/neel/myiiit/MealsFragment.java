@@ -1,7 +1,9 @@
 package com.example.neel.myiiit;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +65,7 @@ public class MealsFragment extends Fragment {
 
         mErrorMessage.setVisibility(View.INVISIBLE);
 
+
         mBreakfastTextView.setText(meals.breakfast);
         mLunchTextView.setText(meals.lunch);
         mDinnerTextView.setText(meals.dinner);
@@ -70,6 +73,8 @@ public class MealsFragment extends Fragment {
 
     public void setDate(Calendar date) {
         mDayTextView.setText(mDateFormat.format(date.getTimeInMillis()));
+
+
     }
 
     public void invalidate() {
@@ -82,7 +87,6 @@ public class MealsFragment extends Fragment {
         mBreakfastTextView.setVisibility(View.INVISIBLE);
         mLunchTextView.setVisibility(View.INVISIBLE);
         mDinnerTextView.setVisibility(View.INVISIBLE);
-
         mErrorMessage.setVisibility(View.INVISIBLE);
     }
 

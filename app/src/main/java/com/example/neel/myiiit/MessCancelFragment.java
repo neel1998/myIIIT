@@ -107,8 +107,10 @@ public class MessCancelFragment extends Fragment {
         if (mLunchCheckBox.isChecked()) meals |= Mess.MEAL_LUNCH;
         if (mDinnerCheckBox.isChecked()) meals |= Mess.MEAL_DINNER;
 
-        Log.d("fragment start date", mStartDate.toString());
-        Log.d("fragment end date", mEndDate.toString());
+        if (meals == 0) {
+            resetLayout("Please Select meals to Cancel");
+            return;
+        }
         mess.cancelMeals((Calendar) mStartDate.clone(), (Calendar) mEndDate.clone(), meals, mUncancelCheckBox.isChecked(), new Callback1<String>() {
             @Override
             public void success(String s) {

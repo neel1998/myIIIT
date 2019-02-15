@@ -59,8 +59,10 @@ class MessMonthlyMealsAsyncTask extends CallbackAsyncTask<Integer, Void, List<Me
             return new AsyncTaskResult<List<Meals>>(new RuntimeException("Error while extracting data from mess portal"));
         }
 
+        String tableText = calendarTable.get(0).text().replace(" Non-", "Non-");
         // Parse table
-        String[] tableTokens = calendarTable.get(0).text().split(" ");
+        String[] tableTokens = tableText.split(" ");
+
 
         List<Meals> allMeals = new ArrayList<>();
         for (int date = 1, i = 11; i < tableTokens.length - 3; ++date, i += 4) {
