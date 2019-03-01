@@ -35,19 +35,19 @@
 
                 <fragment
                     android:id="@+id/meals_today"
-                    android:name="com.example.neel.myiiit.MealsFragment"
+                    android:name="com.trivedi.neel.myiiit.MealsFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
                 <fragment
                     android:id="@+id/meals_tomorrow"
-                    android:name="com.example.neel.myiiit.MealsFragment"
+                    android:name="com.trivedi.neel.myiiit.MealsFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <fragment
                     android:id="@+id/meals_day_after"
-                    android:name="com.example.neel.myiiit.MealsFragment"
+                    android:name="com.trivedi.neel.myiiit.MealsFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
