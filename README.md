@@ -12,9 +12,9 @@
 - Assignment deadline notificatios and submission
 - Courier notifications
 
-##### And all these without any need to logging into any VPN. This app works on any network removing the tiresome job of connecting to intranet everytime we want to check meals/attendance.
+##### And all these without any need to logging into any VPN. This app works on any network removing the tiresome job of connecting to intranet everytime students want to check meals/attendance.
 
-![]('ScreenShots/home.png')
-![]('ScreenShots/meals.png')
-![]('ScreenShots/cancel.png')
-![]('ScreenShots/attendance.png')
+<img src="ScreenShots/home.png" height="500" width="300"> 
+<img src="ScreenShots/meals.png" height="500" width="300"> 
+<img src="ScreenShots/cancel.png" height="500" width="300"> 
+<img src="ScreenShots/attendance.png" height="500" width="300"> 
