@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#0b2a59</color>
+    <color name="colorPrimaryDark">#021a3d</color>
+    <color name="colorAccent">#64789C</color>
 
     <color name="Meals1">#d40b1f</color>
     <color name="Meals2">#64030d</color>
@@ -24,6 +24,20 @@
     <color name="Login2">#196401</color>
     <color name="Login3">#196401</color>
 
-    <color name="date_highlight">@android:color/holo_blue_dark</color>
+    <color name="main1">#485d86</color>
+    <color name="main2">#0b2a59</color>
+    <color name="main3">#021a3d</color>
+
+
+    <color name="selected_tab_text">#FFFFFF</color>
+    <color name="unselected_tab_text">#BDBCBC</color>
+
+
+    <color name="date_highlight">#0b2a59</color>
     <color name="date_ignore">@android:color/darker_gray</color>
+
+    <color name="meal_upcoming">#7E7D7D</color>
+    <color name="meal_past">@android:color/darker_gray</color>
+    <color name="meal_next">#000C1F</color>
+
 </resources>

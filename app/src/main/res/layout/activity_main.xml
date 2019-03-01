@@ -23,6 +23,7 @@
             android:background="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:titleTextColor="@color/selected_tab_text"
             app:title="@string/app_name">
 
         </android.support.v7.widget.Toolbar>
@@ -32,6 +33,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:tabMode="scrollable"
+            app:tabTextColor="@color/unselected_tab_text"
+            app:tabSelectedTextColor="@color/selected_tab_text"
             >
 
             <android.support.design.widget.TabItem
@@ -44,7 +47,7 @@
                 android:id="@+id/tabItem2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Today's Meals" />
+                android:text="Meals" />
 
             <android.support.design.widget.TabItem
                 android:id="@+id/tabItem3"

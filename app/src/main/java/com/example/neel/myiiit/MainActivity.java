@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private ViewPager mViewPager;
-    SharedPreferences preferences;
     Toolbar toolbar;
     TabLayout tabLayout;
     AppBarLayout appBarLayout;
@@ -58,9 +57,10 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        getWindow().setStatusBarColor(getResources().getColor(R.color.Home3));
-        tabLayout.setBackgroundColor(getResources().getColor(R.color.Home2));
-        toolbar.setBackgroundColor(getResources().getColor(R.color.Home1));
+        getWindow().setStatusBarColor(getResources().getColor(R.color.main1));
+        tabLayout.setBackgroundColor(getResources().getColor(R.color.main3));
+        toolbar.setBackgroundColor(getResources().getColor(R.color.main2));
+        appBarLayout.setBackgroundColor(getResources().getColor(R.color.main3));
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -70,34 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                switch (position) {
-                    case 0:
-                        getWindow().setStatusBarColor(getResources().getColor(R.color.Home3));
-                        tabLayout.setBackgroundColor(getResources().getColor(R.color.Home2));
-                        toolbar.setBackgroundColor(getResources().getColor(R.color.Home1));
-                        appBarLayout.setBackgroundColor(getResources().getColor(R.color.Home2));
-                        break;
-                    case 1:
-                        getWindow().setStatusBarColor(getResources().getColor(R.color.Meals3));
-                        tabLayout.setBackgroundColor(getResources().getColor(R.color.Meals2));
-                        toolbar.setBackgroundColor(getResources().getColor(R.color.Meals1));
-                        appBarLayout.setBackgroundColor(getResources().getColor(R.color.Meals2));
-                        break;
-                    case 2:
-                        getWindow().setStatusBarColor(getResources().getColor(R.color.Cancel3));
-                        tabLayout.setBackgroundColor(getResources().getColor(R.color.Cancel2));
-                        toolbar.setBackgroundColor(getResources().getColor(R.color.Cancel1));
-                        appBarLayout.setBackgroundColor(getResources().getColor(R.color.Cancel2));
-                        break;
-                    case 3:
-                        getWindow().setStatusBarColor(getResources().getColor(R.color.Attd3));
-                        tabLayout.setBackgroundColor(getResources().getColor(R.color.Attd2));
-                        toolbar.setBackgroundColor(getResources().getColor(R.color.Attd1));
-                        appBarLayout.setBackgroundColor(getResources().getColor(R.color.Attd2));
-                        break;
-                    default:
-                        break;
-                }
+
             }
 
             @Override
@@ -135,7 +108,10 @@ public class MainActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
-
+        else if (id == R.id.action_about) {
+            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 
