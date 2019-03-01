@@ -11,7 +11,7 @@
 
     </string>
     <string name="disclaimer_text">This app is NOT an official app by International Institute Of Information Technology, Hyderabad.
-        Developers take no responsibility of the data shown and fetched from different services. Your credentials are stored ONLY on your local device and may be transmitted over network for various purposes.
+        Developers take no responsibility of the data shown and fetched from different services. Your credentials are stored on your local device and may be transmitted over network for various purposes.
         </string>
     <string name="developers_name">Neel Trivedi and Nisarg Jhaveri</string>
     <string name="github_link_text">github.com/neel1998/myIIIT</string>
