@@ -5,14 +5,14 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="home_text">Your one stop solution to Day to Day worries at IIIT</string>
+    <string name="home_text">Your one stop solution to day-to-day worries at IIIT</string>
     <string name="about_text">myIIIT app helps students of International Institute of Information Technology, Hyderabad
                             keep track of their meals and attendance. This app works on any network so users do not need to login into IIIT network
 
     </string>
     <string name="disclaimer_text">This app is NOT an official app by International Institute Of Information Technology, Hyderabad.
-        Developers take no responsibility of the data shown and fetched from different services. Your credentials are stored ONLY on your local device and may be transmitted over network for various purposes
+        Developers take no responsibility of the data shown and fetched from different services. Your credentials are stored on your local device and may be transmitted over network for various purposes.
         </string>
-    <string name="developers_name">Nisarg Jhaveri &amp; Neel Trivedi</string>
-    <string name="github_link">Checkout the code and Contribute!</string>
+    <string name="developers_name">Neel Trivedi and Nisarg Jhaveri</string>
+    <string name="github_link_text">github.com/neel1998/myIIIT</string>
 </resources>

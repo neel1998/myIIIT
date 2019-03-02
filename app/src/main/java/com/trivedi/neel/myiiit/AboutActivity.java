@@ -14,7 +14,7 @@ public class AboutActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
-        TextView githubLink = findViewById(R.id.github_link);
+        View githubLink = findViewById(R.id.github_link);
         githubLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
