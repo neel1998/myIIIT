@@ -2,6 +2,8 @@
 
 ##### A day to day use app for students at International Institute of Information Technology, Hyderabad
 
+<a href='https://play.google.com/store/apps/details?id=com.trivedi.neel.myiiit&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
+
 #### Features
 - Students can see their mess registration for any month.
 - Students can cancel their meals in single click
