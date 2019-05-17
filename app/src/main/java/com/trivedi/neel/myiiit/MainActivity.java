@@ -126,6 +126,8 @@ public class MainActivity extends AppCompatActivity {
                 case 2:
                     return new MessCancelFragment();
                 case 3:
+                    return new ChangeMessFragment();
+                case 4:
                     return new AttendanceFragment();
                 default:
                     return null;
@@ -134,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
     }
 }

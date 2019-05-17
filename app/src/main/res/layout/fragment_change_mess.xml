@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <RadioGroup
+        android:id="@+id/change_mess_type_radio_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/change_mess_date_wise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="DateWise" />
+
+        <RadioButton
+            android:id="@+id/change_mess_day_wise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="DayWise" />
+
+        <RadioButton
+            android:id="@+id/change_mess_monthly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Monthly" />
+    </RadioGroup>
+
+    <include
+        android:id="@+id/date_wise_change_mess_layout"
+        layout="@layout/date_wise_change_mess"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <include
+        android:id="@+id/day_wise_change_mess_layout"
+        layout="@layout/day_wise_change_mess"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/montly_change_mess_layout"
+        layout="@layout/monthly_change_mess"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="12dp"
+        android:orientation="vertical">
+
+        <CheckBox
+            android:id="@+id/breakfast_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Breakfast"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <CheckBox
+            android:id="@+id/lunch_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lunch"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <CheckBox
+            android:id="@+id/dinner_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dinner"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/mess_select_radio_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/north_mess"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="North" />
+
+            <RadioButton
+                android:id="@+id/south_mess"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="South" />
+
+            <RadioButton
+                android:id="@+id/nbh_mess_veg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Yuktahar" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/nbh_mess_nveg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NBH Veg" />
+
+            <RadioButton
+                android:id="@+id/yukta_mess"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NBH NVeg" />
+        </LinearLayout>
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/change_mess_submit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:text="Submit" />
+</LinearLayout>

@@ -59,6 +59,12 @@
                 android:id="@+id/tabItem4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Change Mess" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabItem5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Attendance" />
 
         </android.support.design.widget.TabLayout>

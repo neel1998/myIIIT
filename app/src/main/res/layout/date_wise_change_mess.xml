@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/start_date"
+        android:padding="12dp"
+        android:textAlignment="center"
+        android:textAppearance="@style/AppTheme.TextAppearance.HighlightDate" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="to"
+        android:id="@+id/to_end_date_label"
+        android:textAppearance="@style/AppTheme.TextAppearance.IgnoreDateLabel" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/end_date"
+        android:padding="12dp"
+        android:textAlignment="center"
+        android:textAppearance="@style/AppTheme.TextAppearance.IgnoreDate" />
+
+</LinearLayout>
