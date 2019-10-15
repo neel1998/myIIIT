@@ -68,7 +68,6 @@ public class Network {
 
         try {
             response = new NetworkResponse(client.newCall(request).execute());
-
             if (!intranet && response.code() == 401) {
                 // Auth failed
                 throw new AuthenticationException();
@@ -91,10 +90,16 @@ public class Network {
 
             if (canAttemptLogin && isLoginPage(response.getSoup())) {
                 Log.d("Network", "Attempting login");
-                if (!loginCore(context, response.getSoup())) {
+                NetworkResponse loginCoreResponse = loginCore(context, response.getSoup());
+                if (!(loginCoreResponse.getResponse().code() == 200 && !isLoginPage(loginCoreResponse.getSoup()))) {
                     throw new AuthenticationException();
                 }
-                shouldRetry = true;
+                if (url.equals("https://login.iiit.ac.in")) {
+                    shouldRetry = false;
+                    response = loginCoreResponse;
+                } else {
+                    shouldRetry = true;
+                }
             }
 
             if (shouldRetry) {
@@ -111,7 +116,7 @@ public class Network {
     }
 
     private static boolean isLoginPage(Document soup) {
-        return soup.title().equals("Central Authentication Service - IIIT Hyderabad") &&
+        return soup.title().equals("Login - CAS – Central Authentication Service") &&
                 soup.selectFirst("input#username") != null &&
                 soup.selectFirst("input#password") != null;
     }
@@ -131,7 +136,7 @@ public class Network {
         return Network.request(context, body, final_url, false);
     }
 
-    private static boolean loginCore(Context context, Document casSoup) throws AuthenticationException, IOException {
+    private static NetworkResponse loginCore(Context context, Document casSoup) throws AuthenticationException, IOException {
         CredentialStorage credentialStorage = CredentialStorage.getInstance(context);
 
         Element form = casSoup.getElementById("fm1");
@@ -154,9 +159,7 @@ public class Network {
             }
         }
 
-        NetworkResponse response = Network.request(context, loginBodyBuilder.build(), loginUrl, false);
-
-        return response.code() == 200 && !isLoginPage(response.getSoup());
+        return Network.request(context, loginBodyBuilder.build(), loginUrl, false);
     }
 
     public static boolean login(Context context) throws AuthenticationException, IOException {
