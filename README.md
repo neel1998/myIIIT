@@ -6,12 +6,12 @@
 
 #### Features
 - Students can see their mess registration for any month.
-- Students can cancel their meals in single click
-- Students can keep track of their attendance in current as well as past course
+- Students can cancel their meals with a single click.
+- Students can keep track of their attendance in current as well as past courses.
 
 ##### Upcoming Features
 - Mess changing option
-- Assignment deadline notificatios and submission
+- Assignment deadline notifications and submissions
 - Courier notifications
 
 ##### And all these without any need to logging into any VPN. This app works on any network removing the tiresome job of connecting to intranet everytime students want to check meals/attendance.
