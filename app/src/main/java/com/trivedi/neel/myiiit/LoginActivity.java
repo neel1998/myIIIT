@@ -1,10 +1,13 @@
 package com.trivedi.neel.myiiit;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -50,6 +53,15 @@ public class LoginActivity extends AppCompatActivity {
                 username = username_box.getText().toString();
                 pswd = pswd_box.getText().toString();
 
+                InputMethodManager imm = (InputMethodManager) LoginActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                //Find the currently focused view, so we can grab the correct window token from it.
+                View view = LoginActivity.this.getCurrentFocus();
+                //If no view currently has focus, create a new one, just so we can grab a window token from it
+                if (view == null) {
+                    view = new View(LoginActivity.this);
+                }
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
                 if (username.equals("")) {
                     username_err.setVisibility(View.VISIBLE);
                 }
@@ -85,15 +97,20 @@ public class LoginActivity extends AppCompatActivity {
             login_prog.setVisibility(View.GONE);
             login_btn.setVisibility(View.VISIBLE);
 
-            if ((loginSuccessful.isError() && loginSuccessful.getError() instanceof AuthenticationException)
-                    || !loginSuccessful.getResult()) {
+            if (loginSuccessful.isError()) {
                 Network.removeCredentials(LoginActivity.this);
 
-                pswd_err.setText("Invalid Credentials");
-                pswd_err.setVisibility(View.VISIBLE);
-            }
-            else if (loginSuccessful.isError()) {
-                pswd_err.setText("Something went wrong");
+                username_box.clearFocus();
+                pswd_box.clearFocus();
+
+                String err_msg;
+                if(loginSuccessful.getError() instanceof AuthenticationException) {
+                    err_msg = "Invalid credentilas";
+                }
+                else {
+                    err_msg = "Something went wrong";
+                }
+                pswd_err.setText(err_msg);
                 pswd_err.setVisibility(View.VISIBLE);
             }
             else {
