@@ -111,7 +111,7 @@ public class Network {
     }
 
     private static boolean isLoginPage(Document soup) {
-        return soup.title().equals("Central Authentication Service - IIIT Hyderabad") &&
+        return soup.title().equals("Login - CAS – Central Authentication Service") &&
                 soup.selectFirst("input#username") != null &&
                 soup.selectFirst("input#password") != null;
     }
