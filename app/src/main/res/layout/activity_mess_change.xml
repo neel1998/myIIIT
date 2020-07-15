@@ -27,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Datewise Registration"
-                android:textAppearance="@style/AppTheme.TextAppearance.HighlightDate"/>
+                android:textAppearance="@style/AppTheme.TextAppearance.Heading"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -63,15 +63,15 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
-                android:orientation="horizontal"
+                android:layout_marginBottom="24dp"
+                android:orientation="vertical"
                 >
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginRight="12dp"
+                    android:layout_marginBottom="16dp"
                     >
 
                     <CheckBox
@@ -104,8 +104,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/date_mess_spinner"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="12dp"/>
+                    android:layout_marginTop="16dp"/>
 
             </LinearLayout>
 
@@ -137,9 +136,10 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="12dp"
-            android:background="#000000"/>
+            android:layout_height="4dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="@color/colorPrimary"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -152,46 +152,37 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Daywise Registration"
-                android:textAppearance="@style/AppTheme.TextAppearance.HighlightDate"/>
+                android:textAppearance="@style/AppTheme.TextAppearance.Heading"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
                 >
 
-                <LinearLayout
+
+                <Spinner
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginRight="0dp"
-                    >
+                    android:id="@+id/day_spinner"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="24dp"/>
 
-                    <Spinner
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/day_spinner"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginBottom="24dp"/>
-
-                    <Spinner
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/day_meal_spinner"
-                        android:layout_marginBottom="12dp"
-                        android:layout_marginTop="24dp"/>
-
-                </LinearLayout>
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/day_meal_spinner"
+                    android:layout_marginBottom="24dp"
+                    android:layout_marginTop="24dp"/>
 
                 <Spinner
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/day_mess_spinner"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="-0dp"/>
+                    android:layout_marginTop="24dp"/>
 
             </LinearLayout>
 
@@ -223,9 +214,10 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="12dp"
-            android:background="#000000"/>
+            android:layout_height="4dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="@color/colorPrimary"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -238,7 +230,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Monthly Registration"
-                android:textAppearance="@style/AppTheme.TextAppearance.HighlightDate"/>
+                android:textAppearance="@style/AppTheme.TextAppearance.Heading"/>
 
             <CheckBox
                 android:layout_width="wrap_content"
@@ -254,21 +246,20 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
                 >
 
                 <Spinner
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/month_spinner"
-                    android:layout_marginTop="12dp"
                     android:layout_marginBottom="24dp"/>
 
                 <Spinner
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/month_mess_spinner"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="12dp"/>
+                    android:layout_marginTop="24dp" />
 
             </LinearLayout>
 

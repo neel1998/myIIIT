@@ -231,15 +231,15 @@ public class MessChangeFragment extends Fragment {
     }
 
     private void fillSpinners() {
-        ArrayAdapter<CharSequence> messAdapter = ArrayAdapter.createFromResource(getContext(), R.array.mess, android.R.layout.simple_spinner_item);
-        ArrayAdapter<CharSequence> mealAdapter = ArrayAdapter.createFromResource(getContext(), R.array.meal, android.R.layout.simple_spinner_item);
-        ArrayAdapter<CharSequence> daysAdapter = ArrayAdapter.createFromResource(getContext(), R.array.days, android.R.layout.simple_spinner_item);
-        ArrayAdapter<String> monthAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, monthList);
+        ArrayAdapter<CharSequence> messAdapter = ArrayAdapter.createFromResource(getContext(), R.array.mess, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> mealAdapter = ArrayAdapter.createFromResource(getContext(), R.array.meal, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> daysAdapter = ArrayAdapter.createFromResource(getContext(), R.array.days, R.layout.spinner_item);
+        ArrayAdapter<String> monthAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, monthList);
 
-        messAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mealAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        daysAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        messAdapter.setDropDownViewResource(R.layout.spinner_item);
+        mealAdapter.setDropDownViewResource(R.layout.spinner_item);
+        daysAdapter.setDropDownViewResource(R.layout.spinner_item);
+        monthAdapter.setDropDownViewResource(R.layout.spinner_item);
 
         mDateMessSpinner.setAdapter(messAdapter);
         mDaySpinner.setAdapter(daysAdapter);
@@ -249,8 +249,8 @@ public class MessChangeFragment extends Fragment {
 
         ArrayList<String > monthMessList = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.mess)));
         monthMessList.remove(4);
-        ArrayAdapter<String> monthMessAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, monthMessList);
-        monthMessAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> monthMessAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, monthMessList);
+        monthMessAdapter.setDropDownViewResource(R.layout.spinner_item);
         mMonthMessSpinner.setAdapter(monthMessAdapter);
     }
 

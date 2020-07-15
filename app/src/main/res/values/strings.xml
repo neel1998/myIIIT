@@ -35,9 +35,9 @@
     </string-array>
 
     <string-array name="meal">
-        <item>breakfast</item>
-        <item>lunch</item>
-        <item>dinner</item>
+        <item>Breakfast</item>
+        <item>Lunch</item>
+        <item>Dinner</item>
     </string-array>
 
 </resources>
