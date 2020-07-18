@@ -92,6 +92,48 @@ public class Mess {
         messCancelTask.execute();
     }
 
+    public void changeMealsDatewise(final Calendar startDate, final Calendar endDate, final int meals, final int mess, final Callback1<String> callback) {
+        MessChangeDatewiseAsyncTask messChangeTask = new MessChangeDatewiseAsyncTask(mContext, startDate, endDate, meals, mess, new AsyncTaskCallback<String>() {
+            @Override
+            public void call(AsyncTaskResult<String> result) {
+                if(result.isError()) {
+                    callback.error(result.getError());
+                    return;
+                }
+                callback.success(result.getResult());
+            }
+        });
+        messChangeTask.execute();
+    }
+
+    public void changeMealsDaywise(final String day, final int meal, final int mess, final Callback1<String> callback) {
+        MessChangeDaywiseAsyncTask messChangeTask = new MessChangeDaywiseAsyncTask(mContext, day, meal, mess, new AsyncTaskCallback<String>() {
+            @Override
+            public void call(AsyncTaskResult<String> result) {
+                if(result.isError()) {
+                    callback.error(result.getError());
+                    return;
+                }
+                callback.success(result.getResult());
+            }
+        });
+        messChangeTask.execute();
+    }
+
+    public void changeMealsMonthly(final boolean unregister, final String month, final int mess, final Callback1<String> callback) {
+        MessChangeMonthlyAsyncTask messChangeTask = new MessChangeMonthlyAsyncTask(mContext, unregister, month, mess, new AsyncTaskCallback<String>() {
+            @Override
+            public void call(AsyncTaskResult<String> result) {
+                if(result.isError()) {
+                    callback.error(result.getError());
+                    return;
+                }
+                callback.success(result.getResult());
+            }
+        });
+        messChangeTask.execute();
+    }
+
     public void clearCache() {
         mCacheManager.clearCache();
     }

@@ -15,4 +15,29 @@
         </string>
     <string name="developers_name">Nisarg Jhaveri and Neel Trivedi</string>
     <string name="github_link_text">github.com/neel1998/myIIIT</string>
+
+    <string-array name="mess">
+        <item>Yuktahaar</item>
+        <item>South</item>
+        <item>North</item>
+        <item>Kadamb-Veg</item>
+        <item>Kadamb Non-Veg</item>
+    </string-array>
+
+    <string-array name="days">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
+
+    <string-array name="meal">
+        <item>Breakfast</item>
+        <item>Lunch</item>
+        <item>Dinner</item>
+    </string-array>
+
 </resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/textView1"
+    android:layout_width="@dimen/spinners_width"
+    android:layout_height="wrap_content"
+    android:paddingBottom="15dp"
+    android:paddingTop="15dp"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
+    android:background="@android:color/background_light"
+    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+    android:textColor="@android:color/black"
+    android:textSize="16sp"
+
+    android:textAlignment="gravity"
+    android:gravity="center"
+
+    />
